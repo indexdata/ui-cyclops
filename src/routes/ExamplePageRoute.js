@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'react-router-dom/Link';
 import { FormattedMessage } from 'react-intl';
 import { stripesConnect } from '@folio/stripes/core';
@@ -13,39 +13,25 @@ import {
 
 import GreetingModal from '../components/greeting-modal';
 
-class ExamplePageRoute extends React.Component {
-  static manifest = Object.freeze({
-    health: {
-      type: 'okapi',
-      path: '_/discovery/health',
-    }
-  });
+function ExamplePageRoute(props) {
+  const [showModal, setShowModal] = useState(false);
 
-  constructor(props) {
-    super(props);
+  const toggleModal = (val) => {
+    setShowModal(val);
+  };
 
-    this.toggleModal = this.toggleModal.bind(this);
-    this.buttonClick = this.buttonClick.bind(this);
-    this.onClose = this.onClose.bind(this);
-    this.state = { showModal: false };
-  }
+  const onClose = () => {
+    toggleModal(false);
+  };
 
-  toggleModal(showModal) {
-    this.setState({ showModal });
-  }
+  const buttonClick = () => {
+    toggleModal(true);
+  };
 
-  onClose() {
-    this.toggleModal(false);
-  }
-
-  buttonClick() {
-    this.toggleModal(true);
-  }
-
-  getHealthSummary() {
+  const getHealthSummary = () => {
     const {
       records: healthData
-    } = this.props.resources.health;
+    } = props.resources.health;
 
     const defaultlHealthSummary = {
       healthyInstances: 0,
@@ -61,13 +47,13 @@ class ExamplePageRoute extends React.Component {
 
       return healthSummary;
     }, defaultlHealthSummary);
-  }
+  };
 
-  renderHealthSummary() {
+  const renderHealthSummary = () => {
     const {
       healthyInstances,
       notHealthyInstances,
-    } = this.getHealthSummary();
+    } = getHealthSummary();
 
     return (
       <FormattedMessage
@@ -78,55 +64,60 @@ class ExamplePageRoute extends React.Component {
         id="ui-cyclops.example-page.health-summary"
       />
     );
-  }
+  };
 
-  render() {
-    const { health } = this.props.resources;
-    const healthResourceAvaliable = health && health.hasLoaded;
+  const { health } = props.resources;
+  const healthResourceAvaliable = health && health.hasLoaded;
 
-    return (
-      <Paneset static>
-        <Pane defaultWidth="20%" paneTitle="Examples">
-          <Headline size="small">Paneset and Panes</Headline>
-          These columns are created with Paneset and Pane components.
-          <hr />
-          <div data-test-example-page-home>
-            <Link to="cyclops">home page</Link>
-          </div>
-        </Pane>
-        <Pane defaultWidth="80%" paneTitle="Some Stripes Components">
-          <Headline size="small" margin="medium">Button with modal</Headline>
-          <div data-test-example-page-button>
-            <Button onClick={this.buttonClick}>Click me</Button>
-          </div>
-          <GreetingModal onClose={this.onClose} open={this.state.showModal} />
-          <hr />
-          <Headline
-            size="small"
-            margin="medium"
-          >
-            <FormattedMessage id="ui-cyclops.example-page.sample-request" />
-          </Headline>
-          {healthResourceAvaliable
-            ? this.renderHealthSummary()
-            : <Icon icon="spinner-ellipsis" />
-          }
-          <hr />
-          <Headline size="small" margin="medium">More...</Headline>
-          Please refer to the
-          {' '}
-          <a
-            data-test-example-page-components-link
-            href="https://github.com/folio-org/stripes-components/blob/master/README.md"
-          >
-            Stripes Components README
-          </a>
-          {' '}
-          for more components and examples.
-        </Pane>
-      </Paneset>
-    );
-  }
+  return (
+    <Paneset static>
+      <Pane defaultWidth="20%" paneTitle="Examples">
+        <Headline size="small">Paneset and Panes</Headline>
+        These columns are created with Paneset and Pane components.
+        <hr />
+        <div data-test-example-page-home>
+          <Link to="cyclops">home page</Link>
+        </div>
+      </Pane>
+      <Pane defaultWidth="80%" paneTitle="Some Stripes Components">
+        <Headline size="small" margin="medium">Button with modal</Headline>
+        <div data-test-example-page-button>
+          <Button onClick={buttonClick}>Click me</Button>
+        </div>
+        <GreetingModal onClose={onClose} open={showModal} />
+        <hr />
+        <Headline
+          size="small"
+          margin="medium"
+        >
+          <FormattedMessage id="ui-cyclops.example-page.sample-request" />
+        </Headline>
+        {healthResourceAvaliable
+          ? renderHealthSummary()
+          : <Icon icon="spinner-ellipsis" />
+        }
+        <hr />
+        <Headline size="small" margin="medium">More...</Headline>
+        Please refer to the
+        {' '}
+        <a
+          data-test-example-page-components-link
+          href="https://github.com/folio-org/stripes-components/blob/master/README.md"
+        >
+          Stripes Components README
+        </a>
+        {' '}
+        for more components and examples.
+      </Pane>
+    </Paneset>
+  );
 }
+
+ExamplePageRoute.manifest = Object.freeze({
+  health: {
+    type: 'okapi',
+    path: '_/discovery/health',
+  }
+});
 
 export default stripesConnect(ExamplePageRoute);
