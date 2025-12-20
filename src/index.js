@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Switch from 'react-router-dom/Switch';
 import Route from 'react-router-dom/Route';
 import SpectresRoute from './routes/SpectresRoute';
-import ExamplePage from './routes/ExamplePage';
+import ExamplePageRoute from './routes/ExamplePageRoute';
 import Settings from './settings';
 
 export default function Cyclops(props) {
@@ -31,7 +31,7 @@ export default function Cyclops(props) {
       <Route
         path={`${path}/examples`}
         exact
-        component={ExamplePage}
+        component={ExamplePageRoute}
       />
     </Switch>
   );

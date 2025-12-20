@@ -14,7 +14,7 @@ import {
 
 import GreetingModal from '../components/greeting-modal';
 
-class ExamplePage extends React.Component {
+class ExamplePageRoute extends React.Component {
   static propTypes = {
     resources: PropTypes.shape({
       health: PropTypes.shape({
@@ -144,4 +144,4 @@ class ExamplePage extends React.Component {
   }
 }
 
-export default stripesConnect(ExamplePage);
+export default stripesConnect(ExamplePageRoute);
