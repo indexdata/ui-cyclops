@@ -4,7 +4,7 @@ import { stripesConnect } from '@folio/stripes/core';
 import { Pane, Paneset } from '@folio/stripes/components';
 import NewAppGreeting from '../components/new-app-greeting';
 
-function Spectres(props) {
+function SpectresRoute(props) {
   return (
     <Paneset>
       <Pane defaultWidth="fill" fluidContentWidth paneTitle="ui-cyclops">
@@ -33,4 +33,4 @@ function Spectres(props) {
   );
 }
 
-export default stripesConnect(Spectres);
+export default stripesConnect(SpectresRoute);
