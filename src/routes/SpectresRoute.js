@@ -1,36 +1,123 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import Link from 'react-router-dom/Link';
+import { FormattedMessage } from 'react-intl';
 import { stripesConnect } from '@folio/stripes/core';
-import { Pane, Paneset } from '@folio/stripes/components';
-import NewAppGreeting from '../components/new-app-greeting';
 
-function SpectresRoute(props) {
+import {
+  Button,
+  Headline,
+  Pane,
+  Paneset,
+  Icon,
+} from '@folio/stripes/components';
+
+import GreetingModal from '../components/greeting-modal';
+
+function ExamplePageRoute(props) {
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModal = (val) => {
+    setShowModal(val);
+  };
+
+  const onClose = () => {
+    toggleModal(false);
+  };
+
+  const buttonClick = () => {
+    toggleModal(true);
+  };
+
+  const getHealthSummary = () => {
+    const {
+      records: healthData
+    } = props.resources.health;
+
+    const defaultlHealthSummary = {
+      healthyInstances: 0,
+      notHealthyInstances: 0
+    };
+
+    return healthData.reduce((healthSummary, { healthStatus }) => {
+      if (healthStatus) {
+        healthSummary.healthyInstances++;
+      } else {
+        healthSummary.notHealthyInstances++;
+      }
+
+      return healthSummary;
+    }, defaultlHealthSummary);
+  };
+
+  const renderHealthSummary = () => {
+    const {
+      healthyInstances,
+      notHealthyInstances,
+    } = getHealthSummary();
+
+    return (
+      <FormattedMessage
+        values={{
+          healthyInstances: <b>{healthyInstances}</b>,
+          notHealthyInstances: <b>{notHealthyInstances}</b>
+        }}
+        id="ui-cyclops.example-page.health-summary"
+      />
+    );
+  };
+
+  const { health } = props.resources;
+  const healthResourceAvaliable = health && health.hasLoaded;
+
   return (
-    <Paneset>
-      <Pane defaultWidth="fill" fluidContentWidth paneTitle="ui-cyclops">
-        <NewAppGreeting />
-        <br />
-        <ul>
-          <li data-test-application-examples>
-            View the
-            {' '}
-            <Link to={`${props.match.path}/examples`}>examples page</Link>
-            {' '}
-            to see some useful components.
-          </li>
-          <li data-test-application-guide>
-            Please refer to the
-            {' '}
-            <a href="https://github.com/folio-org/stripes/blob/master/doc/dev-guide.md">
-              Stripes Module Developer&apos;s Guide
-            </a>
-            {' '}
-            for more information.
-          </li>
-        </ul>
+    <Paneset static>
+      <Pane defaultWidth="20%" paneTitle="Examples">
+        <Headline size="small">Paneset and Panes</Headline>
+        These columns are created with Paneset and Pane components.
+        <hr />
+        <div data-test-example-page-home>
+          <Link to="cyclops">home page</Link>
+        </div>
+      </Pane>
+      <Pane defaultWidth="80%" paneTitle="Some Stripes Components">
+        <Headline size="small" margin="medium">Button with modal</Headline>
+        <div data-test-example-page-button>
+          <Button onClick={buttonClick}>Click me</Button>
+        </div>
+        <GreetingModal onClose={onClose} open={showModal} />
+        <hr />
+        <Headline
+          size="small"
+          margin="medium"
+        >
+          <FormattedMessage id="ui-cyclops.example-page.sample-request" />
+        </Headline>
+        {healthResourceAvaliable
+          ? renderHealthSummary()
+          : <Icon icon="spinner-ellipsis" />
+        }
+        <hr />
+        <Headline size="small" margin="medium">More...</Headline>
+        Please refer to the
+        {' '}
+        <a
+          data-test-example-page-components-link
+          href="https://github.com/folio-org/stripes-components/blob/master/README.md"
+        >
+          Stripes Components README
+        </a>
+        {' '}
+        for more components and examples.
       </Pane>
     </Paneset>
   );
 }
 
-export default stripesConnect(SpectresRoute);
+ExamplePageRoute.manifest = Object.freeze({
+  health: {
+    type: 'okapi',
+    path: '_/discovery/health',
+  }
+});
+
+export default stripesConnect(ExamplePageRoute);
