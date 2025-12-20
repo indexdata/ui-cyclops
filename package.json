@@ -10,7 +10,7 @@
     "build": "stripes build --output ./output",
     "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json ",
     "formatjs-compile": "stripes translate compile",
-    "lint": "eslint ."
+    "lint": "eslint -f unix ."
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",
