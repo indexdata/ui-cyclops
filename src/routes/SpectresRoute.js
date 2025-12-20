@@ -73,18 +73,6 @@ function ExamplePageRoute(props) {
           ? renderHealthSummary()
           : <Icon icon="spinner-ellipsis" />
         }
-        <hr />
-        <Headline size="small" margin="medium">More...</Headline>
-        Please refer to the
-        {' '}
-        <a
-          data-test-example-page-components-link
-          href="https://github.com/folio-org/stripes-components/blob/master/README.md"
-        >
-          Stripes Components README
-        </a>
-        {' '}
-        for more components and examples.
       </Pane>
     </Paneset>
   );
