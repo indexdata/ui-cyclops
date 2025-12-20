@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'react-router-dom/Link';
 import { FormattedMessage } from 'react-intl';
+import { stripesConnect } from '@folio/stripes/core';
 
 import {
   Button,
@@ -13,7 +14,7 @@ import {
 
 import GreetingModal from '../components/greeting-modal';
 
-export default class ExamplePage extends React.Component {
+class ExamplePage extends React.Component {
   static propTypes = {
     resources: PropTypes.shape({
       health: PropTypes.shape({
@@ -142,3 +143,5 @@ export default class ExamplePage extends React.Component {
     );
   }
 }
+
+export default stripesConnect(ExamplePage);

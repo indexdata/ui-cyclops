@@ -9,47 +9,30 @@ import Application from './routes/application';
 import ExamplePage from './routes/example-page';
 import Settings from './settings';
 
-class Cyclops extends React.Component {
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    showSettings: PropTypes.bool,
-    stripes: PropTypes.shape({
-      connect: PropTypes.func
-    })
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.connectedExamplePage = props.stripes.connect(ExamplePage);
-  }
-
-  render() {
-    const {
-      showSettings,
-      match: {
-        path
-      }
-    } = this.props;
-
-    if (showSettings) {
-      return <Settings {...this.props} />;
+export default function Cyclops(props) {
+  const {
+    showSettings,
+    match: {
+      path
     }
-    return (
-      <Switch>
-        <Route
-          path={path}
-          exact
-          component={Application}
-        />
-        <Route
-          path={`${path}/examples`}
-          exact
-          component={this.connectedExamplePage}
-        />
-      </Switch>
-    );
-  }
-}
+  } = props;
 
-export default Cyclops;
+  if (showSettings) {
+    return <Settings {...props} />;
+  }
+
+  return (
+    <Switch>
+      <Route
+        path={path}
+        exact
+        component={Application}
+      />
+      <Route
+        path={`${path}/examples`}
+        exact
+        component={ExamplePage}
+      />
+    </Switch>
+  );
+}
