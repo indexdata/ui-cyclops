@@ -1,33 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'react-router-dom/Link';
 import { FormattedMessage } from 'react-intl';
 import { stripesConnect } from '@folio/stripes/core';
 
 import {
-  Button,
   Headline,
   Pane,
   Paneset,
   Icon,
 } from '@folio/stripes/components';
 
-import GreetingModal from '../components/greeting-modal';
-
 function ExamplePageRoute(props) {
-  const [showModal, setShowModal] = useState(false);
-
-  const toggleModal = (val) => {
-    setShowModal(val);
-  };
-
-  const onClose = () => {
-    toggleModal(false);
-  };
-
-  const buttonClick = () => {
-    toggleModal(true);
-  };
-
   const getHealthSummary = () => {
     const {
       records: healthData
@@ -80,12 +63,6 @@ function ExamplePageRoute(props) {
         </div>
       </Pane>
       <Pane defaultWidth="80%" paneTitle="Some Stripes Components">
-        <Headline size="small" margin="medium">Button with modal</Headline>
-        <div data-test-example-page-button>
-          <Button onClick={buttonClick}>Click me</Button>
-        </div>
-        <GreetingModal onClose={onClose} open={showModal} />
-        <hr />
         <Headline
           size="small"
           margin="medium"
