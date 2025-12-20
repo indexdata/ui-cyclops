@@ -13,12 +13,6 @@ import {
 
 import GreetingModal from '../components/greeting-modal';
 
-/*
-  STRIPES-NEW-APP
-  This page contains some simple examples to illustrate getting started
-  with some stripes-components and your app's own components
-*/
-
 export default class ExamplePage extends React.Component {
   static propTypes = {
     resources: PropTypes.shape({
