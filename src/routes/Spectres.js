@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { stripesConnect } from '@folio/stripes/core';
 import { Pane, Paneset } from '@folio/stripes/components';
 import NewAppGreeting from '../components/new-app-greeting';
 
-export default class Application extends React.Component {
+class Spectres extends React.Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
   }
@@ -38,3 +39,5 @@ export default class Application extends React.Component {
     );
   }
 }
+
+export default stripesConnect(Spectres);
