@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Link from 'react-router-dom/Link';
 import { FormattedMessage } from 'react-intl';
 import { stripesConnect } from '@folio/stripes/core';
@@ -15,20 +14,6 @@ import {
 import GreetingModal from '../components/greeting-modal';
 
 class ExamplePageRoute extends React.Component {
-  static propTypes = {
-    resources: PropTypes.shape({
-      health: PropTypes.shape({
-        hasLoaded: PropTypes.bool.isRequired,
-        records: PropTypes.arrayOf(PropTypes.shape({
-          healthMessage: PropTypes.string.isRequired,
-          healthStatus: PropTypes.bool.isRequired,
-          instId: PropTypes.string.isRequired,
-          srvcId: PropTypes.string.isRequired
-        })).isRequired
-      })
-    }).isRequired
-  }
-
   static manifest = Object.freeze({
     health: {
       type: 'okapi',
