@@ -1,88 +1,30 @@
 import React from 'react';
-import Link from 'react-router-dom/Link';
-import { FormattedMessage } from 'react-intl';
 import { stripesConnect } from '@folio/stripes/core';
+import SpectresView from '../views/SpectresView';
 
-import {
-  Headline,
-  Pane,
-  Paneset,
-  Icon,
-} from '@folio/stripes/components';
+function SpectresRoute(props) {
+  const spectresResource = props.resources.spectres;
+  const loaded = spectresResource && spectresResource.hasLoaded;
+  console.log('loaded =', loaded, '-- spectres =', spectresResource.records[0]);
 
-function ExamplePageRoute(props) {
-  const getHealthSummary = () => {
-    const {
-      records: healthData
-    } = props.resources.health;
-
-    const defaultlHealthSummary = {
-      healthyInstances: 0,
-      notHealthyInstances: 0
-    };
-
-    return healthData.reduce((healthSummary, { healthStatus }) => {
-      if (healthStatus) {
-        healthSummary.healthyInstances++;
-      } else {
-        healthSummary.notHealthyInstances++;
-      }
-
-      return healthSummary;
-    }, defaultlHealthSummary);
-  };
-
-  const renderHealthSummary = () => {
-    const {
-      healthyInstances,
-      notHealthyInstances,
-    } = getHealthSummary();
-
-    return (
-      <FormattedMessage
-        values={{
-          healthyInstances: <b>{healthyInstances}</b>,
-          notHealthyInstances: <b>{notHealthyInstances}</b>
-        }}
-        id="ui-cyclops.example-page.health-summary"
-      />
-    );
-  };
-
-  const { health } = props.resources;
-  const healthResourceAvaliable = health && health.hasLoaded;
-
-  return (
-    <Paneset static>
-      <Pane defaultWidth="20%" paneTitle="Examples">
-        <Headline size="small">Paneset and Panes</Headline>
-        These columns are created with Paneset and Pane components.
-        <hr />
-        <div data-test-example-page-home>
-          <Link to="cyclops">home page</Link>
-        </div>
-      </Pane>
-      <Pane defaultWidth="80%" paneTitle="Some Stripes Components">
-        <Headline
-          size="small"
-          margin="medium"
-        >
-          <FormattedMessage id="ui-cyclops.example-page.sample-request" />
-        </Headline>
-        {healthResourceAvaliable
-          ? renderHealthSummary()
-          : <Icon icon="spinner-ellipsis" />
-        }
-      </Pane>
-    </Paneset>
-  );
+  return <SpectresView loaded={loaded} spectres={spectresResource.records[0]} />;
 }
 
-ExamplePageRoute.manifest = Object.freeze({
-  health: {
+SpectresRoute.manifest = Object.freeze({
+  spectres: {
     type: 'okapi',
-    path: '_/discovery/health',
+    path: 'cyclops/sets/reserve',
+    params: {
+      fields: '*',
+      // XXX The following do not seem to be supported yet
+      // cond: '143100000 <= age AND age <= 201400000',
+      // filter: 'jurassic',
+      // tag: 'dino,ptero',
+      // sort: 'author,title',
+      // offset: '200',
+      limit: '100',
+    },
   }
 });
 
-export default stripesConnect(ExamplePageRoute);
+export default stripesConnect(SpectresRoute);
