@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pane, Paneset,  Headline, Icon, MultiColumnList } from '@folio/stripes/components';
+import { Pane, Paneset, Headline, Icon, MultiColumnList } from '@folio/stripes/components';
 
 
 
@@ -41,4 +41,4 @@ export default function SpectresView({ loaded, spectres }) {
       </Pane>
     </Paneset>
   );
-};
+}
