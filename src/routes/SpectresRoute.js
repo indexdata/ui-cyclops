@@ -5,7 +5,6 @@ import SpectresView from '../views/SpectresView';
 function SpectresRoute(props) {
   const spectresResource = props.resources.spectres;
   const loaded = spectresResource && spectresResource.hasLoaded;
-  console.log('loaded =', loaded, '-- spectres =', spectresResource.records[0]);
 
   return <SpectresView loaded={loaded} spectres={spectresResource.records[0]} />;
 }
