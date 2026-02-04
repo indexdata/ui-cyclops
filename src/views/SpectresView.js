@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Pane, Paneset, Headline, Icon, MultiColumnList } from '@folio/stripes/components';
 
 
@@ -29,10 +30,7 @@ export default function SpectresView({ loaded, spectres }) {
       <Pane defaultWidth="20%" paneTitle="Search & filter">
         <Headline size="small">XXX to be done</Headline>
       </Pane>
-      <Pane defaultWidth="80%" paneTitle={<>Spectres in set <code>foobar</code></>}>
-        <Headline size="small" margin="medium">
-          {loaded && <>{spectres.data.length} spectres</>}
-        </Headline>
+      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.spectres.count" values={{ count: spectres?.data.length, name: 'foobar' }} />}>
         {loaded
           ? renderList(spectres)
           : <Icon icon="spinner-ellipsis" />
