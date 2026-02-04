@@ -26,12 +26,12 @@ function renderList(spectres) {
 export default function SpectresView({ loaded, spectres }) {
   return (
     <Paneset static>
-      <Pane defaultWidth="20%" paneTitle="About/Filters">
+      <Pane defaultWidth="20%" paneTitle="Search & filter">
         <Headline size="small">XXX to be done</Headline>
       </Pane>
-      <Pane defaultWidth="80%" paneTitle="Objects">
+      <Pane defaultWidth="80%" paneTitle={<>Spectres in set <code>foobar</code></>}>
         <Headline size="small" margin="medium">
-          {loaded && <>{spectres.data.length} objects</>}
+          {loaded && <>{spectres.data.length} spectres</>}
         </Headline>
         {loaded
           ? renderList(spectres)
