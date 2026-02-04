@@ -19,7 +19,7 @@ SpectresRoute.manifest = Object.freeze({
       // cond: '143100000 <= age AND age <= 201400000',
       // filter: 'jurassic',
       // tag: 'dino,ptero',
-      // sort: 'author,title',
+      sort: 'title',
       // offset: '200',
       limit: '100',
     },
