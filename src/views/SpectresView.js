@@ -17,6 +17,13 @@ function renderList(spectres) {
       <div />{/* For some reason, if we omit this the MCL does not render */}
       <MultiColumnList
         contentData={contentData}
+        columnWidths={{
+          id: '100px',
+          author: '200px',
+          title: '350px',
+          full_vendor_name: '200px',
+          availability: '140px',
+        }}
       />
       <pre>{JSON.stringify(spectres, null, 2)}</pre>
     </>
