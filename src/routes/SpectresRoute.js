@@ -12,7 +12,7 @@ function SpectresRoute(props) {
 SpectresRoute.manifest = Object.freeze({
   spectres: {
     type: 'okapi',
-    path: 'cyclops/sets/reserve',
+    path: 'cyclops/sets/:{setId}',
     params: {
       fields: '*',
       // XXX The following do not seem to be supported yet
