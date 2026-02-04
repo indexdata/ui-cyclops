@@ -2,7 +2,6 @@ import React from 'react';
 import { Pane, Paneset, Headline, Icon, MultiColumnList } from '@folio/stripes/components';
 
 
-
 function renderList(spectres) {
   const contentData = spectres.data.map(row => ({
     id: row.values[0],
