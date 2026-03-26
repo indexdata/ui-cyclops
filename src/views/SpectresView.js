@@ -31,13 +31,13 @@ function renderList(spectres) {
 }
 
 
-export default function SpectresView({ loaded, spectres }) {
+export default function SpectresView({ loaded, name, spectres }) {
   return (
     <Paneset static>
       <Pane defaultWidth="20%" paneTitle="Search & filter">
         <Headline size="small">XXX to be done</Headline>
       </Pane>
-      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.spectres.count" values={{ count: spectres?.data.length, name: 'foobar' }} />}>
+      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.spectres.count" values={{ count: spectres?.data.length, name: name }} />}>
         {loaded
           ? renderList(spectres)
           : <Icon icon="spinner-ellipsis" />

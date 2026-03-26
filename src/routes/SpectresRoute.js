@@ -6,7 +6,7 @@ function SpectresRoute(props) {
   const spectresResource = props.resources.spectres;
   const loaded = spectresResource && spectresResource.hasLoaded;
 
-  return <SpectresView loaded={loaded} spectres={spectresResource.records[0]} />;
+  return <SpectresView loaded={loaded} name={props.match.params.setId} spectres={spectresResource.records[0]} />;
 }
 
 SpectresRoute.manifest = Object.freeze({
