@@ -12,18 +12,30 @@ function renderList(spectres) {
     availability: row.values[4],
   }));
 
+  const fields = {
+    id: ['100px'],
+    author: ['200px'],
+    title: ['350px'],
+    full_vendor_name: ['200px'],
+    availability: ['140px'],
+  };
+
+  const columnMapping = Object.fromEntries(
+    Object.entries(fields).map(([key]) => [key, <FormattedMessage id={`ui-cyclops.field.${key}`} />])
+  );
+
+  const columnWidths = Object.fromEntries(
+    Object.entries(fields).map(([key, value]) => [key, value[0]])
+  );
+
   return (
     <>
       <div />{/* For some reason, if we omit this the MCL does not render */}
       <MultiColumnList
+        visibleColumns={Object.keys(fields)}
+        columnMapping={columnMapping}
+        columnWidths={columnWidths}
         contentData={contentData}
-        columnWidths={{
-          id: '100px',
-          author: '200px',
-          title: '350px',
-          full_vendor_name: '200px',
-          availability: '140px',
-        }}
       />
       <pre>{JSON.stringify(spectres, null, 2)}</pre>
     </>
@@ -37,7 +49,7 @@ export default function SpectresView({ loaded, name, spectres }) {
       <Pane defaultWidth="20%" paneTitle="Search & filter">
         <Headline size="small">XXX to be done</Headline>
       </Pane>
-      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.spectres.count" values={{ count: spectres?.data.length, name: name }} />}>
+      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.spectres.count" values={{ count: spectres?.data.length, name }} />}>
         {loaded
           ? renderList(spectres)
           : <Icon icon="spinner-ellipsis" />
