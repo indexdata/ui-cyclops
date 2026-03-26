@@ -3,7 +3,27 @@ import { FormattedMessage } from 'react-intl';
 import { Pane, Paneset, Headline, Icon, MultiColumnList, Accordion } from '@folio/stripes/components';
 
 
+const fields = {
+  id: ['100px'],
+  author: ['200px'],
+  title: ['350px'],
+  full_vendor_name: ['200px'],
+  availability: ['140px'],
+};
+
+const columnMapping = Object.fromEntries(
+  Object.entries(fields).map(([key]) => [key, <FormattedMessage id={`ui-cyclops.field.${key}`} />])
+);
+
+const columnWidths = Object.fromEntries(
+  Object.entries(fields).map(([key, value]) => [key, value[0]])
+);
+
+
 function renderList(spectres, query, updateQuery) {
+  const sortedColumn = query.sort?.replace(/^-/, '');
+  const sortDirection = query.sort?.startsWith('-') ? 'descending' : 'ascending';
+
   const contentData = spectres.data.map(row => ({
     id: row.values[0],
     author: row.values[1],
@@ -11,25 +31,6 @@ function renderList(spectres, query, updateQuery) {
     full_vendor_name: row.values[3],
     availability: row.values[4],
   }));
-
-  const fields = {
-    id: ['100px'],
-    author: ['200px'],
-    title: ['350px'],
-    full_vendor_name: ['200px'],
-    availability: ['140px'],
-  };
-
-  const columnMapping = Object.fromEntries(
-    Object.entries(fields).map(([key]) => [key, <FormattedMessage id={`ui-cyclops.field.${key}`} />])
-  );
-
-  const columnWidths = Object.fromEntries(
-    Object.entries(fields).map(([key, value]) => [key, value[0]])
-  );
-
-  const sortedColumn = query.sort?.replace(/^-/, '');
-  const sortDirection = query.sort?.startsWith('-') ? 'descending' : 'ascending';
 
   return (
     <>
