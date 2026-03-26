@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { Pane, Paneset, Headline, Icon, MultiColumnList, Accordion } from '@folio/stripes/components';
 
 
-function renderList(spectres) {
+function renderList(spectres, query, updateQuery) {
   const contentData = spectres.data.map(row => ({
     id: row.values[0],
     author: row.values[1],
@@ -28,6 +28,9 @@ function renderList(spectres) {
     Object.entries(fields).map(([key, value]) => [key, value[0]])
   );
 
+  const sortedColumn = query.sort?.replace(/^-/, '');
+  const sortDirection = query.sort?.startsWith('-') ? 'descending' : 'ascending';
+
   return (
     <>
       <div />{/* For some reason, if we omit this the MCL does not render */}
@@ -36,6 +39,12 @@ function renderList(spectres) {
         columnMapping={columnMapping}
         columnWidths={columnWidths}
         contentData={contentData}
+        onHeaderClick={(_, data) => {
+          const newSort = (query.sort === data.name) ? `-${data.name}` : data.name;
+          updateQuery({ sort: newSort });
+        }}
+        sortedColumn={sortedColumn}
+        sortDirection={sortDirection}
       />
       <Accordion
         closedByDefault
@@ -48,7 +57,7 @@ function renderList(spectres) {
 }
 
 
-export default function SpectresView({ loaded, name, spectres }) {
+export default function SpectresView({ loaded, name, spectres, query, updateQuery }) {
   return (
     <Paneset static>
       <Pane defaultWidth="20%" paneTitle="Search & filter">
@@ -56,7 +65,7 @@ export default function SpectresView({ loaded, name, spectres }) {
       </Pane>
       <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.spectres.count" values={{ count: spectres?.data.length, name }} />}>
         {loaded
-          ? renderList(spectres)
+          ? renderList(spectres, query, updateQuery)
           : <Icon icon="spinner-ellipsis" />
         }
       </Pane>
