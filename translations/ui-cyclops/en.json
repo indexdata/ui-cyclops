@@ -3,6 +3,7 @@
   "example-page.health-summary": "{healthyInstances} instances healthy, {notHealthyInstances} instances not healthy",
   "greeting-modal.message": "Greeting Message Modal",
   "meta.title": "Cyclops",
+  "devInfo": "Developer information",
   "new-app.greeting": "Congratulations!",
   "new-app.message": "Your Stripes app is running.",
   "field.id": "ID",

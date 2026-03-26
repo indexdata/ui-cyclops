@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Pane, Paneset, Headline, Icon, MultiColumnList } from '@folio/stripes/components';
+import { Pane, Paneset, Headline, Icon, MultiColumnList, Accordion } from '@folio/stripes/components';
 
 
 function renderList(spectres) {
@@ -37,7 +37,12 @@ function renderList(spectres) {
         columnWidths={columnWidths}
         contentData={contentData}
       />
-      <pre>{JSON.stringify(spectres, null, 2)}</pre>
+      <Accordion
+        closedByDefault
+        label={<FormattedMessage id="ui-cyclops.devInfo" />}
+      >
+        <pre>{JSON.stringify(spectres, null, 2)}</pre>
+      </Accordion>
     </>
   );
 }
