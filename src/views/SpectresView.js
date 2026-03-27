@@ -34,7 +34,6 @@ function renderList(spectres, query, updateQuery) {
 
   return (
     <>
-      <div />{/* For some reason, if we omit this the MCL does not render */}
       <MultiColumnList
         visibleColumns={Object.keys(fields)}
         columnMapping={columnMapping}
