@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Pane, Paneset, Headline, Icon, IconButton, MultiColumnList, Accordion } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button } from '@folio/stripes/components';
 
 
 const fields = {
@@ -11,6 +11,11 @@ const fields = {
   availability: ['140px'],
 };
 
+const searchableIndexes = Object.entries(fields).map(([key]) => ({
+  value: key,
+  label: <FormattedMessage id={`ui-cyclops.field.${key}`} />,
+}));
+
 const columnMapping = Object.fromEntries(
   Object.entries(fields).map(([key]) => [key, <FormattedMessage id={`ui-cyclops.field.${key}`} />])
 );
@@ -18,6 +23,37 @@ const columnMapping = Object.fromEntries(
 const columnWidths = Object.fromEntries(
   Object.entries(fields).map(([key, value]) => [key, value[0]])
 );
+
+
+function renderSearch(query, updateQuery) {
+  const onSubmitSearch = (e) => {
+    e.preventDefault();
+    updateQuery({ query: e.currentTarget.elements.query?.value });
+  };
+
+  return (
+    <form onSubmit={onSubmitSearch}>
+      <SearchField
+        autoFocus
+        name="query"
+        ariaLabel="XXX search"
+        searchableIndexes={searchableIndexes}
+        selectedIndex={query.qindex}
+        value={query.query}
+        onChangeIndex={(e) => updateQuery({ qindex: e.target.value })}
+        marginBottom0
+      />
+      <Button
+        type="submit"
+        buttonStyle="primary"
+        fullWidth
+        marginBottom0
+      >
+        <FormattedMessage id="stripes-smart-components.search" />
+      </Button>
+    </form>
+  );
+}
 
 
 function renderList(spectres, query, updateQuery) {
@@ -68,7 +104,7 @@ export default function SpectresView({ loaded, name, spectres, query, updateQuer
           paneTitle="Search & filter"
           lastMenu={<IconButton icon="caret-left" onClick={() => setShowSearchPane(false)} />}
         >
-          <Headline size="small">XXX to be done</Headline>
+          {renderSearch(query, updateQuery)}
         </Pane>
       }
       <Pane

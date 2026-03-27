@@ -22,11 +22,12 @@ SpectresRoute.manifest = Object.freeze({
     path: 'cyclops/sets/:{setId}',
     params: {
       fields: '*',
-      // XXX This is not yet implemented
-      // cond: '143100000 <= age AND age <= 201400000',
-      // XXX The following do not seem to be supported yet
-      // filter: 'jurassic',
-      // tag: 'dino,ptero',
+      cond: (_a, _b, resources) => {
+        const query = resources.query.query;
+        const qindex = resources.query.qindex;
+        if (!query || !qindex) return undefined;
+        return `${qindex} = '${query}'`;
+      },
       sort: (_a, _b, resources) => {
         const s = resources.query.sort;
         if (!s) {
@@ -37,8 +38,11 @@ SpectresRoute.manifest = Object.freeze({
           return s;
         }
       },
-      // offset: '200',
+      // offset: '200', // Paging not yet implemented
       limit: '100',
+      // XXX The following are not yet supported by CCMS
+      // filter: 'jurassic',
+      // tag: 'dino,ptero',
     },
   }
 });
