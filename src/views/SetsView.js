@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Pane, Paneset, Icon, MultiColumnList } from '@folio/stripes/components';
+import packageInfo from '../../package';
 
 
 function renderList(sets) {
@@ -13,7 +14,7 @@ function renderList(sets) {
       <MultiColumnList
         contentData={contentData}
         formatter={{
-          name: r => <Link to={`./cyclops/set/${r.name}`}>{r.name}</Link>
+          name: r => <Link to={`${packageInfo.stripes.route}/spectres/${r.name}`}>{r.name}</Link>
         }}
       />
     </>
