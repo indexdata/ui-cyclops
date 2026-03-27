@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Pane, Paneset, Headline, Icon, MultiColumnList, Accordion } from '@folio/stripes/components';
+import { Pane, Paneset, Headline, Icon, IconButton, MultiColumnList, Accordion } from '@folio/stripes/components';
 
 
 const fields = {
@@ -59,12 +59,28 @@ function renderList(spectres, query, updateQuery) {
 
 
 export default function SpectresView({ loaded, name, spectres, query, updateQuery }) {
+  const [showSearchPane, setShowSearchPane] = useState(true);
+
   return (
     <Paneset static>
-      <Pane defaultWidth="20%" paneTitle="Search & filter">
-        <Headline size="small">XXX to be done</Headline>
-      </Pane>
-      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.spectres.count" values={{ count: spectres?.data.length, name }} />}>
+      {showSearchPane &&
+        <Pane
+          defaultWidth="20%"
+          paneTitle="Search & filter"
+          lastMenu={<IconButton icon="caret-left" onClick={() => setShowSearchPane(false)} />}
+        >
+          <Headline size="small">XXX to be done</Headline>
+        </Pane>
+      }
+      <Pane
+        defaultWidth="fill"
+        paneTitle={<FormattedMessage id="ui-cyclops.spectres.count" values={{ count: spectres?.data.length, name }} />}
+        firstMenu={
+          showSearchPane ? '' : (
+            <IconButton icon="caret-right" onClick={() => setShowSearchPane(true)} />
+          )
+        }
+      >
         {loaded
           ? renderList(spectres, query, updateQuery)
           : <Icon icon="spinner-ellipsis" />
