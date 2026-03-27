@@ -66,14 +66,16 @@ function renderSearch(query, updateQuery) {
       >
         <FormattedMessage id="stripes-smart-components.search" />
       </Button>
-      <p>
+      <br />
+      <br />
+      <div>
         <Select
           label={<FormattedMessage id="ui-cyclops.field.availability" />}
           dataOptions={dataOptions}
           value={query.availability}
           onChange={(e) => updateQuery({ availability: e.currentTarget.value })}
         />
-      </p>
+      </div>
     </form>
   );
 }
@@ -134,7 +136,7 @@ export default function SpectresView({ loaded, name, spectres, query, updateQuer
         defaultWidth="fill"
         paneTitle={<FormattedMessage id="ui-cyclops.spectres.count" values={{ count: spectres?.data.length, name }} />}
         firstMenu={
-          showSearchPane ? '' : (
+          showSearchPane ? undefined : (
             <IconButton icon="caret-right" onClick={() => setShowSearchPane(true)} />
           )
         }
