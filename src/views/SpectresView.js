@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select } from '@folio/stripes/components';
 
 
 const fields = {
@@ -25,6 +25,19 @@ const columnWidths = Object.fromEntries(
   Object.entries(fields).map(([key, value]) => [key, value[0]])
 );
 
+// Determined experimentally from records in "reserve"
+const availabilityValues = [
+  'In stock',
+  'Temporarily unavailable',
+  'Not yet available',
+  'No longer supplied by us',
+  'Not available (reason unspecified)',
+];
+
+const dataOptions = [
+  { value: '', label: <FormattedMessage id="ui-cyclops.no-value" /> },
+  ...availabilityValues.map(x => ({ value: x, label: <FormattedMessage id={`ui-cyclops.availability.${x}`} /> })),
+];
 
 function renderSearch(query, updateQuery) {
   const onSubmitSearch = (e) => {
@@ -41,7 +54,7 @@ function renderSearch(query, updateQuery) {
         searchableIndexes={searchableIndexes}
         selectedIndex={query.qindex}
         value={query.query}
-        onChangeIndex={(e) => updateQuery({ qindex: e.target.value })}
+        onChangeIndex={(e) => updateQuery({ qindex: e.currentTarget.value })}
         marginBottom0
       />
       <br />
@@ -53,6 +66,14 @@ function renderSearch(query, updateQuery) {
       >
         <FormattedMessage id="stripes-smart-components.search" />
       </Button>
+      <p>
+        <Select
+          label={<FormattedMessage id="ui-cyclops.field.availability" />}
+          dataOptions={dataOptions}
+          value={query.availability}
+          onChange={(e) => updateQuery({ availability: e.currentTarget.value })}
+        />
+      </p>
     </form>
   );
 }

@@ -23,10 +23,20 @@ SpectresRoute.manifest = Object.freeze({
     params: {
       fields: '*',
       cond: (_a, _b, resources) => {
+        const clauses = [];
+
         const query = resources.query.query;
         const qindex = resources.query.qindex;
-        if (!query || !qindex) return undefined;
-        return `${qindex} = '${query}'`;
+        if (query && qindex) {
+          clauses.push(`${qindex} = '${query}'`);
+        }
+
+        const availability = resources.query.availability;
+        if (availability) {
+          clauses.push(`availability = '${availability}'`);
+        }
+
+        return clauses.join(' and ');
       },
       sort: (_a, _b, resources) => {
         const s = resources.query.sort;
