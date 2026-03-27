@@ -11,10 +11,11 @@ const fields = {
   availability: ['140px'],
 };
 
-const searchableIndexes = Object.entries(fields).map(([key]) => ({
+const searchableIndexes = [{ value: '', label: '-' }].concat(Object.entries(fields).map(([key]) => ({
   value: key,
   label: <FormattedMessage id={`ui-cyclops.field.${key}`} />,
-}));
+})));
+
 
 const columnMapping = Object.fromEntries(
   Object.entries(fields).map(([key]) => [key, <FormattedMessage id={`ui-cyclops.field.${key}`} />])
@@ -43,6 +44,7 @@ function renderSearch(query, updateQuery) {
         onChangeIndex={(e) => updateQuery({ qindex: e.target.value })}
         marginBottom0
       />
+      <br />
       <Button
         type="submit"
         buttonStyle="primary"
