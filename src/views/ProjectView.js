@@ -34,7 +34,7 @@ function renderList(sets, nav, rrhistory) {
 }
 
 
-export default function SetsView({ loaded, sets }) {
+export default function ProjectView({ loaded, sets }) {
   const nav = useNav();
   const rrhistory = useHistory();
 

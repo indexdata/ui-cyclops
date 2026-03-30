@@ -1,19 +1,19 @@
 import React from 'react';
 import { stripesConnect } from '@folio/stripes/core';
-import SetsView from '../views/SetsView';
+import ProjectView from '../views/ProjectView';
 
-function SetsRoute(props) {
+function ProjectRoute(props) {
   const setsResource = props.resources.sets;
   const loaded = setsResource && setsResource.hasLoaded;
 
-  return <SetsView loaded={loaded} sets={setsResource.records[0]} />;
+  return <ProjectView loaded={loaded} sets={setsResource.records[0]} />;
 }
 
-SetsRoute.manifest = Object.freeze({
+ProjectRoute.manifest = Object.freeze({
   sets: {
     type: 'okapi',
     path: 'cyclops/sets',
   }
 });
 
-export default stripesConnect(SetsRoute);
+export default stripesConnect(ProjectRoute);
