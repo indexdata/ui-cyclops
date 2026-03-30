@@ -11,7 +11,8 @@
     "build": "stripes build --output ./output",
     "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json ",
     "formatjs-compile": "stripes translate compile",
-    "lint": "eslint -f unix ."
+    "lint": "eslint -f unix .",
+    "qlint": "eslint -f unix  --rule '{\"no-console\":\"off\"}' ."
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",
