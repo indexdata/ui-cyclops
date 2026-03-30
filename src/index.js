@@ -8,7 +8,7 @@ import Tabs from './Tabs';
 import Settings from './settings';
 import HomeRoute from './routes/HomeRoute';
 import ProjectRoute from './routes/ProjectRoute';
-import SpectresRoute from './routes/SpectresRoute';
+import ListRoute from './routes/ListRoute';
 
 const NavConfig = {
   project: undefined,
@@ -28,7 +28,7 @@ export default function Cyclops(props) {
         <Redirect exact from={path} to={`${path}/home`} />
         <Route path={`${path}/home`} exact component={HomeRoute} />
         <Route path={`${path}/project/:projectId`} exact component={ProjectRoute} />
-        <Route path={`${path}/list/:projectId/:setId`} exact component={SpectresRoute} />
+        <Route path={`${path}/list/:projectId/:setId`} exact component={ListRoute} />
       </Switch>
     </NavContext.Provider>
   );

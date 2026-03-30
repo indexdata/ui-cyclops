@@ -118,7 +118,7 @@ function renderList(spectres, query, updateQuery) {
 }
 
 
-export default function SpectresView({ loaded, name, spectres, query, updateQuery }) {
+export default function ListView({ loaded, name, spectres, query, updateQuery }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
 
   return (

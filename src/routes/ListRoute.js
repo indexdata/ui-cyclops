@@ -1,12 +1,12 @@
 import React from 'react';
 import { stripesConnect } from '@folio/stripes/core';
-import SpectresView from '../views/SpectresView';
+import ListView from '../views/ListView';
 
-function SpectresRoute({ resources, mutator, match }) {
+function ListRoute({ resources, mutator, match }) {
   const spectresResource = resources.spectres;
   const loaded = spectresResource && spectresResource.hasLoaded;
 
-  return <SpectresView
+  return <ListView
     loaded={loaded}
     name={match.params.setId}
     spectres={spectresResource.records[0]}
@@ -15,7 +15,7 @@ function SpectresRoute({ resources, mutator, match }) {
   />;
 }
 
-SpectresRoute.manifest = Object.freeze({
+ListRoute.manifest = Object.freeze({
   query: {},
   spectres: {
     type: 'okapi',
@@ -57,4 +57,4 @@ SpectresRoute.manifest = Object.freeze({
   }
 });
 
-export default stripesConnect(SpectresRoute);
+export default stripesConnect(ListRoute);
