@@ -6,7 +6,7 @@ import packageInfo from '../package';
 import { useNav } from './NavContext';
 
 
-const segments = [{
+const segmentsConfig = [{
   name: 'home',
 }, {
   name: 'project',
@@ -23,34 +23,32 @@ function Tabs() {
   const nav = useNav();
 
   return (
-    <>
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5em' }}>
-        <ButtonGroup>
-          {
-            segments.map(({ name, idField }) => {
-              const segmentNav = nav[name];
-              const fullBase = '/' + base + '/';
-              const effectiveTab = location.pathname.replace(fullBase, '').replace(/\/.*/, '');
-              const selected = (effectiveTab === name);
-              const disabled = !!idField && !segmentNav?.name;
-              return (
-                <Button
-                  key={`${name}`}
-                  to={`/${base}/${name}/${segmentNav?.[idField] || ''}`}
-                  buttonStyle={selected ? 'primary' : 'default'}
-                  disabled={disabled}
-                >
-                  <FormattedMessage
-                    id={`ui-cyclops.tab.${name}`}
-                    values={{ name: segmentNav?.name }}
-                  />
-                </Button>
-              );
-            })
-          }
-        </ButtonGroup>
-      </div>
-    </>
+    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5em' }}>
+      <ButtonGroup>
+        {
+          segmentsConfig.map(({ name, idField }) => {
+            const segmentState = nav[name];
+            const fullBase = '/' + base + '/';
+            const effectiveTab = location.pathname.replace(fullBase, '').replace(/\/.*/, '');
+            const selected = (effectiveTab === name);
+            const disabled = !!idField && !segmentState?.name;
+            return (
+              <Button
+                key={`${name}`}
+                to={`/${base}/${name}/${segmentState?.[idField] || ''}`}
+                buttonStyle={selected ? 'primary' : 'default'}
+                disabled={disabled}
+              >
+                <FormattedMessage
+                  id={`ui-cyclops.tab.${name}`}
+                  values={{ name: segmentState?.name }}
+                />
+              </Button>
+            );
+          })
+        }
+      </ButtonGroup>
+    </div>
   );
 }
 
