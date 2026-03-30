@@ -6,6 +6,7 @@
   "devInfo": "Developer information",
   "no-value": "No value selected",
   "field.id": "ID",
+  "field.name": "Name",
   "field.author": "Author",
   "field.title": "Title",
   "field.full_vendor_name": "Vendor name",
@@ -20,7 +21,7 @@
   "settings.some-feature": "Some Feature",
   "settings.some-feature.message": "These are your settings for some app feature.",
   "projects.count": "There {count, plural, one {is} other {are}} {count} {count, plural, one {project} other {projects}}",
-  "sets.count": "There {count, plural, one {is} other {are}} {count} {count, plural, one {set} other {sets}}",
+  "sets.count": "There {count, plural, one {is} other {are}} {count} {count, plural, one {set} other {sets}} in project {project}",
   "spectres.count": "There {count, plural, one {is} other {are}} {count} {count, plural, one {spectre} other {spectres}} in set <code>{name}</code>",
   "SENTINEL": ""
 }

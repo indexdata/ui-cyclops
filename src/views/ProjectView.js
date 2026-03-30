@@ -14,6 +14,9 @@ function renderList(sets, nav, rrhistory) {
     <>
       <div />{/* For some reason, if we omit this the MCL does not render */}
       <MultiColumnList
+        columnMapping={{
+          name: <FormattedMessage id={`ui-cyclops.field.name`} />,
+        }}
         contentData={contentData}
         formatter={{
           name: r => (
@@ -38,12 +41,20 @@ export default function ProjectView({ loaded, sets }) {
   const nav = useNav();
   const rrhistory = useHistory();
 
+  const paneTitle = <FormattedMessage
+    id="ui-cyclops.sets.count"
+    values={{
+      count: sets?.sets.length,
+      project: nav.project.name,
+    }}
+  />;
+
   return (
     <Paneset static>
       <Pane defaultWidth="20%" paneTitle="">
         {/* Nothing to go here, unless we want an "About" text or something */}
       </Pane>
-      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.sets.count" values={{ count: sets?.sets.length }} />}>
+      <Pane defaultWidth="80%" paneTitle={paneTitle}>
         {loaded
           ? renderList(sets, nav, rrhistory)
           : <Icon icon="spinner-ellipsis" />

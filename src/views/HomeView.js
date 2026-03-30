@@ -12,6 +12,10 @@ function renderList(projects, nav, rrhistory) {
     <>
       <div />{/* For some reason, if we omit this the MCL does not render */}
       <MultiColumnList
+        columnMapping={{
+          id: <FormattedMessage id={`ui-cyclops.field.id`} />,
+          name: <FormattedMessage id={`ui-cyclops.field.name`} />,
+        }}
         contentData={projects}
         formatter={{
           name: r => (
