@@ -3,32 +3,33 @@ import 'regenerator-runtime/runtime';
 
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { NavContext } from './NavContext';
 import Tabs from './Tabs';
+import Settings from './settings';
+import HomeRoute from './routes/HomeRoute';
 import SetsRoute from './routes/SetsRoute';
 import SpectresRoute from './routes/SpectresRoute';
-import Settings from './settings';
+
+const NavConfig = {
+  project: undefined,
+  list: undefined,
+};
 
 export default function Cyclops(props) {
-  const {
-    showSettings,
-    match: {
-      path
-    }
-  } = props;
-
-  if (showSettings) {
+  if (props.showSettings) {
     return <Settings {...props} />;
   }
 
+  const path = props.match.path;
   return (
-    <>
+    <NavContext.Provider value={NavConfig}>
       <Tabs />
       <Switch>
-        <Redirect exact from={path} to={`${path}/project`} />
-        <Route path={path} exact component={SetsRoute} />
-        <Route path={`${path}/project`} exact component={SetsRoute} />
-        <Route path={`${path}/list/:setId`} exact component={SpectresRoute} />
+        <Redirect exact from={path} to={`${path}/home`} />
+        <Route path={`${path}/home`} exact component={HomeRoute} />
+        <Route path={`${path}/project/:projectId`} exact component={SetsRoute} />
+        <Route path={`${path}/list/:projectId/:setId`} exact component={SpectresRoute} />
       </Switch>
-    </>
+    </NavContext.Provider>
   );
 }

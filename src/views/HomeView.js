@@ -6,22 +6,20 @@ import { useNav } from '../NavContext';
 import packageInfo from '../../package';
 
 
-function renderList(sets, nav, rrhistory) {
-  const contentData = sets.sets.map(name => ({ name }));
-
+function renderList(projects, nav, rrhistory) {
   /* eslint-disable jsx-a11y/anchor-is-valid */
   return (
     <>
       <div />{/* For some reason, if we omit this the MCL does not render */}
       <MultiColumnList
-        contentData={contentData}
+        contentData={projects}
         formatter={{
           name: r => (
             <Link
               onClick={(e) => {
                 e.preventDefault();
-                nav.list = r;
-                rrhistory.push(`${packageInfo.stripes.route}/list/${nav.project.id}/${r.name}`);
+                nav.project = r;
+                rrhistory.push(`${packageInfo.stripes.route}/project/${r.id}`);
               }}
             >
               {r.name}
@@ -34,7 +32,7 @@ function renderList(sets, nav, rrhistory) {
 }
 
 
-export default function SetsView({ loaded, sets }) {
+export default function HomeView({ loaded, projects }) {
   const nav = useNav();
   const rrhistory = useHistory();
 
@@ -43,9 +41,9 @@ export default function SetsView({ loaded, sets }) {
       <Pane defaultWidth="20%" paneTitle="">
         {/* Nothing to go here, unless we want an "About" text or something */}
       </Pane>
-      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.sets.count" values={{ count: sets?.sets.length }} />}>
+      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.projects.count" values={{ count: projects?.length }} />}>
         {loaded
-          ? renderList(sets, nav, rrhistory)
+          ? renderList(projects, nav, rrhistory)
           : <Icon icon="spinner-ellipsis" />
         }
       </Pane>
