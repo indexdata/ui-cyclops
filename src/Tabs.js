@@ -6,12 +6,12 @@ import packageInfo from '../package';
 
 
 const segments = [{
-  name: 'projects',
+  name: 'home',
   // We may add more elements here later
 }, {
-  name: 'lists',
+  name: 'project',
 }, {
-  name: 'spectres',
+  name: 'list',
 }];
 
 

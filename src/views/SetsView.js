@@ -14,7 +14,7 @@ function renderList(sets) {
       <MultiColumnList
         contentData={contentData}
         formatter={{
-          name: r => <Link to={`${packageInfo.stripes.route}/spectres/${r.name}`}>{r.name}</Link>
+          name: r => <Link to={`${packageInfo.stripes.route}/list/${r.name}`}>{r.name}</Link>
         }}
       />
     </>

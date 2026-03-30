@@ -24,10 +24,10 @@ export default function Cyclops(props) {
     <>
       <Tabs />
       <Switch>
-        <Redirect exact from={path} to={`${path}/lists`} />
+        <Redirect exact from={path} to={`${path}/project`} />
         <Route path={path} exact component={SetsRoute} />
-        <Route path={`${path}/lists`} exact component={SetsRoute} />
-        <Route path={`${path}/spectres/:setId`} exact component={SpectresRoute} />
+        <Route path={`${path}/project`} exact component={SetsRoute} />
+        <Route path={`${path}/list/:setId`} exact component={SpectresRoute} />
       </Switch>
     </>
   );

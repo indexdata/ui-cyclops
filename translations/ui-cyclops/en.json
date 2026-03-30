@@ -1,8 +1,8 @@
 {
   "meta.title": "Cyclops",
-  "tab.projects": "Projects",
-  "tab.lists": "Lists",
-  "tab.spectres": "Spectres",
+  "tab.home": "Home",
+  "tab.project": "Project {name}",
+  "tab.list": "List {name}",
   "devInfo": "Developer information",
   "no-value": "No value selected",
   "field.id": "ID",
