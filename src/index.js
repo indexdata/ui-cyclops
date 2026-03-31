@@ -10,9 +10,10 @@ import HomeRoute from './routes/HomeRoute';
 import ProjectRoute from './routes/ProjectRoute';
 import ListRoute from './routes/ListRoute';
 
-const NavConfig = {
-  project: undefined,
-  list: undefined,
+const Nav = {
+  home: {},
+  project: {},
+  list: {},
 };
 
 export default function Cyclops(props) {
@@ -22,7 +23,7 @@ export default function Cyclops(props) {
 
   const path = props.match.path;
   return (
-    <NavContext.Provider value={NavConfig}>
+    <NavContext.Provider value={Nav}>
       <Tabs />
       <Switch>
         <Redirect exact from={path} to={`${path}/home`} />

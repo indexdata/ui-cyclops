@@ -8,12 +8,13 @@ import { useNav } from './NavContext';
 
 const segmentsConfig = [{
   name: 'home',
+  needIdField: false,
 }, {
   name: 'project',
-  idField: 'id',
+  needIdField: true,
 }, {
   name: 'list',
-  idField: 'name',
+  needIdField: true,
 }];
 
 
@@ -26,22 +27,22 @@ function Tabs() {
     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5em' }}>
       <ButtonGroup>
         {
-          segmentsConfig.map(({ name, idField }) => {
-            const segmentState = nav[name];
+          segmentsConfig.map(({ name, needIdField }) => {
+            const segmentNav = nav[name];
             const fullBase = '/' + base + '/';
             const effectiveTab = location.pathname.replace(fullBase, '').replace(/\/.*/, '');
             const selected = (effectiveTab === name);
-            const disabled = !!idField && !segmentState?.name;
+            const disabled = needIdField && !segmentNav.name;
             return (
               <Button
                 key={`${name}`}
-                to={`/${base}/${name}/${segmentState?.[idField] || ''}`}
+                to={segmentNav.location?.pathname + segmentNav.location?.search}
                 buttonStyle={selected ? 'primary' : 'default'}
                 disabled={disabled}
               >
                 <FormattedMessage
                   id={`ui-cyclops.tab.${name}`}
-                  values={{ name: segmentState?.name }}
+                  values={{ name: segmentNav.name }}
                 />
               </Button>
             );

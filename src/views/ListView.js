@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select } from '@folio/stripes/components';
+import { useNav } from '../NavContext';
 
 
 const fields = {
@@ -120,6 +122,8 @@ function renderList(spectres, query, updateQuery) {
 
 export default function ListView({ loaded, name, spectres, query, updateQuery }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
+  const nav = useNav();
+  nav.list = { name, location: useLocation() };
 
   return (
     <Paneset static>
