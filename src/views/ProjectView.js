@@ -29,7 +29,7 @@ function renderList(sets, nav) {
 
 export default function ProjectView({ loaded, project, sets }) {
   const nav = useNav();
-  nav.project = { ...project, location: useLocation() };
+  nav.update({ project: { ...project, location: useLocation() } });
 
   const paneTitle = <FormattedMessage
     id="ui-cyclops.sets.count"

@@ -28,7 +28,7 @@ function renderList(projects) {
 
 export default function HomeView({ loaded, projects }) {
   const nav = useNav();
-  nav.home.location = useLocation();
+  nav.update({ home: { location: useLocation() } });
 
   return (
     <Paneset static>

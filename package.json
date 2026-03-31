@@ -39,6 +39,7 @@
     "regenerator-runtime": "^0.13.3"
   },
   "dependencies": {
+    "fast-deep-equal": "^3.0.0",
     "prop-types": "^15.6.0"
   },
   "peerDependencies": {

@@ -123,7 +123,7 @@ function renderList(spectres, query, updateQuery) {
 export default function ListView({ loaded, name, spectres, query, updateQuery }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const nav = useNav();
-  nav.list = { name, location: useLocation() };
+  nav.update({ list: { name, location: useLocation() } });
 
   return (
     <Paneset static>
