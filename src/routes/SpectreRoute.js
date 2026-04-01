@@ -1,8 +1,23 @@
 import React from 'react';
-import { Pane } from '@folio/stripes/components';
+import { stripesConnect } from '@folio/stripes/core';
+import SpectreView from '../views/SpectreView';
 
-function SpectreRoute({ match }) {
-  return <Pane><code>{JSON.stringify(match.params, null, 2)}</code></Pane>;
+function SpectreRoute({ resources, match }) {
+  const spectreResource = resources.spectre;
+  const loaded = spectreResource && spectreResource.hasLoaded;
+
+  return <SpectreView match={match} spectre={spectreResource.records[0]} />;
 }
 
-export default SpectreRoute;
+SpectreRoute.manifest = Object.freeze({
+  spectre: {
+    type: 'okapi',
+    path: 'cyclops/sets/:{setId}',
+    params: {
+      fields: '*',
+      cond: (_, pathParams) => `id=${pathParams.spectreId}`,
+    },
+  }
+});
+
+export default stripesConnect(SpectreRoute);
