@@ -2,11 +2,20 @@ import React from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import SpectreView from '../views/SpectreView';
 
+function response2spectre(response) {
+  const spectre = {};
+  response.fields.forEach(({ name }, index) => {
+    spectre[name] = response.data[0].values[index];
+  });
+  return spectre;
+}
+
 function SpectreRoute({ resources, match }) {
   const spectreResource = resources.spectre;
   const loaded = spectreResource && spectreResource.hasLoaded;
+  const spectre = response2spectre(spectreResource.records[0]);
 
-  return <SpectreView match={match} spectre={spectreResource.records[0]} />;
+  return <SpectreView loaded={loaded} match={match} spectre={spectre} />;
 }
 
 SpectreRoute.manifest = Object.freeze({

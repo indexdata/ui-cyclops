@@ -1,13 +1,11 @@
 import React from 'react';
-import { Pane } from '@folio/stripes/components';
+import { Pane, LoadingPane } from '@folio/stripes/components';
 
-function SpectreRoute({ match, spectre }) {
+function SpectreRoute({ loaded, match, spectre }) {
+  if (!loaded) return <LoadingPane />;
+
   return (
     <Pane>
-      <div>
-        <pre>{JSON.stringify(match.params, null, 2)}</pre>
-      </div>
-      <hr />
       <div>
         <pre>{JSON.stringify(spectre, null, 2)}</pre>
       </div>
