@@ -9,6 +9,7 @@ const dummyProject = {
   altName: 'palci_slavic',
   mou: 'https://www.miketaylor.org.uk/dino/pubs/',
   fund: 'PALCI cultural preservation',
+  // Design doc has multiple funds, each with name, default?, value, currency
   people: [
     {
       name: 'Boaz (Lehigh)',
