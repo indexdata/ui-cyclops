@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
+import packageInfo from '../../package';
 
 
 const fields = {
@@ -83,7 +84,7 @@ function renderSearch(query, updateQuery) {
 }
 
 
-function renderList(spectres, query, updateQuery) {
+function renderList(spectres, nav, query, updateQuery) {
   const sortedColumn = query.sort?.replace(/^-/, '');
   const sortDirection = query.sort?.startsWith('-') ? 'descending' : 'ascending';
 
@@ -101,6 +102,9 @@ function renderList(spectres, query, updateQuery) {
         visibleColumns={Object.keys(fields)}
         columnMapping={columnMapping}
         columnWidths={columnWidths}
+        formatter={{
+          title: r => <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${nav.list.name}/${r.id}`}>{r.title}</Link>,
+        }}
         contentData={contentData}
         onHeaderClick={(_, data) => {
           const newSort = (query.sort === data.name) ? `-${data.name}` : data.name;
@@ -120,7 +124,7 @@ function renderList(spectres, query, updateQuery) {
 }
 
 
-export default function ListView({ loaded, name, spectres, query, updateQuery }) {
+export default function ListView({ loaded, name, spectres, query, updateQuery, children }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const nav = useNav();
   nav.update({ list: { name, location: useLocation() } });
@@ -146,10 +150,11 @@ export default function ListView({ loaded, name, spectres, query, updateQuery })
         }
       >
         {loaded
-          ? renderList(spectres, query, updateQuery)
+          ? renderList(spectres, nav, query, updateQuery)
           : <Icon icon="spinner-ellipsis" />
         }
       </Pane>
+      {children}
     </Paneset>
   );
 }

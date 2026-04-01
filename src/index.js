@@ -4,12 +4,14 @@ import 'regenerator-runtime/runtime';
 import React, { useState } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import equal from 'fast-deep-equal';
+import { Route as NestedRoute } from '@folio/stripes-core';
 import { NavContext } from './NavContext';
 import Tabs from './Tabs';
 import Settings from './settings';
 import HomeRoute from './routes/HomeRoute';
 import ProjectRoute from './routes/ProjectRoute';
 import ListRoute from './routes/ListRoute';
+import SpectreRoute from './routes/SpectreRoute';
 
 export default function Cyclops(props) {
   const [Nav, setNav] = useState({
@@ -36,7 +38,9 @@ export default function Cyclops(props) {
         <Redirect exact from={path} to={`${path}/home`} />
         <Route path={`${path}/home`} exact component={HomeRoute} />
         <Route path={`${path}/project/:projectId`} exact component={ProjectRoute} />
-        <Route path={`${path}/list/:projectId/:setId`} exact component={ListRoute} />
+        <NestedRoute path={`${path}/list/:projectId/:setId`} component={ListRoute}>
+          <Route path={`${path}/list/:projectId/:setId/:spectreId`} exact component={SpectreRoute} />
+        </NestedRoute>
       </Switch>
     </NavContext.Provider>
   );

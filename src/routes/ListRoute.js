@@ -2,17 +2,21 @@ import React from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import ListView from '../views/ListView';
 
-function ListRoute({ resources, mutator, match }) {
+function ListRoute({ resources, mutator, match, children }) {
   const spectresResource = resources.spectres;
   const loaded = spectresResource && spectresResource.hasLoaded;
 
-  return <ListView
-    loaded={loaded}
-    name={match.params.setId}
-    spectres={spectresResource.records[0]}
-    query={resources.query}
-    updateQuery={mutator.query.update}
-  />;
+  return (
+    <ListView
+      loaded={loaded}
+      name={match.params.setId}
+      spectres={spectresResource.records[0]}
+      query={resources.query}
+      updateQuery={mutator.query.update}
+    >
+      {children}
+    </ListView>
+  );
 }
 
 ListRoute.manifest = Object.freeze({
