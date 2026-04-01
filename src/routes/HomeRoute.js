@@ -24,9 +24,9 @@ export default stripesConnect(HomeRoute);
 
 function HomeRoute() {
   const projectsProp = [
-    { id: '123', name: 'Ukrainian Culture' },
+    { id: '123', name: 'Slavic Studies' },
     { id: '456', name: 'Literature of North Korea' },
-    { id: '789', name: 'Palaeontology: the Bone Wars' },
+    { id: '789', name: 'Ukrainian Culture' },
   ];
 
   return <HomeView loaded projects={projectsProp} />;
