@@ -3,6 +3,8 @@ import { stripesConnect } from '@folio/stripes/core';
 import SpectreView from '../views/SpectreView';
 
 function response2spectre(response) {
+  if (!response) return undefined;
+
   const spectre = {};
   response.fields.forEach(({ name }, index) => {
     spectre[name] = response.data[0].values[index];
