@@ -18,6 +18,7 @@ function SpectreRoute({ loaded, match, spectre }) {
       <Row>
         <Col xs={6} className={css.miniPane}>
           <h4>About</h4>
+          <KeyValue label={<FormattedMessage id="ui-cyclops.field.title" />} value={spectre.title} />
           <KeyValue label={<FormattedMessage id="ui-cyclops.field.author" />} value={spectre.author} />
           <KeyValue label={<FormattedMessage id="ui-cyclops.field.full_vendor_name" />} value={spectre.vendor} />
           <KeyValue label={<FormattedMessage id="ui-cyclops.field.availability" />} value={spectre.availability} />
