@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Pane, LoadingPane, IconButton, Row, Col, Headline, KeyValue, Button, Select } from '@folio/stripes/components';
+import { Pane, LoadingPane, IconButton, Row, Col, Headline, KeyValue } from '@folio/stripes/components';
 import ActionSection from './ActionSection';
 import css from './SpectreView.css';
 import packageInfo from '../../package';

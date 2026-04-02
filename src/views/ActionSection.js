@@ -1,19 +1,16 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
-import { Pane, LoadingPane, IconButton, Row, Col, Headline, KeyValue, Button, Select } from '@folio/stripes/components';
-import packageInfo from '../../package';
-import css from './SpectreView.css';
+import { IconButton, Row, Col, Button, Select } from '@folio/stripes/components';
 
-function ActionSection({ spectre }) {
+function ActionSection() {
   const fundOptions = [
-    { value: 'fund1', label: 'PALCI cultural preservation'},
-    { value: 'fund2', label: 'Coalition for Slavic literature'},
+    { value: 'fund1', label: 'PALCI cultural preservation' },
+    { value: 'fund2', label: 'Coalition for Slavic literature' },
   ];
 
   const trackOptions = [
-    { value: 'track1', label: 'Offsite'},
-    { value: 'track2', label: 'Reserve'},
-    { value: 'track3', label: 'Stacks'},
+    { value: 'track1', label: 'Offsite' },
+    { value: 'track2', label: 'Reserve' },
+    { value: 'track3', label: 'Stacks' },
   ];
 
   const locationOptions = [
@@ -38,7 +35,7 @@ function ActionSection({ spectre }) {
       </Col>
       <Col xs={2} style={{ paddingTop: '1.7em' }}>
         <div>
-          <IconButton icon="envelope"/>
+          <IconButton icon="envelope" />
         </div>
         <br />
         <div>
