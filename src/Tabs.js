@@ -31,12 +31,14 @@ function Tabs() {
             const segmentNav = nav[name];
             const fullBase = '/' + base + '/';
             const effectiveTab = location.pathname.replace(fullBase, '').replace(/\/.*/, '');
+            const sl = segmentNav.location
+            const to = sl ? `${sl.pathname}${sl.search}` : `${packageInfo.stripes.route}/${name}`;
             const selected = (effectiveTab === name);
             const disabled = needIdField && !segmentNav.name;
             return (
               <Button
                 key={`${name}`}
-                to={segmentNav.location?.pathname + segmentNav.location?.search}
+                to={to}
                 buttonStyle={selected ? 'primary' : 'default'}
                 disabled={disabled}
               >
