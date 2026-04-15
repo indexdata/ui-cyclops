@@ -77,6 +77,35 @@
           "settings.enabled"
         ],
         "visible": true
+      },
+      {
+        "permissionName": "ui-cyclops.user.manage",
+        "displayName": "CYCLOPS: manage lists and spectres",
+        "visible": true,
+        "subPermissions": [
+          "module.cyclops.enabled",
+          "cyclops.tags.read",
+          "cyclops.filters.read",
+          "cyclops.sets.read",
+          "cyclops.sets.retrieve",
+          "cyclops.sets.add-objects",
+          "cyclops.sets.remove-objects",
+          "cyclops.sets.modify-tags",
+          "cyclops.sets.add-tags",
+          "cyclops.sets.remove-tags"
+        ]
+      },
+      {
+        "permissionName": "ui-cyclops.admin.manage",
+        "displayName": "CYCLOPS: administrate projects",
+        "visible": true,
+        "subPermissions": [
+          "ui-cyclops.user.manage",
+          "cyclops.tags.create",
+          "cyclops.filters.create",
+          "cyclops.sets.create",
+          "cyclops.sets.delete"
+        ]
       }
     ]
   }
