@@ -7,17 +7,70 @@ import { RCKV, CKV } from '../components/CKV';
 import packageInfo from '../../package';
 
 
-function renderProject(project) {
+function renderProject(baseProject) {
+  const project = {
+    ...baseProject,
+
+    // Dummy data until we can get the real stuff from CCMS
+    people: [
+      {
+        name: 'Boaz (Lehigh)',
+        role: 'Admin',
+      },
+      {
+        name: 'Sebastian (Index Data)',
+        role: 'Visionary',
+      },
+    ],
+    locations: [
+      {
+        name: 'Lehigh',
+      },
+      {
+        name: 'NYU',
+      },
+      {
+        name: 'CLOCKSS',
+      },
+    ],
+    tracks: [
+      {
+        name: 'Offsite',
+      },
+      {
+        name: 'Reserve',
+      },
+      {
+        name: 'Stacks',
+      },
+    ],
+  };
+
   return (
     <>
       <Row>
-        <CKV rec={project} tag="name" xs={6} />
+        <CKV rec={project} tag="title" xs={6} />
         <CKV rec={project} tag="altName" xs={3} formatFn={x => <code>{x}</code>} />
-        <CKV rec={project} tag="action" xs={3} />
+        <CKV rec={project} tag="action" xs={3} formatFn={(value) => value.name} />
       </Row>
-      <RCKV rec={project} tag="mou" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
+      <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
       <Row>
-        <CKV rec={project} tag="fund" xs={6} />
+        <CKV
+          rec={project}
+          tag="funds"
+          xs={6}
+          formatFn={(entries) => (
+            <ul>
+              {entries.split('|').map(entry => (
+                <li>
+                  <code>{entry.replace(/:.*/, '')}</code>
+                  &nbsp;
+                  ({entry.replace(/.*?:/, '')})
+                </li>
+              ))}
+            </ul>
+          )}
+        />
         <CKV
           xs={6}
           rec={project}
@@ -65,7 +118,7 @@ function renderList(sets, nav) {
         }}
         contentData={contentData}
         formatter={{
-          name: r => <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${r.name}`}>{r.name}</Link>,
+          name: r => <Link to={`${packageInfo.stripes.route}/list/${nav.project.altName}/${r.name}`}>{r.name}</Link>,
         }}
       />
     </>
