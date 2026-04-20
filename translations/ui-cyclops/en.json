@@ -16,6 +16,7 @@
   "project.field.tracks": "Tracks",
   "field.id": "ID",
   "field.name": "Name",
+  "field.altName": "Slug",
   "field.author": "Author",
   "field.title": "Title",
   "field.full_vendor_name": "Vendor name",

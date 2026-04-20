@@ -7,7 +7,6 @@ import packageInfo from '../../package';
 
 
 function renderList(projects) {
-  /* eslint-disable jsx-a11y/anchor-is-valid */
   return (
     <>
       <div />{/* For some reason, if we omit this the MCL does not render */}
@@ -15,10 +14,11 @@ function renderList(projects) {
         columnMapping={{
           id: <FormattedMessage id="ui-cyclops.field.id" />,
           name: <FormattedMessage id="ui-cyclops.field.name" />,
+          altName: <FormattedMessage id="ui-cyclops.field.altName" />,
         }}
-        contentData={projects}
+        contentData={projects.projects}
         formatter={{
-          name: r => <Link to={`${packageInfo.stripes.route}/project/${r.id}`}>{r.name}</Link>,
+          altName: r => <Link to={`${packageInfo.stripes.route}/project/${r.altName}`}>{r.altName}</Link>,
         }}
       />
     </>
