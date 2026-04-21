@@ -108,7 +108,9 @@ function renderProject(baseProject) {
 }
 
 
-function renderList(sets, nav, showCreateModal, setShowCreateModal, addList, listToDelete, setListToDelete, deleteList, callout) {
+function renderList(sets, nav, callout,
+  showCreateModal, setShowCreateModal, addList,
+  listToDelete, setListToDelete, deleteList) {
   const contentData = sets.sets.map(name => ({ name }));
 
   async function makeNewSet(name) {
@@ -246,7 +248,9 @@ export default function ProjectView({ loaded, project, sets, addList, deleteList
           : (
             <>
               {renderProject(project)}
-              {renderList(sets, nav, showCreateModal, setShowCreateModal, addList, listToDelete, setListToDelete, deleteList, callout)}
+              {renderList(sets, nav, callout,
+                showCreateModal, setShowCreateModal, addList,
+                listToDelete, setListToDelete, deleteList)}
             </>
           )
         }
