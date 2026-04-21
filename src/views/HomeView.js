@@ -35,7 +35,7 @@ export default function HomeView({ loaded, projects }) {
       <Pane defaultWidth="20%" paneTitle="">
         {/* Nothing to go here, unless we want an "About" text or something */}
       </Pane>
-      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.projects.count" values={{ count: projects?.length }} />}>
+      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.projects.count" values={{ count: projects?.projects?.length }} />}>
         {loaded
           ? renderList(projects)
           : <Icon icon="spinner-ellipsis" />
