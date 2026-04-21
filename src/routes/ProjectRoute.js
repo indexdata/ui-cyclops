@@ -12,7 +12,7 @@ function ProjectRoute(props) {
     loaded={loaded}
     project={projectResource.records[0]}
     sets={setsResource.records[0]}
-    addSet={(name) => props.mutator.sets.POST({ name })}
+    addList={(name) => props.mutator.sets.POST({ name })}
   />;
 }
 

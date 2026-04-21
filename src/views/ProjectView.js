@@ -108,14 +108,14 @@ function renderProject(baseProject) {
 }
 
 
-function renderList(sets, nav, showCreateModal, setShowCreateModal, addSet, callout) {
+function renderList(sets, nav, showCreateModal, setShowCreateModal, addList, callout) {
   const contentData = sets.sets.map(name => ({ name }));
 
   async function makeNewSet(name) {
     setShowCreateModal(false);
 
     try {
-      await addSet(name);
+      await addList(name);
       callout.sendCallout({
         message: <FormattedMessage id="ui-cyclops.project.new-list.success" values={{ name }} />,
       });
@@ -175,7 +175,7 @@ function renderList(sets, nav, showCreateModal, setShowCreateModal, addSet, call
 }
 
 
-export default function ProjectView({ loaded, project, sets, addSet }) {
+export default function ProjectView({ loaded, project, sets, addList }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const callout = useCallout();
 
@@ -201,7 +201,7 @@ export default function ProjectView({ loaded, project, sets, addSet }) {
           : (
             <>
               {renderProject(project)}
-              {renderList(sets, nav, showCreateModal, setShowCreateModal, addSet, callout)}
+              {renderList(sets, nav, showCreateModal, setShowCreateModal, addList, callout)}
             </>
           )
         }
