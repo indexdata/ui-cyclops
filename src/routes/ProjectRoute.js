@@ -12,6 +12,7 @@ function ProjectRoute(props) {
     loaded={loaded}
     project={projectResource.records[0]}
     sets={setsResource.records[0]}
+    addSet={(name) => props.mutator.sets.POST({ name })}
   />;
 }
 
@@ -23,6 +24,9 @@ ProjectRoute.manifest = Object.freeze({
   sets: {
     type: 'okapi',
     path: 'cyclops/sets',
+    POST: {
+      throwErrors: false,
+    },
   },
 });
 

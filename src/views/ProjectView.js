@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, Headline, Button, MultiColumnList, Row, Col, KeyValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { RCKV, CKV } from '../components/CKV';
@@ -107,8 +108,33 @@ function renderProject(baseProject) {
 }
 
 
-function renderList(sets, nav, showCreateModal, setShowCreateModal) {
+function renderList(sets, nav, showCreateModal, setShowCreateModal, addSet, callout) {
   const contentData = sets.sets.map(name => ({ name }));
+
+  async function makeNewSet(name) {
+    setShowCreateModal(false);
+
+    try {
+      await addSet(name);
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.project.new-list.success" values={{ name }} />,
+      });
+    } catch (res) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage
+          id="ui-cyclops.project.new-list.failure"
+          values={{
+            name,
+            status: res.status,
+            statusText: res.statusText,
+            body: await res.text(),
+          }}
+        />
+      });
+    }
+  }
 
   /* eslint-disable jsx-a11y/anchor-is-valid */
   return (
@@ -140,7 +166,7 @@ function renderList(sets, nav, showCreateModal, setShowCreateModal) {
       <PromptModal
         heading={<FormattedMessage id="ui-cyclops.project.new-list.heading" />}
         open={showCreateModal}
-        onConfirm={(name) => { setShowCreateModal(false); alert(`Should create new set "${name}"`); }}
+        onConfirm={(name) => makeNewSet(name)}
         onCancel={() => setShowCreateModal(false)}
         message={<FormattedMessage id="ui-cyclops.project.new-list.message" />}
       />
@@ -149,8 +175,10 @@ function renderList(sets, nav, showCreateModal, setShowCreateModal) {
 }
 
 
-export default function ProjectView({ loaded, project, sets }) {
+export default function ProjectView({ loaded, project, sets, addSet }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const callout = useCallout();
+
   const nav = useNav();
   nav.update({ project: { ...project, location: useLocation() } });
 
@@ -173,7 +201,7 @@ export default function ProjectView({ loaded, project, sets }) {
           : (
             <>
               {renderProject(project)}
-              {renderList(sets, nav, showCreateModal, setShowCreateModal)}
+              {renderList(sets, nav, showCreateModal, setShowCreateModal, addSet, callout)}
             </>
           )
         }
