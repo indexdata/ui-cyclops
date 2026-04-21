@@ -92,7 +92,9 @@
           "cyclops.sets.remove-objects",
           "cyclops.sets.modify-tags",
           "cyclops.sets.add-tags",
-          "cyclops.sets.remove-tags"
+          "cyclops.sets.remove-tags",
+          "cyclops.projects.collection.get",
+          "cyclops.projects.get"
         ]
       },
       {
@@ -104,7 +106,10 @@
           "cyclops.tags.create",
           "cyclops.filters.create",
           "cyclops.sets.create",
-          "cyclops.sets.delete"
+          "cyclops.sets.delete",
+          "cyclops.projects.post",
+          "cyclops.projects.delete",
+          "cyclops.projects.put"
         ]
       }
     ]
