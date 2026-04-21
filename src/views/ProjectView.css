@@ -1,0 +1,7 @@
+.flex {
+    display: flex;
+}
+
+.flex button {
+    margin-left: auto;
+}

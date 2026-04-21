@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Pane, Paneset, Icon, MultiColumnList, Row, Col, KeyValue } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, Headline, Button, MultiColumnList, Row, Col, KeyValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { RCKV, CKV } from '../components/CKV';
 import packageInfo from '../../package';
+import css from './ProjectView.css';
+import { PromptModal } from '../components/PromptModal';
 
 
 function renderProject(baseProject) {
@@ -62,7 +64,7 @@ function renderProject(baseProject) {
           formatFn={(entries) => (
             <ul>
               {entries.split('|').map(entry => (
-                <li>
+                <li key={entry}>
                   <code>{entry.replace(/:.*/, '')}</code>
                   &nbsp;
                   ({entry.replace(/.*?:/, '')})
@@ -78,7 +80,7 @@ function renderProject(baseProject) {
           formatFn={
             x => (
               <ul>
-                {x.map(y => <li>{y.name}: {y.role}</li>)}
+                {x.map(y => <li key={y.name}>{y.name}: {y.role}</li>)}
               </ul>
             )
           }
@@ -88,14 +90,14 @@ function renderProject(baseProject) {
         <Col xs={6}>
           <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.locations" />}>
             <ul>
-              {project.locations.map(x => <li>{x.name}</li>)}
+              {project.locations.map(x => <li key={x.name}>{x.name}</li>)}
             </ul>
           </KeyValue>
         </Col>
         <Col xs={6}>
           <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.tracks" />}>
             <ul>
-              {project.tracks.map(x => <li>{x.name}</li>)}
+              {project.tracks.map(x => <li key={x.name}>{x.name}</li>)}
             </ul>
           </KeyValue>
         </Col>
@@ -105,13 +107,26 @@ function renderProject(baseProject) {
 }
 
 
-function renderList(sets, nav) {
+function renderList(sets, nav, showCreateModal, setShowCreateModal) {
   const contentData = sets.sets.map(name => ({ name }));
 
   /* eslint-disable jsx-a11y/anchor-is-valid */
   return (
     <>
-      <div />{/* For some reason, if we omit this the MCL does not render */}
+      <hr />
+      <div className={css.flex}>
+        <Headline tag="h3" size="large" margin="small">
+          <FormattedMessage id="ui-cyclops.project.lists" />
+        </Headline>
+        <Button
+          onClick={() => setShowCreateModal(true)}
+        >
+          <Icon icon="plus-sign" />
+          &nbsp;
+          <FormattedMessage id="stripes-components.addNew" />
+        </Button>
+      </div>
+
       <MultiColumnList
         columnMapping={{
           name: <FormattedMessage id="ui-cyclops.field.name" />,
@@ -121,12 +136,21 @@ function renderList(sets, nav) {
           name: r => <Link to={`${packageInfo.stripes.route}/list/${nav.project.altName}/${r.name}`}>{r.name}</Link>,
         }}
       />
+
+      <PromptModal
+        heading={<FormattedMessage id="ui-cyclops.project.new-list.heading" />}
+        open={showCreateModal}
+        onConfirm={(name) => { setShowCreateModal(false); alert(`Should create new set "${name}"`); }}
+        onCancel={() => setShowCreateModal(false)}
+        message={<FormattedMessage id="ui-cyclops.project.new-list.message" />}
+      />
     </>
   );
 }
 
 
 export default function ProjectView({ loaded, project, sets }) {
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const nav = useNav();
   nav.update({ project: { ...project, location: useLocation() } });
 
@@ -149,7 +173,7 @@ export default function ProjectView({ loaded, project, sets }) {
           : (
             <>
               {renderProject(project)}
-              {renderList(sets, nav)}
+              {renderList(sets, nav, showCreateModal, setShowCreateModal)}
             </>
           )
         }
