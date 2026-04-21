@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
-import { Pane, Paneset, Icon, Headline, Button, MultiColumnList, Row, Col, KeyValue } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, Headline, Button, MultiColumnList, Row, Col, KeyValue, ConfirmationModal } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { RCKV, CKV } from '../components/CKV';
 import packageInfo from '../../package';
@@ -108,7 +108,7 @@ function renderProject(baseProject) {
 }
 
 
-function renderList(sets, nav, showCreateModal, setShowCreateModal, addList, callout) {
+function renderList(sets, nav, showCreateModal, setShowCreateModal, addList, listToDelete, setListToDelete, deleteList, callout) {
   const contentData = sets.sets.map(name => ({ name }));
 
   async function makeNewSet(name) {
@@ -125,6 +125,31 @@ function renderList(sets, nav, showCreateModal, setShowCreateModal, addList, cal
         timeout: 0,
         message: <FormattedMessage
           id="ui-cyclops.project.new-list.failure"
+          values={{
+            name,
+            status: res.status,
+            statusText: res.statusText,
+            body: await res.text(),
+          }}
+        />
+      });
+    }
+  }
+
+  async function actuallyDeleteSet(name) {
+    setListToDelete(undefined);
+
+    try {
+      await deleteList(name);
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.project.delete-list.success" values={{ name }} />,
+      });
+    } catch (res) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage
+          id="ui-cyclops.project.delete-list.failure"
           values={{
             name,
             status: res.status,
@@ -156,10 +181,21 @@ function renderList(sets, nav, showCreateModal, setShowCreateModal, addList, cal
       <MultiColumnList
         columnMapping={{
           name: <FormattedMessage id="ui-cyclops.field.name" />,
+          'action-delete': <FormattedMessage id="ui-cyclops.field.action-delete" />,
         }}
+        visibleColumns={['name', 'action-delete']}
+        columnWidths={{ 'name': '85%x' }}
         contentData={contentData}
         formatter={{
           name: r => <Link to={`${packageInfo.stripes.route}/list/${nav.project.altName}/${r.name}`}>{r.name}</Link>,
+          'action-delete': r => (
+            r.name === 'reserve' ? null :
+            <Button marginBottom0 onClick={() => setListToDelete(r.name)}>
+              <Icon icon="trash" />
+              &nbsp;
+              <FormattedMessage id="stripes-core.button.delete" />
+            </Button>
+          ),
         }}
       />
 
@@ -170,13 +206,22 @@ function renderList(sets, nav, showCreateModal, setShowCreateModal, addList, cal
         onCancel={() => setShowCreateModal(false)}
         message={<FormattedMessage id="ui-cyclops.project.new-list.message" />}
       />
+
+      <ConfirmationModal
+        heading={<FormattedMessage id="ui-cyclops.project.delete-list.heading" />}
+        open={!!listToDelete}
+        onConfirm={() => actuallyDeleteSet(listToDelete)}
+        onCancel={() => setListToDelete(undefined)}
+        message={<FormattedMessage id="ui-cyclops.project.delete-list.message" />}
+      />
     </>
   );
 }
 
 
-export default function ProjectView({ loaded, project, sets, addList }) {
+export default function ProjectView({ loaded, project, sets, addList, deleteList }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [listToDelete, setListToDelete] = useState();
   const callout = useCallout();
 
   const nav = useNav();
@@ -201,7 +246,7 @@ export default function ProjectView({ loaded, project, sets, addList }) {
           : (
             <>
               {renderProject(project)}
-              {renderList(sets, nav, showCreateModal, setShowCreateModal, addList, callout)}
+              {renderList(sets, nav, showCreateModal, setShowCreateModal, addList, listToDelete, setListToDelete, deleteList, callout)}
             </>
           )
         }
