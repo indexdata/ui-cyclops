@@ -23,6 +23,8 @@
   "project.delete-list.message": "Once it's gone, it's gone",
   "project.delete-list.success": "Deleted list <code>{name}</code>",
   "project.delete-list.failure": "Could not delete list <code>{name}</code>: status {status} ({statusText}): {body}",
+  "list.add-spectre.success": "Added spectre {spectreId} ({title}) to list <code>{list}</code>",
+  "list.add-spectre.failure": "Could not add spectre {spectreId} ({title}) to list <code>{list}</code>: status {status} ({statusText}): {body}",
   "field.id": "ID",
   "field.name": "Name",
   "field.action-delete": "Delete",
@@ -41,6 +43,9 @@
   "settings.some-feature": "Some Feature",
   "settings.some-feature.message": "These are your settings for some app feature.",
   "projects.count": "There {count, plural, one {is} other {are}} {count} {count, plural, one {project} other {projects}}",
-  "spectres.count": "There {count, plural, one {is} other {are}} {count} {count, plural, one {spectre} other {spectres}} in set <code>{name}</code>",
+  "spectres.count": "There {count, plural, one {is} other {are}} {count} {count, plural, one {spectre} other {spectres}} in list <code>{name}</code>",
+  "spectres.add": "Add spectres",
+  "spectres.adding-from": "Adding to list <code>{name}</code> from {count} {count, plural, one {spectre} other {spectres}} in list <code>{addFrom}</code>",
+  "button.add": "Add",
   "SENTINEL": ""
 }

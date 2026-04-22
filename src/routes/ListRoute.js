@@ -2,7 +2,9 @@ import React from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import ListView from '../views/ListView';
 
-function ListRoute({ resources, mutator, match, children }) {
+function ListRoute({ resources, mutator, location, match, children }) {
+  const query = new URLSearchParams(location.search);
+  const addFrom = query.get('addFrom');
   const spectresResource = resources.spectres;
   const loaded = spectresResource && spectresResource.hasLoaded;
 
@@ -13,6 +15,8 @@ function ListRoute({ resources, mutator, match, children }) {
       spectres={spectresResource.records[0]}
       query={resources.query}
       updateQuery={mutator.query.update}
+      addFrom={addFrom}
+      addSpectre={(spectreId) => mutator.addToList.POST({ from: addFrom, cond: `id = ${spectreId}` })}
     >
       {children}
     </ListView>
@@ -23,7 +27,10 @@ ListRoute.manifest = Object.freeze({
   query: {},
   spectres: {
     type: 'okapi',
-    path: 'cyclops/sets/:{setId}',
+    path: (queryParams, pathParams) => {
+      // console.log('queryParams =', queryParams, '-- pathParams =', pathParams);
+      return `cyclops/sets/${queryParams.addFrom || pathParams.setId}`;
+    },
     params: {
       fields: '*',
       cond: (_a, _b, resources) => {
@@ -58,6 +65,12 @@ ListRoute.manifest = Object.freeze({
       // filter: 'jurassic',
       // tag: 'dino,ptero',
     },
+  },
+  addToList: {
+    type: 'okapi',
+    path: 'cyclops/sets/:{setId}/add',
+    fetch: false,
+    throwErrors: false,
   }
 });
 
