@@ -8,43 +8,48 @@ import { useNav } from './NavContext';
 
 const segmentsConfig = [{
   name: 'home',
-  renderName: undefined
+  renderName: () => 'UNUSED',
+  makeLink: () => `${packageInfo.stripes.route}/home`,
 }, {
   name: 'project',
-  renderName: r => r.name,
+  renderName: (r, nav) => r.name || nav.list.name?.replace(/\..*/, ''),
+  makeLink: (nav) => {
+    const pname = nav.list.name?.replace(/\..*/, '');
+    return pname === undefined ? undefined : `${packageInfo.stripes.route}/project/${pname}`;
+  }
 }, {
   name: 'list',
   renderName: r => r.name?.replace(/.*\./, ''),
+  makeLink: () => undefined, // If we've not visited this tab, we have no way to choose a list
 }];
 
 
 function Tabs() {
   const location = useLocation();
-  const base = packageInfo.stripes.route.replace(/^\//, '');
+  const fullBase = `${packageInfo.stripes.route}/`;
+  const effectiveTab = location.pathname.replace(fullBase, '').replace(/\/.*/, '');
   const nav = useNav();
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5em' }}>
       <ButtonGroup>
         {
-          segmentsConfig.map(({ name, renderName }) => {
+          segmentsConfig.map(({ name, renderName, makeLink }) => {
             const segmentNav = nav[name];
-            const fullBase = '/' + base + '/';
-            const effectiveTab = location.pathname.replace(fullBase, '').replace(/\/.*/, '');
             const sl = segmentNav.location;
-            const to = sl ? `${sl.pathname}${sl.search}` : `${packageInfo.stripes.route}/${name}`;
-            const selected = (effectiveTab === name);
-            const disabled = renderName && !renderName(segmentNav);
+            const to = sl ? `${sl.pathname}${sl.search}` : makeLink(nav);
+            const renderedName = renderName(segmentNav, nav);
+
             return (
               <Button
-                key={`${name}`}
+                key={name}
                 to={to}
-                buttonStyle={selected ? 'primary' : 'default'}
-                disabled={disabled}
+                buttonStyle={effectiveTab === name ? 'primary' : 'default'}
+                disabled={!renderedName}
               >
                 <FormattedMessage
                   id={`ui-cyclops.tab.${name}`}
-                  values={{ name: renderName && renderName(segmentNav) }}
+                  values={{ name: renderedName }}
                 />
               </Button>
             );

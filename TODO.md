@@ -16,7 +16,7 @@
 * **DONE** Support new `holdings_count` attribute (in list view, and as a filter)
 * **DONE** Show if a decision has been made on a spectre
 * **DONE** Show in result list which spectres have been decided
-* BUG: Home and Project tabs should always be clickable, even after reloading from the List tab
+* **FIXED**: Home and Project tabs should always be clickable, even after reloading from the List tab
 * Present "object" set with a better name
 * Ability to create a new set directly from search results, skipping filter creation
 * Allow filtering a list on actioned/unactioned spectres
