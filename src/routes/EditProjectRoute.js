@@ -16,7 +16,7 @@ function EditProjectRoute({ resources, mutator, match }) {
     try {
       await mutator.project.PUT(record);
       callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.project.update.success" values={{ name: record.altName }} />,
+        message: <FormattedMessage id="ui-cyclops.project.update.success" values={{ name: record.id }} />,
       });
       handleClose();
     } catch (res) {
@@ -26,7 +26,7 @@ function EditProjectRoute({ resources, mutator, match }) {
         message: <FormattedMessage
           id="ui-cyclops.project.update.failure"
           values={{
-            name: record.altName,
+            name: record.id,
             status: res.status,
             statusText: res.statusText,
             body: await res.text(),

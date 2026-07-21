@@ -180,7 +180,7 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
   const formatter = {
     title: r => (
       !addFrom ?
-        <Link to={`${packageInfo.stripes.route}/list/${nav.project.altName}/${nav.list.name}/${r.id}`}>{r.title}</Link> :
+        <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${nav.list.name}/${r.id}`}>{r.title}</Link> :
         <>
           <Button marginBottom0 onClick={() => addSpectreToList(name, r.id, r.title)}>
             <Icon icon="plus-sign" />
@@ -302,8 +302,8 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
           )
         }
         lastMenu={
-          name === nav.project.altName + '.object' || !!addFrom ? undefined :
-          <Button marginBottom0 to={`${name}?addFrom=${nav.project.altName}.object`}>
+          name === nav.project.id + '.object' || !!addFrom ? undefined :
+          <Button marginBottom0 to={`${name}?addFrom=${nav.project.id}.object`}>
             <Icon icon="plus-sign" />
             &nbsp;
             <FormattedMessage id="ui-cyclops.spectres.add" />

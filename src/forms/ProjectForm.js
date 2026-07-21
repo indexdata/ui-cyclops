@@ -43,7 +43,7 @@ function validate(values) {
   const errors = {};
   const requiredTextMessage = <FormattedMessage id="ui-cyclops.fillIn" />;
 
-  ['altName', 'title'].forEach(fieldName => {
+  ['id', 'name'].forEach(fieldName => {
     if (!values[fieldName]) {
       errors[fieldName] = requiredTextMessage;
     }
@@ -66,8 +66,8 @@ const LOCATION_OPTIONS = [
 ];
 
 function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting, funds = [] }) {
-  const title = initialValues?.name;
-  const fundOptions = funds.map(f => ({ value: f.id, label: f.title }));
+  const name = initialValues?.name;
+  const fundOptions = funds.map(f => ({ value: f.id, label: f.name }));
   const actionOptions = [
     // Leading empty option so the dropdown reads as empty until a value is
     // chosen, rather than defaulting to displaying the first action name.
@@ -75,7 +75,7 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
     ...ACTION_NAMES.map(name => ({ value: name, label: name.charAt(0).toUpperCase() + name.slice(1) })),
   ];
   const paneTitle = initialValues?.id
-    ? <FormattedMessage id="ui-cyclops.project.edit" values={{ project: title }} />
+    ? <FormattedMessage id="ui-cyclops.project.edit" values={{ project: name }} />
     : <FormattedMessage id="ui-cyclops.project.new" />;
 
   return (
@@ -91,11 +91,11 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
         {!loaded
           ? <Icon icon="spinner-ellipsis" />
           : (
-            <TitleManager record={title}>
+            <TitleManager record={name}>
               <form>
                 <Row>
-                  <CF tag="title" xs={6} />
-                  <CF tag="altName" xs={3} />
+                  <CF tag="name" xs={6} />
+                  <CF tag="id" xs={3} />
                   <CF tag="action.id" i18nTag="action" xs={3} component={Select} dataOptions={actionOptions} />
                 </Row>
                 <RCF tag="mou_link" />

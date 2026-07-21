@@ -11,7 +11,7 @@ function ProjectRoute(props) {
   const populateList = async (setName, filterName) => {
     await props.mutator.populateTarget.update({ setName });
     return props.mutator.populateSet.POST({
-      from: `${projectResource.records[0].altName}.object`,
+      from: `${projectResource.records[0].id}.object`,
       cond: `filter(${filterName})`,
     });
   };

@@ -56,8 +56,8 @@ function renderProject(baseProject) {
   return (
     <>
       <Row>
-        <CKV rec={project} tag="title" xs={6} />
-        <CKV rec={project} tag="altName" xs={3} formatFn={x => <code>{x}</code>} />
+        <CKV rec={project} tag="name" xs={6} />
+        <CKV rec={project} tag="id" xs={3} formatFn={x => <code>{x}</code>} />
         <CKV rec={project} tag="action" xs={3} formatFn={(value) => value.name} />
       </Row>
       <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
@@ -217,12 +217,12 @@ function renderList(sets, nav, callout,
         contentData={contentData}
         formatter={{
           name: r => (
-            <Link to={`${packageInfo.stripes.route}/list/${nav.project.altName}/${r.name}`}>
+            <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${r.name}`}>
               {r.name?.replace(/.*\./, '')}
             </Link>
           ),
           'action-delete': r => (
-            r.name === nav.project.altName + '.object' ? null :
+            r.name === nav.project.id + '.object' ? null :
             <Button marginBottom0 onClick={() => setListToDelete(r.name)}>
               <Icon icon="trash" />
               &nbsp;
@@ -235,7 +235,7 @@ function renderList(sets, nav, callout,
       <PromptModal
         heading={<FormattedMessage id="ui-cyclops.project.new-list.heading" />}
         open={showCreateModal}
-        onConfirm={(name, filter) => makeNewSet(`${nav.project.altName}.${name}`, filter)}
+        onConfirm={(name, filter) => makeNewSet(`${nav.project.id}.${name}`, filter)}
         onCancel={() => setShowCreateModal(false)}
         message={<FormattedMessage id="ui-cyclops.project.new-list.message" />}
         filters={filters}
@@ -265,13 +265,13 @@ export default function ProjectView({ loaded, project, sets, filters, addList, p
     id="ui-cyclops.project.header"
     values={{
       count: sets?.sets.length,
-      project: nav.project.title,
+      project: nav.project.name,
     }}
   />;
 
   const renderActionMenu = () => (
     <MenuSection label="Actions">
-      <Button buttonStyle="dropdownItem" to={`${nav.project.altName}/edit`}>
+      <Button buttonStyle="dropdownItem" to={`${nav.project.id}/edit`}>
         <Icon size="small" icon="edit">
           Edit
         </Icon>

@@ -13,7 +13,7 @@ function renderList(projects, callout, projectToDelete, setProjectToDelete, dele
     const name = project.name;
 
     try {
-      await deleteProject(project.altName);
+      await deleteProject(project.id);
       callout.sendCallout({
         message: <FormattedMessage id="ui-cyclops.projects.delete.success" values={{ name }} />,
       });
@@ -38,21 +38,21 @@ function renderList(projects, callout, projectToDelete, setProjectToDelete, dele
     <>
       <div />{/* For some reason, if we omit this the MCL does not render */}
       <MultiColumnList
-        visibleColumns={['altName', 'name', 'action-delete']}
+        visibleColumns={['id', 'name', 'action-delete']}
         columnMapping={{
-          altName: <FormattedMessage id="ui-cyclops.field.altName" />,
+          id: <FormattedMessage id="ui-cyclops.field.id" />,
           name: <FormattedMessage id="ui-cyclops.field.name" />,
           'action-delete': <FormattedMessage id="ui-cyclops.field.action-delete" />,
         }}
         columnWidths={{
-          altName: '100px',
+          id: '100px',
           name: '300px',
           'action-delete': '200px',
         }}
         contentData={projects.projects}
         formatter={{
-          altName: r => <Link to={`${packageInfo.stripes.route}/project/${r.altName}`}>{r.altName}</Link>,
-          name: r => <Link to={`${packageInfo.stripes.route}/project/${r.altName}`}>{r.title}</Link>,
+          id: r => <Link to={`${packageInfo.stripes.route}/project/${r.id}`}>{r.id}</Link>,
+          name: r => <Link to={`${packageInfo.stripes.route}/project/${r.id}`}>{r.name}</Link>,
           'action-delete': r => (
             <Button marginBottom0 onClick={() => setProjectToDelete(r)}>
               <Icon icon="trash" />

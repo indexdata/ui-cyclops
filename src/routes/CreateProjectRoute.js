@@ -23,9 +23,9 @@ function CreateProjectRoute({ resources, mutator }) {
     try {
       const newRecord = await mutator.project.POST(normalized);
       callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.project.create.success" values={{ name: newRecord.altName }} />,
+        message: <FormattedMessage id="ui-cyclops.project.create.success" values={{ name: newRecord.id }} />,
       });
-      history.push(`./${newRecord.altName}`);
+      history.push(`./${newRecord.id}`);
     } catch (res) {
       callout.sendCallout({
         type: 'error',
@@ -33,7 +33,7 @@ function CreateProjectRoute({ resources, mutator }) {
         message: <FormattedMessage
           id="ui-cyclops.project.create.failure"
           values={{
-            name: record.altName,
+            name: record.id,
             status: res.status,
             statusText: res.statusText,
             body: await res.text(),

@@ -11,7 +11,7 @@ const segmentsConfig = [{
   renderName: undefined
 }, {
   name: 'project',
-  renderName: r => r.title,
+  renderName: r => r.name,
 }, {
   name: 'list',
   renderName: r => r.name?.replace(/.*\./, ''),

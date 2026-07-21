@@ -3,11 +3,11 @@ import { useIntl } from 'react-intl';
 import { ControlledVocab } from '@folio/stripes/smart-components';
 import { useStripes } from '@folio/stripes/core';
 
-// Turn a fund's title into a stable, backend-valid identifier: lowercase,
+// Turn a fund's name into a stable, backend-valid identifier: lowercase,
 // with every run of non-alphanumeric characters collapsed to a single
 // underscore and leading/trailing underscores trimmed.
-function slug(title) {
-  return (title || '')
+function slug(name) {
+  return (name || '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '');
@@ -43,18 +43,18 @@ function FundSettings() {
         termWillBeDeleted: 'ui-cyclops.cv.termWillBeDeleted',
       }}
       objectLabel={intl.formatMessage({ id: 'ui-cyclops.settings.funds.objectLabel' })}
-      visibleFields={['id', 'title']}
+      visibleFields={['id', 'name']}
       columnMapping={{
         id: intl.formatMessage({ id: 'ui-cyclops.settings.funds.id' }),
-        title: intl.formatMessage({ id: 'ui-cyclops.settings.funds.title' }),
+        name: intl.formatMessage({ id: 'ui-cyclops.settings.funds.name' }),
       }}
       id="funds"
-      sortby="title"
+      sortby="name"
       readOnlyFields={['id']}
       // Let the backend own the id: don't inject a client-generated UUID (which
-      // it rejects). Instead derive a valid identifier from the title on create.
+      // it rejects). Instead derive a valid identifier from the name on create.
       clientGeneratePk={false}
-      preCreateHook={(item) => ({ ...item, id: slug(item.title) })}
+      preCreateHook={(item) => ({ ...item, id: slug(item.name) })}
       hiddenFields={['lastUpdated', 'numberOfObjects']}
     />
   );
