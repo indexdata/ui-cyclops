@@ -144,9 +144,10 @@ function renderSearch(query, updateQuery, savedFilters, intl) {
 }
 
 
-export default function ListView({ loaded, name, projectId, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
+export default function ListView({ loaded, name, projectId, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addList, populateList, hasSearch, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const intl = useIntl();
   const callout = useCallout();
 
@@ -173,6 +174,54 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
           id="ui-cyclops.save-search.failure"
           values={{
             name: searchName,
+            status: res.status,
+            statusText: res.statusText,
+            body: await res.text(),
+          }}
+        />
+      });
+    }
+  };
+
+  const makeNewList = async (listName) => {
+    setShowCreateModal(false);
+    const fullName = `${projectId}.${listName}`;
+
+    try {
+      await addList(fullName);
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.project.new-list.success" values={{ name: fullName }} />,
+      });
+    } catch (res) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage
+          id="ui-cyclops.project.new-list.failure"
+          values={{
+            name: fullName,
+            status: res.status,
+            statusText: res.statusText,
+            body: await res.text(),
+          }}
+        />
+      });
+      return;
+    }
+
+    try {
+      await populateList(fullName);
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.list.populate-list.success" values={{ name: fullName }} />,
+      });
+    } catch (res) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage
+          id="ui-cyclops.list.populate-list.failure"
+          values={{
+            name: fullName,
             status: res.status,
             statusText: res.statusText,
             body: await res.text(),
@@ -281,11 +330,21 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
           {renderSearch(query, updateQuery, savedFilters, intl)}
           <br />
           <br />
+          <br />
           <Button
             marginBottom0
             onClick={() => setShowSaveModal(true)}
           >
             <FormattedMessage id="ui-cyclops.save-search.button" />
+          </Button>
+          <br />
+          <br />
+          <Button
+            marginBottom0
+            disabled={!hasSearch}
+            onClick={() => setShowCreateModal(true)}
+          >
+            <FormattedMessage id="ui-cyclops.create-list.button" />
           </Button>
         </Pane>
       }
@@ -323,6 +382,14 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
         onConfirm={onSaveSearch}
         onCancel={() => setShowSaveModal(false)}
         message={<FormattedMessage id="ui-cyclops.save-search.message" />}
+      />
+
+      <PromptModal
+        heading={<FormattedMessage id="ui-cyclops.project.new-list.heading" />}
+        open={showCreateModal}
+        onConfirm={makeNewList}
+        onCancel={() => setShowCreateModal(false)}
+        message={<FormattedMessage id="ui-cyclops.project.new-list.message" />}
       />
     </Paneset>
   );

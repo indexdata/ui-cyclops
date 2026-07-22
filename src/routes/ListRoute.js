@@ -23,6 +23,17 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   // eslint-disable-next-line no-use-before-define
   const saveSearch = (name) => mutator.saveFilter.POST({ name, cond: condFn(null, null, resources) });
 
+  // Fill a newly-created set with the records of the present search result:
+  // the same source set that is on view, matched by the same condition.
+  const populateList = async (setName) => {
+    await mutator.populateTarget.update({ setName });
+    return mutator.populateSet.POST({
+      from: addFrom || match.params.setId,
+      // eslint-disable-next-line no-use-before-define
+      cond: condFn(null, null, resources),
+    });
+  };
+
   return (
     <ListView
       loaded={loaded}
@@ -34,6 +45,10 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       updateQuery={mutator.query.update}
       savedFilters={resources.filters?.records?.[0]?.filters || []}
       addFrom={addFrom}
+      addList={(name) => mutator.allSets.POST({ name })}
+      populateList={populateList}
+      // eslint-disable-next-line no-use-before-define
+      hasSearch={!!condFn(null, null, resources)}
       addSpectre={(spectreId) => mutator.addToList.POST({ from: addFrom, cond: `id = ${spectreId}` })}
       saveSearch={saveSearch}
       pageAmount={RESULT_COUNT_INCREMENT}
@@ -137,6 +152,21 @@ ListRoute.manifest = Object.freeze({
   addToList: {
     type: 'okapi',
     path: 'cyclops/sets/:{setId}/add',
+    fetch: false,
+    throwErrors: false,
+  },
+  allSets: {
+    type: 'okapi',
+    path: 'cyclops/sets',
+    fetch: false,
+    POST: {
+      throwErrors: false,
+    },
+  },
+  populateTarget: {},
+  populateSet: {
+    type: 'okapi',
+    path: (_q, _p, resources) => `cyclops/sets/${resources.populateTarget?.setName}/add`,
     fetch: false,
     throwErrors: false,
   },

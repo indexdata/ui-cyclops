@@ -94,5 +94,8 @@
   "save-search.invalid": "<code>{name}</code> is not a valid identifier: use a letter or underscore, followed by letters, digits or underscores",
   "save-search.success": "Saved search <code>{name}</code>",
   "save-search.failure": "Could not save search <code>{name}</code>: status {status} ({statusText}): {body}",
+  "create-list.button": "Create list",
+  "list.populate-list.success": "Populated list <code>{name}</code> from the current search result",
+  "list.populate-list.failure": "Could not populate list <code>{name}</code> from the current search result: status {status} ({statusText}): {body}",
   "SENTINEL": ""
 }
