@@ -1,9 +1,10 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { Button, ButtonGroup } from '@folio/stripes/components';
 import packageInfo from '../package';
 import { useNav } from './NavContext';
+import { listDisplayName } from './util';
 
 
 const segmentsConfig = [{
@@ -19,7 +20,7 @@ const segmentsConfig = [{
   }
 }, {
   name: 'list',
-  renderName: r => r.name?.replace(/.*\./, ''),
+  renderName: (r, nav, intl) => listDisplayName(r.name, intl),
   makeLink: () => undefined, // If we've not visited this tab, we have no way to choose a list
 }];
 
@@ -29,6 +30,7 @@ function Tabs() {
   const fullBase = `${packageInfo.stripes.route}/`;
   const effectiveTab = location.pathname.replace(fullBase, '').replace(/\/.*/, '');
   const nav = useNav();
+  const intl = useIntl();
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5em' }}>
@@ -38,7 +40,7 @@ function Tabs() {
             const segmentNav = nav[name];
             const sl = segmentNav.location;
             const to = sl ? `${sl.pathname}${sl.search}` : makeLink(nav);
-            const renderedName = renderName(segmentNav, nav);
+            const renderedName = renderName(segmentNav, nav, intl);
 
             return (
               <Button

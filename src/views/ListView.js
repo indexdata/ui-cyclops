@@ -5,6 +5,7 @@ import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, TextField, MCLPagingTypes, NoValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { PromptModal } from '../components/PromptModal';
+import { listDisplayName } from '../util';
 import packageInfo from '../../package';
 
 // A valid identifier: a letter or underscore followed by letters, digits or underscores
@@ -143,7 +144,7 @@ function renderSearch(query, updateQuery, savedFilters, intl) {
 }
 
 
-function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, addSpectre, pageAmount, onNeedMoreData, totalCount, pagingOffset) {
+function renderList(spectres, nav, projectId, query, updateQuery, addFrom, name, callout, addSpectre, pageAmount, onNeedMoreData, totalCount, pagingOffset) {
   const sortedColumn = query.sort?.replace(/^-/, '');
   const sortDirection = query.sort?.startsWith('-') ? 'descending' : 'ascending';
 
@@ -180,7 +181,7 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
   const formatter = {
     title: r => (
       !addFrom ?
-        <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${nav.list.name}/${r.id}`}>{r.title}</Link> :
+        <Link to={`${packageInfo.stripes.route}/list/${projectId}/${nav.list.name}/${r.id}`}>{r.title}</Link> :
         <>
           <Button marginBottom0 onClick={() => addSpectreToList(name, r.id, r.title)}>
             <Icon icon="plus-sign" />
@@ -227,7 +228,7 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
 }
 
 
-export default function ListView({ loaded, name, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
+export default function ListView({ loaded, name, projectId, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const intl = useIntl();
@@ -293,8 +294,8 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
         defaultWidth="fill"
         paneTitle={
           addFrom ?
-            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: name?.replace(/.*\./, ''), addFrom }} /> :
-            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name: name?.replace(/.*\./, '') }} />
+            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: listDisplayName(name, intl), addFrom }} /> :
+            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name: listDisplayName(name, intl) }} />
         }
         firstMenu={
           showSearchPane ? undefined : (
@@ -302,8 +303,8 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
           )
         }
         lastMenu={
-          name === nav.project.id + '.object' || !!addFrom ? undefined :
-          <Button marginBottom0 to={`${name}?addFrom=${nav.project.id}.object`}>
+          name === projectId + '.object' || !!addFrom ? undefined :
+          <Button marginBottom0 to={`${name}?addFrom=${projectId}.object`}>
             <Icon icon="plus-sign" />
             &nbsp;
             <FormattedMessage id="ui-cyclops.spectres.add" />
@@ -311,7 +312,7 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
         }
       >
         {loaded
-          ? renderList(spectres, nav, query, updateQuery, addFrom, name, callout, addSpectre, pageAmount, onNeedMoreData, totalCount, pagingOffset)
+          ? renderList(spectres, nav, projectId, query, updateQuery, addFrom, name, callout, addSpectre, pageAmount, onNeedMoreData, totalCount, pagingOffset)
           : <Icon icon="spinner-ellipsis" />
         }
       </Pane>

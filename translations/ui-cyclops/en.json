@@ -7,6 +7,7 @@
   "no-value": "No value selected",
   "fillIn": "Please fill in this value",
   "at-least": "at least {minValue}",
+  "master-list": "Master list",
   "project.header": "Project {project} ({count} {count, plural, one {list} other {lists}})",
   "project.edit": "Edit project {project}",
   "project.new": "New project",

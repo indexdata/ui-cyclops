@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, Headline, MenuSection, Button, MultiColumnList, Row, Col, KeyValue, ConfirmationModal, NoValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { RCKV, CKV } from '../components/CKV';
+import { listDisplayName } from '../util';
 import packageInfo from '../../package';
 import css from './ProjectView.css';
 import { PromptModal } from '../components/PromptModal';
@@ -112,7 +113,7 @@ function renderProject(baseProject) {
 function renderList(sets, nav, callout,
   showCreateModal, setShowCreateModal, addList,
   listToDelete, setListToDelete, deleteList,
-  filters, populateList) {
+  filters, populateList, intl) {
   const contentData = sets.sets.map(name => ({ name }));
 
   async function makeNewSet(name, filter) {
@@ -218,7 +219,7 @@ function renderList(sets, nav, callout,
         formatter={{
           name: r => (
             <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${r.name}`}>
-              {r.name?.replace(/.*\./, '')}
+              {listDisplayName(r.name, intl)}
             </Link>
           ),
           'action-delete': r => (
@@ -257,6 +258,7 @@ export default function ProjectView({ loaded, project, sets, filters, addList, p
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [listToDelete, setListToDelete] = useState();
   const callout = useCallout();
+  const intl = useIntl();
 
   const nav = useNav();
   nav.update({ project: { ...project, location: useLocation() } });
@@ -293,7 +295,7 @@ export default function ProjectView({ loaded, project, sets, filters, addList, p
               {renderList(sets, nav, callout,
                 showCreateModal, setShowCreateModal, addList,
                 listToDelete, setListToDelete, deleteList,
-                filters, populateList)}
+                filters, populateList, intl)}
             </>
           )
         }

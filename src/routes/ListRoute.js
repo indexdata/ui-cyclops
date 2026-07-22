@@ -27,6 +27,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
     <ListView
       loaded={loaded}
       name={match.params.setId}
+      projectId={match.params.projectId}
       spectres={spectresResource.records[0]}
       spectreCount={resources.spectreCount.records[0]?.data[0].values[0]}
       query={resources.query}
