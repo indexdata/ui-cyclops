@@ -23,8 +23,6 @@ const ListField = ({ name, label, renderEntry, component, emptyValue }) => {
                   }
                 </div>
                 <div>
-                  <IconButton icon="arrow-up" disabled={index === 0} onClick={() => fields.swap(index - 1, index)} />
-                  <IconButton icon="arrow-down" disabled={index === fields.length - 1} onClick={() => fields.swap(index, index + 1)} />
                   <IconButton icon="trash" onClick={() => fields.remove(index)} />
                 </div>
               </div>
