@@ -17,8 +17,8 @@
 * **DONE** Show if a decision has been made on a spectre
 * **DONE** Show in result list which spectres have been decided
 * **DONE** Present "object" set with a better name
+* **DONE** Allow filtering a list on actioned/unactioned spectres
 * **FIXED**: Home and Project tabs should always be clickable, even after reloading from the List tab
 * Ability to create a new set directly from search results, skipping filter creation
-* Allow filtering a list on actioned/unactioned spectres
 * Result-list: checkboxes for bulk actions
 * Remove up/down arrows for ordering list
