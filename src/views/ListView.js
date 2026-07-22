@@ -144,90 +144,6 @@ function renderSearch(query, updateQuery, savedFilters, intl) {
 }
 
 
-function renderList(spectres, nav, projectId, query, updateQuery, addFrom, name, callout, addSpectre, pageAmount, onNeedMoreData, totalCount, pagingOffset) {
-  const sortedColumn = query.sort?.replace(/^-/, '');
-  const sortDirection = query.sort?.startsWith('-') ? 'descending' : 'ascending';
-
-  async function addSpectreToList(addTo, spectreId, title) {
-    try {
-      await addSpectre(spectreId);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.list.add-spectre.success" values={{ list: addTo, spectreId, title }} />,
-      });
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.list.add-spectre.failure"
-          values={{
-            list: addTo,
-            spectreId,
-            title,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-    }
-  }
-
-  const fieldNames = spectres.fields.map(({ name: fieldName }) => fieldName);
-  const contentData = spectres.data.map(row => (
-    Object.fromEntries(fieldNames.map((fieldName, index) => [fieldName, row.values[index]]))
-  ));
-
-  const formatter = {
-    title: r => (
-      !addFrom ?
-        <Link to={`${packageInfo.stripes.route}/list/${projectId}/${nav.list.name}/${r.id}`}>{r.title}</Link> :
-        <>
-          <Button marginBottom0 onClick={() => addSpectreToList(name, r.id, r.title)}>
-            <Icon icon="plus-sign" />
-            &nbsp;
-            <FormattedMessage id="ui-cyclops.button.add" />
-          </Button>
-          &nbsp;
-          &nbsp;
-          {r.title}
-        </>
-    ),
-    decision: r => (r.decision ? '❎' : <NoValue />),
-    fund: r => r.fund?.replace(/.*?:/, ''),
-  };
-
-  return (
-    <>
-      <MultiColumnList
-        visibleColumns={Object.keys(fields)}
-        columnMapping={columnMapping}
-        columnWidths={columnWidths}
-        formatter={formatter}
-        contentData={contentData}
-        totalCount={totalCount}
-        onHeaderClick={(_, data) => {
-          const newSort = (query.sort === data.name) ? `-${data.name}` : data.name;
-          updateQuery({ sort: newSort });
-        }}
-        sortedColumn={sortedColumn}
-        sortDirection={sortDirection}
-        pagingType={MCLPagingTypes.PREV_NEXT}
-        pageAmount={pageAmount}
-        onNeedMoreData={onNeedMoreData}
-        pagingOffset={pagingOffset}
-      />
-      <Accordion
-        closedByDefault
-        label={<FormattedMessage id="ui-cyclops.devInfo" />}
-      >
-        <pre>{JSON.stringify(spectres, null, 2)}</pre>
-      </Accordion>
-    </>
-  );
-}
-
-
 export default function ListView({ loaded, name, projectId, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -271,6 +187,89 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
   const totalCount = spectreCount || spectres?.data.length;
   const count = spectreCount || intl.formatMessage({ id: 'ui-cyclops.at-least' }, { minValue: spectres?.data.length });
 
+  async function addSpectreToList(addTo, spectreId, title) {
+    try {
+      await addSpectre(spectreId);
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.list.add-spectre.success" values={{ list: addTo, spectreId, title }} />,
+      });
+    } catch (res) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage
+          id="ui-cyclops.list.add-spectre.failure"
+          values={{
+            list: addTo,
+            spectreId,
+            title,
+            status: res.status,
+            statusText: res.statusText,
+            body: await res.text(),
+          }}
+        />
+      });
+    }
+  }
+
+  const renderList = () => {
+    const sortedColumn = query.sort?.replace(/^-/, '');
+    const sortDirection = query.sort?.startsWith('-') ? 'descending' : 'ascending';
+
+    const fieldNames = spectres.fields.map(({ name: fieldName }) => fieldName);
+    const contentData = spectres.data.map(row => (
+      Object.fromEntries(fieldNames.map((fieldName, index) => [fieldName, row.values[index]]))
+    ));
+
+    const formatter = {
+      title: r => (
+        !addFrom ?
+          <Link to={`${packageInfo.stripes.route}/list/${projectId}/${nav.list.name}/${r.id}`}>{r.title}</Link> :
+          <>
+            <Button marginBottom0 onClick={() => addSpectreToList(name, r.id, r.title)}>
+              <Icon icon="plus-sign" />
+              &nbsp;
+              <FormattedMessage id="ui-cyclops.button.add" />
+            </Button>
+            &nbsp;
+            &nbsp;
+            {r.title}
+          </>
+      ),
+      decision: r => (r.decision ? '❎' : <NoValue />),
+      fund: r => r.fund?.replace(/.*?:/, ''),
+    };
+
+    return (
+      <>
+        <MultiColumnList
+          visibleColumns={Object.keys(fields)}
+          columnMapping={columnMapping}
+          columnWidths={columnWidths}
+          formatter={formatter}
+          contentData={contentData}
+          totalCount={totalCount}
+          onHeaderClick={(_, data) => {
+            const newSort = (query.sort === data.name) ? `-${data.name}` : data.name;
+            updateQuery({ sort: newSort });
+          }}
+          sortedColumn={sortedColumn}
+          sortDirection={sortDirection}
+          pagingType={MCLPagingTypes.PREV_NEXT}
+          pageAmount={pageAmount}
+          onNeedMoreData={onNeedMoreData}
+          pagingOffset={pagingOffset}
+        />
+        <Accordion
+          closedByDefault
+          label={<FormattedMessage id="ui-cyclops.devInfo" />}
+        >
+          <pre>{JSON.stringify(spectres, null, 2)}</pre>
+        </Accordion>
+      </>
+    );
+  };
+
   return (
     <Paneset static>
       {showSearchPane &&
@@ -312,7 +311,7 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
         }
       >
         {loaded
-          ? renderList(spectres, nav, projectId, query, updateQuery, addFrom, name, callout, addSpectre, pageAmount, onNeedMoreData, totalCount, pagingOffset)
+          ? renderList()
           : <Icon icon="spinner-ellipsis" />
         }
       </Pane>
