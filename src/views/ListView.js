@@ -5,7 +5,7 @@ import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, TextField, MCLPagingTypes, NoValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { PromptModal } from '../components/PromptModal';
-import { listDisplayName } from '../util';
+import { listDisplayName, mutateWithCallout } from '../util';
 import packageInfo from '../../package';
 
 // A valid identifier: a letter or underscore followed by letters, digits or underscores
@@ -161,74 +161,29 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
     }
 
     setShowSaveModal(false);
-    try {
-      await saveSearch(searchName);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.save-search.success" values={{ name: searchName }} />,
-      });
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.save-search.failure"
-          values={{
-            name: searchName,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-    }
+    await mutateWithCallout(callout, () => saveSearch(searchName), {
+      values: { name: searchName },
+      successId: 'ui-cyclops.save-search.success',
+      failureId: 'ui-cyclops.save-search.failure',
+    });
   };
 
   const makeNewList = async (listName) => {
     setShowCreateModal(false);
     const fullName = `${projectId}.${listName}`;
 
-    try {
-      await addList(fullName);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.project.new-list.success" values={{ name: fullName }} />,
-      });
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.project.new-list.failure"
-          values={{
-            name: fullName,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-      return;
-    }
+    const created = await mutateWithCallout(callout, () => addList(fullName), {
+      values: { name: fullName },
+      successId: 'ui-cyclops.project.new-list.success',
+      failureId: 'ui-cyclops.project.new-list.failure',
+    });
+    if (!created) return;
 
-    try {
-      await populateList(fullName);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.list.populate-list.success" values={{ name: fullName }} />,
-      });
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.list.populate-list.failure"
-          values={{
-            name: fullName,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-    }
+    await mutateWithCallout(callout, () => populateList(fullName), {
+      values: { name: fullName },
+      successId: 'ui-cyclops.list.populate-list.success',
+      failureId: 'ui-cyclops.list.populate-list.failure',
+    });
   };
 
   const nav = useNav();
@@ -237,28 +192,11 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
   const count = spectreCount || intl.formatMessage({ id: 'ui-cyclops.at-least' }, { minValue: spectres?.data.length });
 
   async function addSpectreToList(addTo, spectreId, title) {
-    try {
-      await addSpectre(spectreId);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.list.add-spectre.success" values={{ list: addTo, spectreId, title }} />,
-      });
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.list.add-spectre.failure"
-          values={{
-            list: addTo,
-            spectreId,
-            title,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-    }
+    await mutateWithCallout(callout, () => addSpectre(spectreId), {
+      values: { list: addTo, spectreId, title },
+      successId: 'ui-cyclops.list.add-spectre.success',
+      failureId: 'ui-cyclops.list.add-spectre.failure',
+    });
   }
 
   const renderList = () => {

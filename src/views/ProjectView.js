@@ -5,7 +5,7 @@ import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, Headline, MenuSection, Button, MultiColumnList, Row, Col, KeyValue, ConfirmationModal, NoValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { RCKV, CKV } from '../components/CKV';
-import { listDisplayName } from '../util';
+import { listDisplayName, mutateWithCallout } from '../util';
 import packageInfo from '../../package';
 import css from './ProjectView.css';
 import { PromptModal } from '../components/PromptModal';
@@ -119,76 +119,28 @@ function renderList(sets, nav, callout,
   async function makeNewSet(name, filter) {
     setShowCreateModal(false);
 
-    try {
-      await addList(name);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.project.new-list.success" values={{ name }} />,
-      });
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.project.new-list.failure"
-          values={{
-            name,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-      return;
-    }
+    const created = await mutateWithCallout(callout, () => addList(name), {
+      values: { name },
+      successId: 'ui-cyclops.project.new-list.success',
+      failureId: 'ui-cyclops.project.new-list.failure',
+    });
+    if (!created || !filter) return;
 
-    if (!filter) return;
-
-    try {
-      await populateList(name, filter);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.project.populate-list.success" values={{ name, filter }} />,
-      });
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.project.populate-list.failure"
-          values={{
-            name,
-            filter,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-    }
+    await mutateWithCallout(callout, () => populateList(name, filter), {
+      values: { name, filter },
+      successId: 'ui-cyclops.project.populate-list.success',
+      failureId: 'ui-cyclops.project.populate-list.failure',
+    });
   }
 
   async function actuallyDeleteSet(name) {
     setListToDelete(undefined);
 
-    try {
-      await deleteList(name);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.project.delete-list.success" values={{ name }} />,
-      });
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.project.delete-list.failure"
-          values={{
-            name,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-    }
+    await mutateWithCallout(callout, () => deleteList(name), {
+      values: { name },
+      successId: 'ui-cyclops.project.delete-list.success',
+      failureId: 'ui-cyclops.project.delete-list.failure',
+    });
   }
 
   /* eslint-disable jsx-a11y/anchor-is-valid */
