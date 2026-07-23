@@ -20,5 +20,5 @@
 * **DONE** Allow filtering a list on actioned/unactioned spectres
 * **DONE** Remove up/down arrows for ordering list
 * **DONE** Ability to create a new set directly from search results, skipping filter creation
+* **DONE** Result-list: checkboxes for bulk actions
 * **FIXED**: Home and Project tabs should always be clickable, even after reloading from the List tab
-* Result-list: checkboxes for bulk actions
