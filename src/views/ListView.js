@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
-import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, TextField, MCLPagingTypes, NoValue } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, TextField, MCLPagingTypes, NoValue, Checkbox, MenuSection } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { PromptModal } from '../components/PromptModal';
 import { listDisplayName, mutateWithCallout } from '../util';
@@ -36,6 +36,12 @@ const columnMapping = Object.fromEntries(
 const columnWidths = Object.fromEntries(
   Object.entries(fields).map(([key, value]) => [key, value[0]])
 );
+
+// The checkbox column for selecting spectres for batch operations. It sits
+// to the left of the data columns, is not a real field, and is not sortable.
+const visibleColumns = ['select', ...Object.keys(fields)];
+const columnMappingWithSelect = { select: <FormattedMessage id="ui-cyclops.field.select" />, ...columnMapping };
+const columnWidthsWithSelect = { select: '80px', ...columnWidths };
 
 // Determined experimentally from records in an old "reserve" list
 const availabilityValues = [
@@ -144,10 +150,20 @@ function renderSearch(query, updateQuery, savedFilters, intl) {
 }
 
 
-export default function ListView({ loaded, name, projectId, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addList, populateList, hasSearch, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
+export default function ListView({ loaded, name, projectId, action, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addList, populateList, hasSearch, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(() => new Set());
+
+  const toggleSelected = (id) => {
+    setSelectedIds((prev) => {
+      // Return a new set instead of mutating the old, as React state comparison is done by reference
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
   const intl = useIntl();
   const callout = useCallout();
 
@@ -191,6 +207,30 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
   const totalCount = spectreCount || spectres?.data.length;
   const count = spectreCount || intl.formatMessage({ id: 'ui-cyclops.at-least' }, { minValue: spectres?.data.length });
 
+  const actionName = action?.name || intl.formatMessage({ id: 'ui-cyclops.action.default' });
+
+  const doBatchAction = async () => {
+    const ids = [...selectedIds].map(String);
+    const done = await mutateWithCallout(callout, () => batchUpdate(ids, { decision: true }), {
+      values: { action: actionName, count: ids.length },
+      successId: 'ui-cyclops.list.batch.success',
+      failureId: 'ui-cyclops.list.batch.failure',
+    });
+    if (done) setSelectedIds(new Set());
+  };
+
+  const renderActionMenu = ({ onToggle }) => (
+    <MenuSection label={intl.formatMessage({ id: 'ui-cyclops.list.actions.selected-spectres' })}>
+      <Button
+        buttonStyle="dropdownItem"
+        disabled={selectedIds.size === 0}
+        onClick={() => { onToggle(); doBatchAction(); }}
+      >
+        {actionName}
+      </Button>
+    </MenuSection>
+  );
+
   async function addSpectreToList(addTo, spectreId, title) {
     await mutateWithCallout(callout, () => addSpectre(spectreId), {
       values: { list: addTo, spectreId, title },
@@ -209,6 +249,13 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
     ));
 
     const formatter = {
+      select: r => (
+        <Checkbox
+          checked={selectedIds.has(r.id)}
+          onChange={() => toggleSelected(r.id)}
+          aria-label={intl.formatMessage({ id: selectedIds.has(r.id) ? 'ui-cyclops.deselect.aria-label' : 'ui-cyclops.select.aria-label' }, { title: r.title })}
+        />
+      ),
       title: r => (
         !addFrom ?
           <Link to={`${packageInfo.stripes.route}/list/${projectId}/${nav.list.name}/${r.id}`}>{r.title}</Link> :
@@ -230,9 +277,10 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
     return (
       <>
         <MultiColumnList
-          visibleColumns={Object.keys(fields)}
-          columnMapping={columnMapping}
-          columnWidths={columnWidths}
+          visibleColumns={visibleColumns}
+          columnMapping={columnMappingWithSelect}
+          columnWidths={columnWidthsWithSelect}
+          nonInteractiveHeaders={['select']}
           formatter={formatter}
           contentData={contentData}
           totalCount={totalCount}
@@ -288,6 +336,7 @@ export default function ListView({ loaded, name, projectId, spectres, spectreCou
       }
       <Pane
         defaultWidth="fill"
+        actionMenu={renderActionMenu}
         paneTitle={
           addFrom ?
             <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: listDisplayName(name, intl), addFrom }} /> :

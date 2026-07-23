@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { IconButton, Row, Col, Button, Select } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 
@@ -47,7 +48,13 @@ function ActionSection({ spectre, funds = [], onChangeFund, onDecide }) {
     <Row>
       {/* Replace text with 118n tags */}
       <Col xs={2} style={{ paddingTop: '1.7em' }}>
-        <Button type="button" disabled={!!spectre?.decision || !fund} onClick={onDecide}>{actionName || 'Buy'}</Button>
+        <Button
+          type="button"
+          disabled={!!spectre?.decision || !fund}
+          onClick={onDecide}
+        >
+          {actionName || <FormattedMessage id="ui-cyclops.action.default" />}
+        </Button>
       </Col>
       <Col xs={4}>
         <Select label="Fund" dataOptions={fundOptions} value={fund} onChange={handleChangeFund} />

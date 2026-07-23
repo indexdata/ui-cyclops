@@ -19,6 +19,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   const addFrom = query.get('addFrom');
   const spectresResource = resources.spectres;
   const loaded = spectresResource && spectresResource.hasLoaded;
+  const action = resources.project?.records?.[0]?.action;
 
   // eslint-disable-next-line no-use-before-define
   const saveSearch = (name) => mutator.saveFilter.POST({ name, cond: condFn(null, null, resources) });
@@ -39,6 +40,8 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       loaded={loaded}
       name={match.params.setId}
       projectId={match.params.projectId}
+      action={action}
+      batchUpdate={(ids, changes) => mutator.batch.POST({ ids, changes })}
       spectres={spectresResource.records[0]}
       spectreCount={resources.spectreCount.records[0]?.data[0].values[0]}
       query={resources.query}
@@ -106,6 +109,10 @@ function condFn(_a, _b, resources) {
 
 ListRoute.manifest = Object.freeze({
   query: {},
+  project: {
+    type: 'okapi',
+    path: 'cyclops/projects/:{projectId}',
+  },
   filters: {
     type: 'okapi',
     path: 'cyclops/filters',
@@ -175,7 +182,14 @@ ListRoute.manifest = Object.freeze({
     path: 'cyclops/filters',
     fetch: false,
     throwErrors: false,
-  }
+  },
+  batch: {
+    type: 'okapi',
+    path: 'cyclops/sets/:{projectId}.object/batch',
+    fetch: false,
+    clientGeneratePk: false,
+    throwErrors: false,
+  },
 });
 
 export default stripesConnect(ListRoute);

@@ -100,7 +100,8 @@
           "cyclops.projects.collection.get",
           "cyclops.projects.get",
           "cyclops.funds.read",
-          "cyclops.sets.spectre.update"
+          "cyclops.sets.spectre.update",
+          "cyclops.sets.spectre.batch-update"
         ]
       },
       {

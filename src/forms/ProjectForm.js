@@ -72,7 +72,7 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
     // Leading empty option so the dropdown reads as empty until a value is
     // chosen, rather than defaulting to displaying the first action name.
     { value: '', label: '' },
-    ...ACTION_NAMES.map(name => ({ value: name, label: name.charAt(0).toUpperCase() + name.slice(1) })),
+    ...ACTION_NAMES.map(action => ({ value: action, label: action.charAt(0).toUpperCase() + action.slice(1) })),
   ];
   const paneTitle = initialValues?.id
     ? <FormattedMessage id="ui-cyclops.project.edit" values={{ project: name }} />
