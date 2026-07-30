@@ -88,20 +88,21 @@
         "visible": true,
         "subPermissions": [
           "module.cyclops.enabled",
-          "cyclops.tags.read",
-          "cyclops.filters.read",
-          "cyclops.sets.read",
-          "cyclops.sets.retrieve",
-          "cyclops.sets.add-objects",
-          "cyclops.sets.remove-objects",
-          "cyclops.sets.modify-tags",
-          "cyclops.sets.add-tags",
-          "cyclops.sets.remove-tags",
+          "cyclops.tags.collection.get",
+          "cyclops.filters.collection.get",
+          "cyclops.sets.collection.get",
+          "cyclops.sets.item.get",
+          "cyclops.sets.item.add-objects.post",
+          "cyclops.sets.item.remove-objects.post",
+          "cyclops.sets.item.modify-tags.post",
+          "cyclops.sets.item.add-tags.post",
+          "cyclops.sets.item.remove-tags.post",
           "cyclops.projects.collection.get",
-          "cyclops.projects.get",
-          "cyclops.funds.read",
-          "cyclops.sets.spectre.update",
-          "cyclops.sets.spectre.batch-update"
+          "cyclops.projects.item.get",
+          "cyclops.projects.item.sets.collection.get",
+          "cyclops.funds.collection.get",
+          "cyclops.sets.item.spectres.item.post",
+          "cyclops.sets.item.spectres.collection.post"
         ]
       },
       {
@@ -110,17 +111,17 @@
         "visible": true,
         "subPermissions": [
           "ui-cyclops.user.manage",
-          "cyclops.tags.create",
-          "cyclops.filters.create",
-          "cyclops.sets.create",
-          "cyclops.sets.delete",
-          "cyclops.projects.post",
-          "cyclops.projects.delete",
-          "cyclops.projects.put",
-          "cyclops.funds.get",
-          "cyclops.funds.create",
-          "cyclops.funds.put",
-          "cyclops.funds.delete"
+          "cyclops.tags.item.post",
+          "cyclops.filters.item.post",
+          "cyclops.sets.item.post",
+          "cyclops.sets.item.delete",
+          "cyclops.projects.item.post",
+          "cyclops.projects.item.delete",
+          "cyclops.projects.item.put",
+          "cyclops.funds.item.get",
+          "cyclops.funds.item.post",
+          "cyclops.funds.item.put",
+          "cyclops.funds.item.delete"
         ]
       }
     ]
