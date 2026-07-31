@@ -21,4 +21,5 @@
 * **DONE** Remove up/down arrows for ordering list
 * **DONE** Ability to create a new set directly from search results, skipping filter creation
 * **DONE** Result-list: checkboxes for bulk actions
+* **DONE** Update to use new permissions from updated mod-graphql
 * **FIXED**: Home and Project tabs should always be clickable, even after reloading from the List tab
