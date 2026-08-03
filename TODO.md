@@ -1,3 +1,5 @@
+# CYCLOPS UI: Things To Do
+
 * **DONE** Add ability to create a new project
 * **DONE** Add ability to set Fund for a spectre
 * **DONE** Add ability to delete a project
