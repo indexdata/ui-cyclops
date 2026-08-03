@@ -25,18 +25,21 @@
 * **FIXED**: Home and Project tabs should always be clickable, even after reloading from the List tab
 
 From 2026-08-03 meeting:
-* Fix overlapping Action menu and Add Spectres button
-* Fix "Adding to list mike_chosen from 11384075 spectres in list mike.object" message
-* Ability to add further index=query search fields with a "+" button
-* Widen the ID field to accomodate larger IDs
-* Add a Reset Query button
-* Action menu for bulk actions should support "Add to list"
-* Action menu for bulk actions should support "Remove from list"
-* Sets should be listed by human-readable name, not just by slug
-* Remove the unused dummy Settings pages
-* Add Settings page for maintaining filters (if only for deletion)
-* CONSIDER switching to submitting CQL, and having mod-cyclops do the translation
-* Filters are now namespaced to project: hide prefixes in UI, as for sets
-* Consider magical "auto.NAME" filter automatically applied to set "NAME"
-* Reword "No value selected" on Decision filter
+* UI only
+  * Reword "No value selected" on Decision filter
+  * Fix "Adding to list mike_chosen from 11384075 spectres in list mike.object" message
+  * Widen the ID field to accomodate larger IDs
+  * Remove the unused dummy Settings pages
+  * Add a Reset Query button
+  * Fix overlapping Action menu and Add Spectres button
+  * Action menu for bulk actions should support "Add to list"
+  * Action menu for bulk actions should support "Remove from list"
+  * Ability to add further index=query search fields with a "+" button
+  * Consider magical "auto.NAME" filter automatically applied to set "NAME"
+* Requiring new backend work
+  * When creating a set, allow the title to be set as well as the slug
+  * Sets should be listed by human-readable title, not just by slug
+  * Add Settings page for maintaining filters (if only for deletion)
+  * Filters are now namespaced to project: hide prefixes in UI, as for sets
+  * CONSIDER switching to submitting CQL, and having mod-cyclops do the translation
 
