@@ -13,7 +13,7 @@ const IDENTIFIER_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 
 const fields = {
-  id: ['80px'],
+  id: ['90px'],
   holdings_count: ['110px'],
   author: ['200px'],
   title: ['450px'],
