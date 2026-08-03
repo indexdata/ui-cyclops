@@ -26,8 +26,8 @@
 
 From 2026-08-03 meeting:
 * UI only
-  * Reword "No value selected" on Decision filter
-  * Fix "Adding to list mike_chosen from 11384075 spectres in list mike.object" message
+  * **DONE** Replace "No value selected" on Decision filter with "-" placeholder.
+  * **DONE** Fix "Adding to list mike_chosen from 11384075 spectres in list mike.object" message
   * Widen the ID field to accomodate larger IDs
   * Remove the unused dummy Settings pages
   * Add a Reset Query button

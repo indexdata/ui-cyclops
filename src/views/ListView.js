@@ -339,7 +339,7 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
         actionMenu={renderActionMenu}
         paneTitle={
           addFrom ?
-            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: listDisplayName(name, intl), addFrom }} /> :
+            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: listDisplayName(name, intl), addFrom: listDisplayName(addFrom, intl) }} /> :
             <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name: listDisplayName(name, intl) }} />
         }
         firstMenu={

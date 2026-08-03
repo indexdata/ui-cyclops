@@ -4,7 +4,7 @@
   "tab.project": "{name, select, undefined {Project} other {Project: {name}}}",
   "tab.list": "{name, select, undefined {List} other {List: {name}}}",
   "devInfo": "Developer information",
-  "no-value": "No value selected",
+  "no-value": "-",
   "fillIn": "Please fill in this value",
   "at-least": "at least {minValue}",
   "master-list": "Master list",
