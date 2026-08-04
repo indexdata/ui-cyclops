@@ -31,7 +31,8 @@ From 2026-08-03 meeting:
   * **DONE** Replace "No value selected" on Decision filter with "-" placeholder.
   * **DONE** Fix "Adding to list mike_chosen from 11384075 spectres in list mike.object" message
   * **DONE** Widen the ID field to accomodate larger IDs
-  * Remove the unused dummy Settings pages
+  * **DONE** Remove the unused dummy Settings pages
+  * **DONE** Add placeholder settings page for filters
   * Add a Reset Query button
   * Fix overlapping Action menu and Add Spectres button
   * Action menu for bulk actions should support "Add to list"
@@ -41,7 +42,7 @@ From 2026-08-03 meeting:
 * Requiring new backend work
   * When creating a set, allow the title to be set as well as the slug
   * Sets should be listed by human-readable title, not just by slug
-  * Add Settings page for maintaining filters (if only for deletion)
+  * Implement settings page for maintaining filters (if only for deletion)
   * Filters are now namespaced to project: hide prefixes in UI, as for sets
   * CONSIDER switching to submitting CQL, and having mod-cyclops do the translation
 

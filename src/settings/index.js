@@ -2,21 +2,15 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Paneset } from '@folio/stripes/components';
 import { Settings } from '@folio/stripes/smart-components';
-import GeneralSettings from './general-settings';
-import SomeFeatureSettings from './some-feature-settings';
+import FilterSettings from './filter-settings';
 import FundSettings from './FundSettings';
 
 export default class CyclopsSettings extends React.Component {
   pages = [
     {
-      route: 'general',
-      label: <FormattedMessage id="ui-cyclops.settings.general" />,
-      component: GeneralSettings,
-    },
-    {
-      route: 'somefeature',
-      label: <FormattedMessage id="ui-cyclops.settings.some-feature" />,
-      component: SomeFeatureSettings,
+      route: 'filters',
+      label: <FormattedMessage id="ui-cyclops.settings.filters" />,
+      component: FilterSettings,
     },
     {
       route: 'funds',
@@ -36,7 +30,11 @@ export default class CyclopsSettings extends React.Component {
     // context that lets the Funds paneset nest as the right-hand pane.
     return (
       <Paneset nested>
-        <Settings {...this.props} pages={this.pages} paneTitle="ui-cyclops" />
+        <Settings
+          {...this.props}
+          pages={this.pages}
+          paneTitle={<FormattedMessage id="ui-cyclops.meta.title" />}
+        />
       </Paneset>
     );
   }
