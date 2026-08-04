@@ -34,14 +34,16 @@ From 2026-08-03 meeting:
   * **DONE** Remove the unused dummy Settings pages
   * **DONE** Add placeholder settings page for filters
   * **DONE** Fix overlapping Action menu and Add Spectres button
-  * Add a Reset Query button
+  * **DONE** Disable Search button when there is nothing to search for
+  * **DONE** Add a Reset Query button
+  * **DONE** Pre-validate name when creating new set from search result
   * Action menu for bulk actions should support "Add to list"
   * Action menu for bulk actions should support "Remove from list"
   * Ability to add further index=query search fields with a "+" button
   * Consider magical "auto.NAME" filter automatically applied to set "NAME"
 * Requiring new backend work
+  * **DONE** Sets should be listed by human-readable title, not just by slug
   * When creating a set, allow the title to be set as well as the slug
-  * Sets should be listed by human-readable title, not just by slug
   * Implement settings page for maintaining filters (if only for deletion)
   * Filters are now namespaced to project: hide prefixes in UI, as for sets
   * CONSIDER switching to submitting CQL, and having mod-cyclops do the translation

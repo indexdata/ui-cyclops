@@ -7,6 +7,7 @@ import { useNav } from '../NavContext';
 import { PromptModal } from '../components/PromptModal';
 import { listDisplayName, mutateWithCallout } from '../util';
 import packageInfo from '../../package';
+import css from './ListView.css';
 
 // A valid identifier: a letter or underscore followed by letters, digits or underscores
 const IDENTIFIER_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
@@ -73,38 +74,84 @@ const decisionOptions = [
   { value: 'false', label: <FormattedMessage id="ui-cyclops.decision.not-made" /> },
 ];
 
-function renderSearch(query, updateQuery, savedFilters, intl) {
+// Every part of the search that "Reset all" clears, with the values that
+// represent "nothing chosen".
+const emptySearch = {
+  qindex: '',
+  query: '',
+  availability: '',
+  holdingsCountOp: 'gte',
+  holdingsCount: '',
+  decision: '',
+  filters: [],
+};
+
+// True when any part of the search differs from its empty/default value, i.e.
+// when there is something for "Reset all" to clear. The search term is passed
+// separately, as what counts is what is in the box rather than what was last
+// submitted.
+function isDirty(query, searchTerm) {
+  if (searchTerm !== '') return true;
+
+  return Object.entries(emptySearch).some(([key, empty]) => {
+    if (key === 'query') return false; // handled above, via searchTerm
+    const value = query[key];
+    if (key === 'filters') return [].concat(value || []).length > 0;
+    // An absent value means the control is showing its default, which is the
+    // empty value -- notably for holdingsCountOp, whose default is not ''
+    return (value ?? empty) !== empty;
+  });
+}
+
+// The search term is held in the caller's state rather than in the query
+// resource, so that typing is reflected in the UI (enabling "Reset all")
+// without re-running the search on every keystroke: only submitting does that.
+function renderSearch(query, updateQuery, savedFilters, intl, searchTerm, setSearchTerm, onResetAll) {
   const onSubmitSearch = (e) => {
     e.preventDefault();
-    updateQuery({ query: e.currentTarget.elements.query?.value });
+    updateQuery({ query: searchTerm });
   };
 
   const filterOptions = savedFilters.map(name => ({ value: name, label: name }));
   const selectedFilters = [].concat(query.filters || []).map(name => ({ value: name, label: name }));
+  const dirty = isDirty(query, searchTerm);
 
   return (
     <form onSubmit={onSubmitSearch}>
-      <SearchField
-        autoFocus
-        name="query"
-        ariaLabel={intl.formatMessage({ id: 'ui-cyclops.search.aria-label' })}
-        searchableIndexes={searchableIndexes}
-        selectedIndex={query.qindex}
-        value={query.query}
-        onChangeIndex={(e) => updateQuery({ qindex: e.currentTarget.value })}
-        marginBottom0
-      />
-      <br />
+      <div className={css.searchGroupWrap}>
+        <SearchField
+          autoFocus
+          name="query"
+          className={css.searchField}
+          ariaLabel={intl.formatMessage({ id: 'ui-cyclops.search.aria-label' })}
+          searchableIndexes={searchableIndexes}
+          selectedIndex={query.qindex}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onClear={() => setSearchTerm('')}
+          onChangeIndex={(e) => updateQuery({ qindex: e.currentTarget.value })}
+          marginBottom0
+        />
+        <Button
+          type="submit"
+          buttonStyle="primary"
+          fullWidth
+          marginBottom0
+          disabled={!dirty}
+        >
+          <FormattedMessage id="stripes-smart-components.search" />
+        </Button>
+      </div>
       <Button
-        type="submit"
-        buttonStyle="primary"
+        type="button"
         fullWidth
-        marginBottom0
+        disabled={!dirty}
+        onClick={onResetAll}
       >
-        <FormattedMessage id="stripes-smart-components.search" />
+        <Icon icon="times-circle-solid">
+          <FormattedMessage id="ui-cyclops.reset-all.button" />
+        </Icon>
       </Button>
-      <br />
-      <br />
       <div>
         <Select
           label={<FormattedMessage id="ui-cyclops.field.availability" />}
@@ -155,6 +202,12 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedIds, setSelectedIds] = useState(() => new Set());
+  const [searchTerm, setSearchTerm] = useState(query.query || '');
+
+  const resetAll = () => {
+    updateQuery(emptySearch);
+    setSearchTerm('');
+  };
 
   const toggleSelected = (id) => {
     setSelectedIds((prev) => {
@@ -330,7 +383,7 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
           paneTitle="Search & filter"
           lastMenu={<IconButton icon="caret-left" onClick={() => setShowSearchPane(false)} />}
         >
-          {renderSearch(query, updateQuery, savedFilters, intl)}
+          {renderSearch(query, updateQuery, savedFilters, intl, searchTerm, setSearchTerm, resetAll)}
           <br />
           <br />
           <br />

@@ -114,7 +114,11 @@ function renderList(sets, nav, callout,
   showCreateModal, setShowCreateModal, addList,
   listToDelete, setListToDelete, deleteList,
   filters, populateList, intl) {
-  const contentData = sets.sets.map(name => ({ name }));
+  // Each record is { project, set, title }, as returned by the WSAPI. The set
+  // name is unqualified, but everything downstream -- URLs, the WSAPI itself --
+  // wants the fully qualified `project.set`.
+  const contentData = sets.sets;
+  const qualifiedName = r => `${r.project}.${r.set}`;
 
   async function makeNewSet(name, filter) {
     setShowCreateModal(false);
@@ -162,21 +166,23 @@ function renderList(sets, nav, callout,
 
       <MultiColumnList
         columnMapping={{
-          name: <FormattedMessage id="ui-cyclops.field.name" />,
+          set: <FormattedMessage id="ui-cyclops.field.name" />,
+          title: <FormattedMessage id="ui-cyclops.field.title" />,
           'action-delete': <FormattedMessage id="ui-cyclops.field.action-delete" />,
         }}
-        visibleColumns={['name', 'action-delete']}
-        columnWidths={{ 'name': '85%x' }}
+        visibleColumns={['set', 'title', 'action-delete']}
+        columnWidths={{ 'set': '30%', 'title': '55%' }}
         contentData={contentData}
         formatter={{
-          name: r => (
-            <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${r.name}`}>
-              {listDisplayName(r.name, intl)}
+          set: r => (
+            <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${qualifiedName(r)}`}>
+              {listDisplayName(qualifiedName(r), intl)}
             </Link>
           ),
+          title: r => r.title || <NoValue />,
           'action-delete': r => (
-            r.name === nav.project.id + '.object' ? null :
-            <Button marginBottom0 onClick={() => setListToDelete(r.name)}>
+            r.set === 'object' ? null :
+            <Button marginBottom0 onClick={() => setListToDelete(qualifiedName(r))}>
               <Icon icon="trash" />
               &nbsp;
               <FormattedMessage id="stripes-core.button.delete" />

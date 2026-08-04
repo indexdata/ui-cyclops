@@ -1,0 +1,12 @@
+/*
+ * Spacing for the search pane's query box and buttons, following the ui-users
+ * idiom: the controls suppress their own margin (marginBottom0) and these
+ * rules put back half the standard control gutter, for a tighter group.
+ */
+.searchGroupWrap {
+    margin-bottom: calc(var(--control-margin-bottom) / 2);
+}
+
+.searchField {
+    margin-bottom: calc(var(--control-margin-bottom) / 2);
+}
