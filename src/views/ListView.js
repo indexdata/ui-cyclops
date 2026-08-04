@@ -219,16 +219,33 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
     if (done) setSelectedIds(new Set());
   };
 
+  // The "add spectres" entry is offered only when viewing a list other than
+  // the project's master list, and not while already adding from another list.
+  const canAddSpectres = name !== projectId + '.object' && !addFrom;
+
   const renderActionMenu = ({ onToggle }) => (
-    <MenuSection label={intl.formatMessage({ id: 'ui-cyclops.list.actions.selected-spectres' })}>
-      <Button
-        buttonStyle="dropdownItem"
-        disabled={selectedIds.size === 0}
-        onClick={() => { onToggle(); doBatchAction(); }}
-      >
-        {actionName}
-      </Button>
-    </MenuSection>
+    <>
+      {canAddSpectres &&
+        <MenuSection label={intl.formatMessage({ id: 'ui-cyclops.list.actions.workflow' })}>
+          <Button
+            buttonStyle="dropdownItem"
+            to={`${name}?addFrom=${projectId}.object`}
+            onClick={onToggle}
+          >
+            <FormattedMessage id="ui-cyclops.spectres.add" />
+          </Button>
+        </MenuSection>
+      }
+      <MenuSection label={intl.formatMessage({ id: 'ui-cyclops.list.actions.selected-spectres' })}>
+        <Button
+          buttonStyle="dropdownItem"
+          disabled={selectedIds.size === 0}
+          onClick={() => { onToggle(); doBatchAction(); }}
+        >
+          {actionName}
+        </Button>
+      </MenuSection>
+    </>
   );
 
   async function addSpectreToList(addTo, spectreId, title) {
@@ -346,14 +363,6 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
           showSearchPane ? undefined : (
             <IconButton icon="caret-right" onClick={() => setShowSearchPane(true)} />
           )
-        }
-        lastMenu={
-          name === projectId + '.object' || !!addFrom ? undefined :
-          <Button marginBottom0 to={`${name}?addFrom=${projectId}.object`}>
-            <Icon icon="plus-sign" />
-            &nbsp;
-            <FormattedMessage id="ui-cyclops.spectres.add" />
-          </Button>
         }
       >
         {loaded

@@ -33,8 +33,8 @@ From 2026-08-03 meeting:
   * **DONE** Widen the ID field to accomodate larger IDs
   * **DONE** Remove the unused dummy Settings pages
   * **DONE** Add placeholder settings page for filters
+  * **DONE** Fix overlapping Action menu and Add Spectres button
   * Add a Reset Query button
-  * Fix overlapping Action menu and Add Spectres button
   * Action menu for bulk actions should support "Add to list"
   * Action menu for bulk actions should support "Remove from list"
   * Ability to add further index=query search fields with a "+" button

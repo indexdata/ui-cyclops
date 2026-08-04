@@ -37,6 +37,7 @@
   "project.update.success": "Updated project <code>{name}</code>",
   "project.update.failure": "Could not update project <code>{name}</code>: status {status} ({statusText}): {body}",
   "action.default": "Activate",
+  "list.actions.workflow": "Workflow",
   "list.actions.selected-spectres": "Selected spectres",
   "list.batch.success": "Applied \"{action}\" to {count, plural, one {# spectre} other {# spectres}}",
   "list.batch.failure": "Could not apply \"{action}\" to {count, plural, one {# spectre} other {# spectres}}: status {status} ({statusText}): {body}",
