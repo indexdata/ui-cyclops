@@ -120,10 +120,10 @@ function renderList(sets, nav, callout,
   const contentData = sets.sets;
   const qualifiedName = r => `${r.project}.${r.set}`;
 
-  async function makeNewSet(name, filter) {
+  async function makeNewSet(name, title, filter) {
     setShowCreateModal(false);
 
-    const created = await mutateWithCallout(callout, () => addList(name), {
+    const created = await mutateWithCallout(callout, () => addList(name, title), {
       values: { name },
       successId: 'ui-cyclops.project.new-list.success',
       failureId: 'ui-cyclops.project.new-list.failure',
@@ -194,10 +194,11 @@ function renderList(sets, nav, callout,
       <PromptModal
         heading={<FormattedMessage id="ui-cyclops.project.new-list.heading" />}
         open={showCreateModal}
-        onConfirm={(name, filter) => makeNewSet(`${nav.project.id}.${name}`, filter)}
+        onConfirm={(name, options) => makeNewSet(`${nav.project.id}.${name}`, options.title, options.filter)}
         onCancel={() => setShowCreateModal(false)}
         message={<FormattedMessage id="ui-cyclops.project.new-list.message" />}
         filters={filters}
+        withTitle
       />
 
       <ConfirmationModal

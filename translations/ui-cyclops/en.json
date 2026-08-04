@@ -28,6 +28,8 @@
   "project.populate-list.success": "Populated list <code>{name}</code> from filter <code>{filter}</code>",
   "project.populate-list.failure": "Could not populate list <code>{name}</code> from filter <code>{filter}</code>: status {status} ({statusText}): {body}",
   "prompt.filter.label": "Populate from filter (optional)",
+  "prompt.name.label": "Name",
+  "prompt.title.label": "Title (optional)",
   "prompt.name.invalid": "The name must begin with a letter and contain only letters, digits and underscores",
   "project.delete-list.heading": "Delete list?",
   "project.delete-list.message": "Once it's gone, it's gone",

@@ -21,7 +21,7 @@ function ProjectRoute(props) {
     project={projectResource.records[0]}
     sets={setsResource.records[0]}
     filters={props.resources.filters?.records?.[0]?.filters || []}
-    addList={(name) => props.mutator.allSets.POST({ name })}
+    addList={(name, title) => props.mutator.allSets.POST(title ? { name, title } : { name })}
     populateList={populateList}
     deleteList={(id) => props.mutator.allSets.DELETE({ id })}
   />;

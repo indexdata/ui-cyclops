@@ -237,11 +237,11 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
     });
   };
 
-  const makeNewList = async (listName) => {
+  const makeNewList = async (listName, options) => {
     setShowCreateModal(false);
     const fullName = `${projectId}.${listName}`;
 
-    const created = await mutateWithCallout(callout, () => addList(fullName), {
+    const created = await mutateWithCallout(callout, () => addList(fullName, options?.title), {
       values: { name: fullName },
       successId: 'ui-cyclops.project.new-list.success',
       failureId: 'ui-cyclops.project.new-list.failure',
@@ -439,6 +439,7 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
         onConfirm={makeNewList}
         onCancel={() => setShowCreateModal(false)}
         message={<FormattedMessage id="ui-cyclops.project.new-list.message" />}
+        withTitle
       />
     </Paneset>
   );

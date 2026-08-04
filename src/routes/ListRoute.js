@@ -48,7 +48,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       updateQuery={mutator.query.update}
       savedFilters={resources.filters?.records?.[0]?.filters || []}
       addFrom={addFrom}
-      addList={(name) => mutator.allSets.POST({ name })}
+      addList={(name, title) => mutator.allSets.POST(title ? { name, title } : { name })}
       populateList={populateList}
       // eslint-disable-next-line no-use-before-define
       hasSearch={!!condFn(null, null, resources)}

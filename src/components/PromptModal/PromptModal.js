@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button, Modal, ModalFooter, Select } from '@folio/stripes/components';
+import { Button, Modal, ModalFooter, Select, TextField } from '@folio/stripes/components';
 
 // A set's name is used unquoted in CCMS queries, so restrict it to a
 // conservative identifier syntax: a letter followed by letters, digits and
@@ -14,8 +14,10 @@ const PromptModal = ({
   open,
   message,
   filters,
+  withTitle,
 }) => {
   const [value, setValue] = useState('');
+  const [title, setTitle] = useState('');
   // Empty string (not undefined) keeps the Select a controlled component
   const [filter, setFilter] = useState('');
 
@@ -25,13 +27,15 @@ const PromptModal = ({
     e.preventDefault();
     if (!value || invalid) return;
     setValue('');
-    onConfirm(value, filter || undefined);
+    setTitle('');
+    onConfirm(value, { title: title || undefined, filter: filter || undefined });
   };
 
-  // The modal stays mounted when closed, so clear the entered name -- otherwise
+  // The modal stays mounted when closed, so clear what was entered -- otherwise
   // it (and any validation error) is still there next time it is opened.
   const handleCancel = () => {
     setValue('');
+    setTitle('');
     onCancel();
   };
 
@@ -60,17 +64,19 @@ const PromptModal = ({
       </p>
       <div>
         <form onSubmit={handleSubmit}>
-          <input
-            style={{ width: '100%', boxSizing: 'border-box' }}
+          <TextField
+            label={<FormattedMessage id="ui-cyclops.prompt.name.label" />}
             name="value"
-            type="text"
             value={value}
             onChange={e => setValue(e.target.value)}
+            error={invalid ? <FormattedMessage id="ui-cyclops.prompt.name.invalid" /> : undefined}
           />
-          {invalid && (
-            <div role="alert" style={{ color: '#900', marginTop: '0.25em' }}>
-              <FormattedMessage id="ui-cyclops.prompt.name.invalid" />
-            </div>
+          {withTitle && (
+            <TextField
+              label={<FormattedMessage id="ui-cyclops.prompt.title.label" />}
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+            />
           )}
           {filters && (
             <Select
