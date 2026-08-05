@@ -37,7 +37,7 @@ From 2026-08-03 meeting:
   * **DONE** Disable Search button when there is nothing to search for
   * **DONE** Add a Reset Query button
   * **DONE** Pre-validate name when creating new set from search result
-  * Default search-index to title instead of undefined
+  * **DONE** Default search-index to "title" instead of undefined
   * Delay search-count request until search has completed
   * Action menu for bulk actions should support "Add to list"
   * Action menu for bulk actions should support "Remove from list"

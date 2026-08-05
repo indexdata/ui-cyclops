@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import { StripesConnectedSource } from '@folio/stripes/smart-components';
-import ListView from '../views/ListView';
+import ListView, { DEFAULT_QINDEX } from '../views/ListView';
 import { filtersForProject } from '../util';
 
 const INITIAL_RESULT_COUNT = 20;
@@ -71,7 +71,7 @@ function condFn(_a, _b, resources) {
   const clauses = [];
 
   const query = resources.query.query;
-  const qindex = resources.query.qindex;
+  const qindex = resources.query.qindex || DEFAULT_QINDEX;
   if (query && qindex) {
     if (qindex === 'title' || qindex === 'author' || qindex === 'author' || qindex === 'full_vendor_name') {
       clauses.push(`${qindex} ilike '%${query}%'`);

@@ -24,7 +24,12 @@ const fields = {
   fund: ['220px'],
 };
 
-const searchableIndexes = [{ value: '', label: '-' }].concat(Object.entries(fields).map(([key]) => ({
+// There is no empty entry among the searchable indexes, so a search with none
+// explicitly chosen runs against this one. ListRoute uses it too, when building
+// the query condition.
+export const DEFAULT_QINDEX = 'title';
+
+const searchableIndexes = [].concat(Object.entries(fields).map(([key]) => ({
   value: key,
   label: <FormattedMessage id={`ui-cyclops.field.${key}`} />,
 })));
@@ -77,7 +82,7 @@ const decisionOptions = [
 // Every part of the search that "Reset all" clears, with the values that
 // represent "nothing chosen".
 const emptySearch = {
-  qindex: '',
+  qindex: DEFAULT_QINDEX,
   query: '',
   availability: '',
   holdingsCountOp: 'gte',
@@ -128,7 +133,7 @@ function renderSearch(query, updateQuery, savedFilters, intl, searchTerm, setSea
           className={css.searchField}
           ariaLabel={intl.formatMessage({ id: 'ui-cyclops.search.aria-label' })}
           searchableIndexes={searchableIndexes}
-          selectedIndex={query.qindex}
+          selectedIndex={query.qindex || DEFAULT_QINDEX}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onClear={() => setSearchTerm('')}
