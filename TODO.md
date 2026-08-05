@@ -42,10 +42,10 @@ From 2026-08-03 meeting:
   * Action menu for bulk actions should support "Add to list"
   * Action menu for bulk actions should support "Remove from list"
   * Ability to add further index=query search fields with a "+" button
+  * Implement settings page for maintaining filters (if only for deletion)
   * Consider magical "auto.NAME" filter automatically applied to set "NAME"
 * Requiring new backend work
   * **DONE** Sets should be listed by human-readable title, not just by slug
   * **DONE** When creating a set, allow the title to be set as well as the slug (so far as possible: CCMS itself does not yet support this)
   * **DONE** Filters are now namespaced to project: hide prefixes in UI, as for sets
-  * Implement settings page for maintaining filters (if only for deletion)
 
