@@ -39,7 +39,7 @@ From 2026-08-03 meeting:
   * **DONE** Pre-validate name when creating new set from search result
   * **DONE** Default search-index to "title" instead of undefined
   * **DONE** Delay search-count request until search has completed
-  * Action menu for bulk actions should support "Add to list"
+  * **DONE** Action menu for bulk actions should support "Add to list"
   * Action menu for bulk actions should support "Remove from list"
   * Ability to add further index=query search fields with a "+" button
   * Implement settings page for maintaining filters (if only for deletion)

@@ -281,6 +281,35 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
     if (done) setSelectedIds(new Set());
   };
 
+  // Add every checked spectre to the list being added to. The WSAPI has no
+  // batch form of the add operation, so this is one request per spectre, all
+  // issued at once; allSettled (rather than all) so that a failure part-way
+  // through neither abandons the rest nor loses the results of those that
+  // succeeded. The outcome is reported once at the end rather than once per
+  // spectre, as the point of the action is to avoid a callout per row.
+  const addSelectedToList = async () => {
+    const ids = [...selectedIds];
+    const results = await Promise.allSettled(ids.map(spectreId => addSpectre(spectreId)));
+    const failures = ids.filter((_, i) => results[i].status === 'rejected');
+
+    const added = ids.length - failures.length;
+    if (added > 0) {
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.list.add-spectres.success" values={{ count: added, list: name }} />,
+      });
+    }
+    if (failures.length > 0) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage id="ui-cyclops.list.add-spectres.failure" values={{ count: failures.length, list: name, ids: failures.join(', ') }} />,
+      });
+    }
+
+    // Keep anything that failed checked, so that it can be retried
+    setSelectedIds(new Set(failures));
+  };
+
   // The "add spectres" entry is offered only when viewing a list other than
   // the project's master list, and not while already adding from another list.
   const canAddSpectres = name !== projectId + '.object' && !addFrom;
@@ -306,6 +335,15 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
         >
           {actionName}
         </Button>
+        {addFrom &&
+          <Button
+            buttonStyle="dropdownItem"
+            disabled={selectedIds.size === 0}
+            onClick={() => { onToggle(); addSelectedToList(); }}
+          >
+            <FormattedMessage id="ui-cyclops.spectres.add-to-list" />
+          </Button>
+        }
       </MenuSection>
     </>
   );
