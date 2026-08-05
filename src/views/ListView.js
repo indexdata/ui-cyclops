@@ -112,7 +112,10 @@ function renderSearch(query, updateQuery, savedFilters, intl, searchTerm, setSea
     updateQuery({ query: searchTerm });
   };
 
-  const filterOptions = savedFilters.map(name => ({ value: name, label: name }));
+  // Filters are qualified as `project.filter` only when created: within a
+  // project, both the UI and the conditions we send to the WSAPI use the
+  // unqualified name.
+  const filterOptions = savedFilters.map(f => ({ value: f.filter, label: f.filter }));
   const selectedFilters = [].concat(query.filters || []).map(name => ({ value: name, label: name }));
   const dirty = isDirty(query, searchTerm);
 
@@ -230,7 +233,8 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
     }
 
     setShowSaveModal(false);
-    await mutateWithCallout(callout, () => saveSearch(searchName), {
+    // Filters are namespaced to their project on creation
+    await mutateWithCallout(callout, () => saveSearch(`${projectId}.${searchName}`), {
       values: { name: searchName },
       successId: 'ui-cyclops.save-search.success',
       failureId: 'ui-cyclops.save-search.failure',

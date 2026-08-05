@@ -1,6 +1,7 @@
 import React from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import ProjectView from '../views/ProjectView';
+import { filtersForProject } from '../util';
 
 function ProjectRoute(props) {
   const projectResource = props.resources.project;
@@ -20,7 +21,7 @@ function ProjectRoute(props) {
     loaded={loaded}
     project={projectResource.records[0]}
     sets={setsResource.records[0]}
-    filters={props.resources.filters?.records?.[0]?.filters || []}
+    filters={filtersForProject(props.resources.filters?.records?.[0]?.filters, props.match.params.projectId)}
     addList={(name, title) => props.mutator.allSets.POST(title ? { name, title } : { name })}
     populateList={populateList}
     deleteList={(id) => props.mutator.allSets.DELETE({ id })}

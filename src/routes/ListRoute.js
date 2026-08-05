@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import { StripesConnectedSource } from '@folio/stripes/smart-components';
 import ListView from '../views/ListView';
+import { filtersForProject } from '../util';
 
 const INITIAL_RESULT_COUNT = 20;
 const RESULT_COUNT_INCREMENT = 20;
@@ -46,7 +47,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       spectreCount={resources.spectreCount.records[0]?.data[0].values[0]}
       query={resources.query}
       updateQuery={mutator.query.update}
-      savedFilters={resources.filters?.records?.[0]?.filters || []}
+      savedFilters={filtersForProject(resources.filters?.records?.[0]?.filters, match.params.projectId)}
       addFrom={addFrom}
       addList={(name, title) => mutator.allSets.POST(title ? { name, title } : { name })}
       populateList={populateList}

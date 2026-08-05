@@ -85,7 +85,7 @@ const PromptModal = ({
               onChange={e => setFilter(e.target.value)}
               dataOptions={[
                 { value: '', label: '' },
-                ...filters.map(f => ({ value: f, label: f })),
+                ...filters.map(f => ({ value: f.filter, label: f.filter })),
               ]}
             />
           )}
