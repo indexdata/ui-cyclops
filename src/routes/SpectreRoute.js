@@ -26,7 +26,16 @@ function SpectreRoute({ resources, mutator, match }) {
   const projectFunds = (projectResource.records[0] || {}).funds || [];
   const funds = projectFunds.map(f => ({ name: f.id, title: f.name }));
 
-  return <SpectreView loaded={loaded} match={match} spectre={spectre} funds={funds} mutator={mutator} />;
+  return (
+    <SpectreView
+      loaded={loaded}
+      match={match}
+      project={projectResource.records[0]}
+      spectre={spectre}
+      funds={funds}
+      mutator={mutator}
+    />
+  );
 }
 
 SpectreRoute.manifest = Object.freeze({

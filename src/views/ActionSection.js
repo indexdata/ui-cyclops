@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { IconButton, Row, Col, Button, Select } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 
-function ActionSection({ spectre, funds = [], onChangeFund, onDecide }) {
+function ActionSection({ project, spectre, funds = [], onChangeFund, onDecide }) {
   const nav = useNav();
   const actionName = nav?.project?.action?.name;
   // The fund value from the server may be of the form "id:description"; we only
@@ -38,12 +38,6 @@ function ActionSection({ spectre, funds = [], onChangeFund, onDecide }) {
     { value: 'track3', label: 'Stacks' },
   ];
 
-  const locationOptions = [
-    { value: 'loc1', label: 'Lehigh' },
-    { value: 'loc2', label: 'NYU' },
-    { value: 'loc3', label: 'CLOCKSS' },
-  ];
-
   return (
     <Row>
       {/* Replace text with 118n tags */}
@@ -61,8 +55,8 @@ function ActionSection({ spectre, funds = [], onChangeFund, onDecide }) {
         <Select label="Track" dataOptions={trackOptions} />
       </Col>
       <Col xs={4}>
-        <Select label="Origin" dataOptions={locationOptions} />
-        <Select label="Destination" dataOptions={locationOptions} />
+        <Select label="Origin" dataOptions={project.origins.map(x => ({ value: x.id, label: x.name }))} />
+        <Select label="Destination" dataOptions={project.destinations.map(x => ({ value: x.id, label: x.name }))} />
       </Col>
       <Col xs={2} style={{ paddingTop: '1.7em' }}>
         <div>

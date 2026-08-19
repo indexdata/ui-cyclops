@@ -6,7 +6,7 @@ import ActionSection from './ActionSection';
 import css from './SpectreView.css';
 import packageInfo from '../../package';
 
-function SpectreView({ loaded, match, spectre, funds, mutator }) {
+function SpectreView({ loaded, match, project, spectre, funds, mutator }) {
   const callout = useCallout();
 
   if (!loaded) return <LoadingPane />;
@@ -87,7 +87,14 @@ function SpectreView({ loaded, match, spectre, funds, mutator }) {
       <Row>
         <Col xs={12} className={css.miniPane}>
           <Headline tag="h3">Actions</Headline>
-          <ActionSection key={match.params.spectreId} spectre={spectre} funds={funds} onChangeFund={onChangeFund} onDecide={onDecide} />
+          <ActionSection
+            key={match.params.spectreId}
+            project={project}
+            spectre={spectre}
+            funds={funds}
+            onChangeFund={onChangeFund}
+            onDecide={onDecide}
+          />
         </Col>
       </Row>
     </Pane>
