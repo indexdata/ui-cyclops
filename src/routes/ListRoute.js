@@ -63,6 +63,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       // eslint-disable-next-line no-use-before-define
       hasSearch={!!condFn(null, null, resources)}
       addSpectre={(spectreId) => mutator.addToList.POST({ from: addFrom, cond: `id = ${spectreId}` })}
+      removeSpectre={(spectreId) => mutator.removeFromList.POST({ cond: `id = ${spectreId}` })}
       saveSearch={saveSearch}
       pageAmount={RESULT_COUNT_INCREMENT}
       onNeedMoreData={handleNeedMoreData}
@@ -186,6 +187,12 @@ ListRoute.manifest = Object.freeze({
   addToList: {
     type: 'okapi',
     path: 'cyclops/sets/:{setId}/add',
+    fetch: false,
+    throwErrors: false,
+  },
+  removeFromList: {
+    type: 'okapi',
+    path: 'cyclops/sets/:{setId}/remove',
     fetch: false,
     throwErrors: false,
   },

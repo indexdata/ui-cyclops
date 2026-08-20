@@ -205,7 +205,7 @@ function renderSearch(query, updateQuery, savedFilters, intl, searchTerm, setSea
 }
 
 
-export default function ListView({ loaded, name, projectId, action, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addList, populateList, hasSearch, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
+export default function ListView({ loaded, name, projectId, action, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addList, populateList, hasSearch, addSpectre, removeSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -281,28 +281,29 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
     if (done) setSelectedIds(new Set());
   };
 
-  // Add every checked spectre to the list being added to. The WSAPI has no
-  // batch form of the add operation, so this is one request per spectre, all
-  // issued at once; allSettled (rather than all) so that a failure part-way
-  // through neither abandons the rest nor loses the results of those that
-  // succeeded. The outcome is reported once at the end rather than once per
-  // spectre, as the point of the action is to avoid a callout per row.
-  const addSelectedToList = async () => {
+  // Apply an operation to every checked spectre. The WSAPI has no batch form
+  // of either the add or the remove operation, so this is one request per
+  // spectre, all issued at once; allSettled (rather than all) so that a
+  // failure part-way through neither abandons the rest nor loses the results
+  // of those that succeeded. The outcome is reported once at the end rather
+  // than once per spectre, as the point of the action is to avoid a callout
+  // per row. `messagePrefix` names the pair of translations to report with.
+  const applyToSelected = async (op, messagePrefix) => {
     const ids = [...selectedIds];
-    const results = await Promise.allSettled(ids.map(spectreId => addSpectre(spectreId)));
+    const results = await Promise.allSettled(ids.map(spectreId => op(spectreId)));
     const failures = ids.filter((_, i) => results[i].status === 'rejected');
 
-    const added = ids.length - failures.length;
-    if (added > 0) {
+    const done = ids.length - failures.length;
+    if (done > 0) {
       callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.list.add-spectres.success" values={{ count: added, list: name }} />,
+        message: <FormattedMessage id={`${messagePrefix}.success`} values={{ count: done, list: name }} />,
       });
     }
     if (failures.length > 0) {
       callout.sendCallout({
         type: 'error',
         timeout: 0,
-        message: <FormattedMessage id="ui-cyclops.list.add-spectres.failure" values={{ count: failures.length, list: name, ids: failures.join(', ') }} />,
+        message: <FormattedMessage id={`${messagePrefix}.failure`} values={{ count: failures.length, list: name, ids: failures.join(', ') }} />,
       });
     }
 
@@ -310,8 +311,13 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
     setSelectedIds(new Set(failures));
   };
 
+  const addSelectedToList = () => applyToSelected(addSpectre, 'ui-cyclops.list.add-spectres');
+  const removeSelectedFromList = () => applyToSelected(removeSpectre, 'ui-cyclops.list.remove-spectres');
+
   // The "add spectres" entry is offered only when viewing a list other than
-  // the project's master list, and not while already adding from another list.
+  // the project's master list, and not while already adding from
+  // another list. That happens also be the condition for when we can
+  // do the bulk action "Remove from list".
   const canAddSpectres = name !== projectId + '.object' && !addFrom;
 
   const renderActionMenu = ({ onToggle }) => (
@@ -335,14 +341,22 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
         >
           {actionName}
         </Button>
-        {addFrom &&
+        {addFrom ?
           <Button
             buttonStyle="dropdownItem"
             disabled={selectedIds.size === 0}
             onClick={() => { onToggle(); addSelectedToList(); }}
           >
             <FormattedMessage id="ui-cyclops.spectres.add-to-list" />
-          </Button>
+          </Button> :
+          canAddSpectres &&
+            <Button
+              buttonStyle="dropdownItem"
+              disabled={selectedIds.size === 0}
+              onClick={() => { onToggle(); removeSelectedFromList(); }}
+            >
+              <FormattedMessage id="ui-cyclops.spectres.remove-from-list" />
+            </Button>
         }
       </MenuSection>
     </>
