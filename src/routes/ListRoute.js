@@ -7,6 +7,10 @@ import { filtersForProject } from '../util';
 const INITIAL_RESULT_COUNT = 20;
 const RESULT_COUNT_INCREMENT = 20;
 
+// The searchable indexes that are matched as substrings, case-insensitively:
+// any other is matched exactly.
+const SUBSTRING_QINDEXES = ['title', 'author', 'full_vendor_name'];
+
 function ListRoute({ stripes, resources, mutator, children, location, match }) {
   const source = useMemo(() => {
     return new StripesConnectedSource({ resources, mutator }, stripes.logger, 'spectres');
@@ -80,15 +84,19 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
 function condFn(_a, _b, resources) {
   const clauses = [];
 
-  const query = resources.query.query;
-  const qindex = resources.query.qindex || DEFAULT_QINDEX;
-  if (query && qindex) {
-    if (qindex === 'title' || qindex === 'author' || qindex === 'author' || qindex === 'full_vendor_name') {
+  // One index/value pair per search row, ANDed together with everything else
+  // below. A row with nothing entered contributes no clause.
+  const qindexes = [].concat(resources.query.qindex || []);
+  const values = [].concat(resources.query.query || []);
+  values.forEach((query, i) => {
+    if (!query) return;
+    const qindex = qindexes[i] || DEFAULT_QINDEX;
+    if (SUBSTRING_QINDEXES.includes(qindex)) {
       clauses.push(`${qindex} ilike '%${query}%'`);
     } else {
       clauses.push(`${qindex} = '${query}'`);
     }
-  }
+  });
 
   const availability = resources.query.availability;
   if (availability) {

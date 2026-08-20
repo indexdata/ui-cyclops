@@ -42,7 +42,7 @@ From 2026-08-03 meeting:
   * **DONE** Action menu for bulk actions should support "Add to list"
   * **DONE** Source and destination dropdowns for spectre should use relevant lists from project.
   * **DONE** Action menu for bulk actions should support "Remove from list"
-  * Ability to add further index=query search fields with a "+" button
+  * **DONE** Ability to add further index=query search fields with a "+" button
   * Implement settings page for maintaining filters (if only for deletion)
   * Consider magical "auto.NAME" filter automatically applied to set "NAME"
 * Requiring new backend work

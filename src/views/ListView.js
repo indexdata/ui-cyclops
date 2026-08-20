@@ -91,15 +91,45 @@ const emptySearch = {
   filters: [],
 };
 
+// An index/value pair with nothing entered: what a newly added search row
+// starts as, and what the single row of an empty search holds.
+const emptyRow = { qindex: DEFAULT_QINDEX, query: '' };
+
+// The search rows as the query resource records them: parallel `qindex` and
+// `query` values, one of each per row. query-string yields a bare string for a
+// single value and an array for several, so normalise both to arrays before
+// pairing them up. There is always at least one row, even for an empty search.
+function searchRowsFromQuery(query) {
+  const qindexes = [].concat(query.qindex ?? []);
+  const values = [].concat(query.query ?? []);
+  const rowCount = Math.max(qindexes.length, values.length, 1);
+
+  return Array.from({ length: rowCount }, (_, i) => ({
+    qindex: qindexes[i] || DEFAULT_QINDEX,
+    query: values[i] ?? '',
+  }));
+}
+
+// The inverse of searchRowsFromQuery: the parts of the query resource that
+// record a set of search rows.
+function queryFromSearchRows(rows) {
+  return {
+    qindex: rows.map(row => row.qindex),
+    query: rows.map(row => row.query),
+  };
+}
+
 // True when any part of the search differs from its empty/default value, i.e.
-// when there is something for "Reset all" to clear. The search term is passed
-// separately, as what counts is what is in the box rather than what was last
+// when there is something for "Reset all" to clear. The rows are passed
+// separately, as what counts is what is in the boxes rather than what was last
 // submitted.
-function isDirty(query, searchTerm) {
-  if (searchTerm !== '') return true;
+function isDirty(query, searchRows) {
+  if (searchRows.length > 1) return true;
+  if (searchRows.some(row => row.query !== '' || row.qindex !== DEFAULT_QINDEX)) return true;
 
   return Object.entries(emptySearch).some(([key, empty]) => {
-    if (key === 'query') return false; // handled above, via searchTerm
+    // Both of these are handled above, via the rows
+    if (key === 'query' || key === 'qindex') return false;
     const value = query[key];
     if (key === 'filters') return [].concat(value || []).length > 0;
     // An absent value means the control is showing its default, which is the
@@ -108,13 +138,28 @@ function isDirty(query, searchTerm) {
   });
 }
 
-// The search term is held in the caller's state rather than in the query
-// resource, so that typing is reflected in the UI (enabling "Reset all")
-// without re-running the search on every keystroke: only submitting does that.
-function renderSearch(query, updateQuery, savedFilters, intl, searchTerm, setSearchTerm, onResetAll) {
+// The search rows are held in the caller's state rather than in the query
+// resource, so that typing (and adding a row) is reflected in the UI without
+// re-running the search: submitting does that, as does removing a row. Each
+// row is an index/value pair, and the rows are ANDed together.
+function renderSearch(query, updateQuery, savedFilters, intl, searchRows, setSearchRows, onResetAll) {
   const onSubmitSearch = (e) => {
     e.preventDefault();
-    updateQuery({ query: searchTerm });
+    updateQuery(queryFromSearchRows(searchRows));
+  };
+
+  const updateRow = (index, changes) => {
+    setSearchRows(rows => rows.map((row, i) => (i === index ? { ...row, ...changes } : row)));
+  };
+  const addRow = () => setSearchRows(rows => [...rows, { ...emptyRow }]);
+
+  // Removing a row re-runs the search at once, as changing one of the filters
+  // below does: once the row is gone there is nothing left to submit it with.
+  // Any edits pending in the rows that remain are submitted along with it.
+  const removeRow = (index) => {
+    const rows = searchRows.filter((_, i) => i !== index);
+    setSearchRows(rows);
+    updateQuery(queryFromSearchRows(rows));
   };
 
   // Filters are qualified as `project.filter` only when created: within a
@@ -122,24 +167,44 @@ function renderSearch(query, updateQuery, savedFilters, intl, searchTerm, setSea
   // unqualified name.
   const filterOptions = savedFilters.map(f => ({ value: f.filter, label: f.filter }));
   const selectedFilters = [].concat(query.filters || []).map(name => ({ value: name, label: name }));
-  const dirty = isDirty(query, searchTerm);
+  const dirty = isDirty(query, searchRows);
 
   return (
     <form onSubmit={onSubmitSearch}>
       <div className={css.searchGroupWrap}>
-        <SearchField
-          autoFocus
-          name="query"
-          className={css.searchField}
-          ariaLabel={intl.formatMessage({ id: 'ui-cyclops.search.aria-label' })}
-          searchableIndexes={searchableIndexes}
-          selectedIndex={query.qindex || DEFAULT_QINDEX}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onClear={() => setSearchTerm('')}
-          onChangeIndex={(e) => updateQuery({ qindex: e.currentTarget.value })}
-          marginBottom0
-        />
+        {searchRows.map((row, index) => (
+          // The rows have no identity of their own, so they are keyed by
+          // position: adding appends, and removing shifts the rows below up,
+          // which is exactly what re-keying by position expresses.
+          // eslint-disable-next-line react/no-array-index-key
+          <div key={index} className={css.searchRow}>
+            <SearchField
+              autoFocus={index === 0}
+              name={`query-${index}`}
+              className={css.searchField}
+              ariaLabel={intl.formatMessage({ id: 'ui-cyclops.search.aria-label' }, { number: index + 1 })}
+              searchableIndexes={searchableIndexes}
+              selectedIndex={row.qindex}
+              value={row.query}
+              onChange={(e) => updateRow(index, { query: e.target.value })}
+              onClear={() => updateRow(index, { query: '' })}
+              onChangeIndex={(e) => updateRow(index, { qindex: e.currentTarget.value })}
+              marginBottom0
+            />
+            {index === 0 ?
+              <IconButton
+                icon="plus-sign"
+                onClick={addRow}
+                aria-label={intl.formatMessage({ id: 'ui-cyclops.search.add-row.aria-label' })}
+              /> :
+              <IconButton
+                icon="trash"
+                onClick={() => removeRow(index)}
+                aria-label={intl.formatMessage({ id: 'ui-cyclops.search.remove-row.aria-label' }, { number: index + 1 })}
+              />
+            }
+          </div>
+        ))}
         <Button
           type="submit"
           buttonStyle="primary"
@@ -210,11 +275,11 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedIds, setSelectedIds] = useState(() => new Set());
-  const [searchTerm, setSearchTerm] = useState(query.query || '');
+  const [searchRows, setSearchRows] = useState(() => searchRowsFromQuery(query));
 
   const resetAll = () => {
     updateQuery(emptySearch);
-    setSearchTerm('');
+    setSearchRows([{ ...emptyRow }]);
   };
 
   const toggleSelected = (id) => {
@@ -444,7 +509,7 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
           paneTitle="Search & filter"
           lastMenu={<IconButton icon="caret-left" onClick={() => setShowSearchPane(false)} />}
         >
-          {renderSearch(query, updateQuery, savedFilters, intl, searchTerm, setSearchTerm, resetAll)}
+          {renderSearch(query, updateQuery, savedFilters, intl, searchRows, setSearchRows, resetAll)}
           <br />
           <br />
           <br />

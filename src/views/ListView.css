@@ -10,3 +10,18 @@
 .searchField {
     margin-bottom: calc(var(--control-margin-bottom) / 2);
 }
+
+/*
+ * Each index/value pair sits on one line, with its "+"/"-" button at the end
+ * and the search field taking up whatever width is left.
+ */
+.searchRow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.searchRow .searchField {
+    flex: 1 1 auto;
+    min-width: 0;
+}
