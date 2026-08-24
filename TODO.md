@@ -45,4 +45,6 @@
 * **FIXED**: Home and Project tabs should always be clickable, even after reloading from the List tab
 * Implement settings page for maintaining filters (if only for deletion)
 * Consider magical "auto.NAME" filter automatically applied to set "NAME"
+* Add UI for changing the name of a set. (Maybe: view set, **Action** -> **Rename**?)
+* Fetch filters for a given project, not all project then filter (when mod-cyclops supports)
 
