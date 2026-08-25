@@ -43,7 +43,7 @@
 * **DONE** Action menu for bulk actions should support "Remove from list"
 * **DONE** Ability to add further index=query search fields with a "+" button
 * **FIXED**: Home and Project tabs should always be clickable, even after reloading from the List tab
-* Implement settings page for maintaining filters (if only for deletion)
+* **DONE** Implement settings page for maintaining filters (though only for deletion, as "edit" neither makes much sense, nor is supported on the back end). Deletion on the filters settings page needs `DELETE /cyclops/filters/{project}.{name}` in mod-cyclops, which does not yet exist.
 * Consider magical "auto.NAME" filter automatically applied to set "NAME"
 * Add UI for changing the name of a set. (Maybe: view set, **Action** -> **Rename**?)
 * Fetch filters for a given project, not all project then filter (when mod-cyclops supports)

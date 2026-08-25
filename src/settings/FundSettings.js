@@ -36,11 +36,11 @@ function FundSettings() {
       records="funds"
       label={intl.formatMessage({ id: 'ui-cyclops.settings.funds' })}
       translations={{
-        cannotDeleteTermHeader: 'ui-cyclops.cv.cannotDeleteTermHeader',
-        cannotDeleteTermMessage: 'ui-cyclops.cv.cannotDeleteTermMessage',
-        deleteEntry: 'ui-cyclops.cv.deleteEntry',
-        termDeleted: 'ui-cyclops.cv.termDeleted',
-        termWillBeDeleted: 'ui-cyclops.cv.termWillBeDeleted',
+        cannotDeleteTermHeader: 'ui-cyclops.cv.funds.cannotDeleteTermHeader',
+        cannotDeleteTermMessage: 'ui-cyclops.cv.funds.cannotDeleteTermMessage',
+        deleteEntry: 'ui-cyclops.cv.funds.deleteEntry',
+        termDeleted: 'ui-cyclops.cv.funds.termDeleted',
+        termWillBeDeleted: 'ui-cyclops.cv.funds.termWillBeDeleted',
       }}
       objectLabel={intl.formatMessage({ id: 'ui-cyclops.settings.funds.objectLabel' })}
       visibleFields={['id', 'name']}

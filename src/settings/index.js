@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Paneset } from '@folio/stripes/components';
 import { Settings } from '@folio/stripes/smart-components';
-import FilterSettings from './filter-settings';
+import FilterSettings from './FilterSettings';
 import FundSettings from './FundSettings';
 
 export default class CyclopsSettings extends React.Component {
