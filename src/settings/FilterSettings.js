@@ -79,7 +79,7 @@ function FilterSettings(props) {
       actionSuppressor={{ edit: () => true, delete: () => false }}
       clientGeneratePk={false}
       rowFilter={projectSelector}
-      rowFilterFunction={(row) => row.project === projectId}
+      projectId={projectId}
       listSuppressor={() => !projectId}
       // Filters are namespaced to their project, so the list is only meaningful
       // once a project has been chosen: until then, suppress it entirely.

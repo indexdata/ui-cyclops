@@ -1,7 +1,6 @@
 import React from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import ProjectView from '../views/ProjectView';
-import { filtersForProject } from '../util';
 
 function ProjectRoute(props) {
   const projectResource = props.resources.project;
@@ -21,7 +20,7 @@ function ProjectRoute(props) {
     loaded={loaded}
     project={projectResource.records[0]}
     sets={setsResource.records[0]}
-    filters={filtersForProject(props.resources.filters?.records?.[0]?.filters, props.match.params.projectId)}
+    filters={props.resources.filters?.records?.[0]?.filters || []}
     addList={(name, title) => props.mutator.allSets.POST(title ? { name, title } : { name })}
     populateList={populateList}
     deleteList={(id) => props.mutator.allSets.DELETE({ id })}
@@ -40,6 +39,7 @@ ProjectRoute.manifest = Object.freeze({
   filters: {
     type: 'okapi',
     path: 'cyclops/filters',
+    params: { project: ':{projectId}' },
   },
   populateTarget: {},
   populateSet: {

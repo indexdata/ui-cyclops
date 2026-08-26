@@ -47,7 +47,27 @@ function FilterVocab({ resources, ...rest }) {
 }
 
 // This component stands in for ControlledVocab at connect time, so it must
-// present the same manifest.
-FilterVocab.manifest = ControlledVocab.manifest;
+// present the same manifest -- except for the fetch of the filters themselves.
+// Filters are namespaced to their project, and the WSAPI selects them
+// server-side with `?project=NAME`, so ask it for only the chosen project's
+// filters rather than fetching them all and discarding the rest. The project
+// has to go into the GET path, because ControlledVocab's own GET path already
+// ends in a query-string of its own, so there is nowhere else to append a
+// parameter: `baseUrl` is interpolated ahead of the `?`. Until a project has
+// been chosen there is nothing to ask for, and a null path suppresses the
+// fetch entirely.
+FilterVocab.manifest = Object.freeze({
+  ...ControlledVocab.manifest,
+  values: {
+    ...ControlledVocab.manifest.values,
+    GET: {
+      path: (_queryParams, _pathParams, _localResources, _logger, props) => (
+        props.projectId
+          ? `${props.baseUrl}?query=cql.allRecords=1 sortby ${props.sortby || 'name'}&limit=2000&project=${props.projectId}`
+          : null
+      ),
+    },
+  },
+});
 
 export default FilterVocab;

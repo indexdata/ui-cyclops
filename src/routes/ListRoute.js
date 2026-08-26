@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import { StripesConnectedSource } from '@folio/stripes/smart-components';
 import ListView, { DEFAULT_QINDEX } from '../views/ListView';
-import { filtersForProject } from '../util';
 
 const INITIAL_RESULT_COUNT = 20;
 const RESULT_COUNT_INCREMENT = 20;
@@ -60,7 +59,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       spectreCount={spectreCount}
       query={resources.query}
       updateQuery={mutator.query.update}
-      savedFilters={filtersForProject(resources.filters?.records?.[0]?.filters, match.params.projectId)}
+      savedFilters={resources.filters?.records?.[0]?.filters || []}
       addFrom={addFrom}
       addList={(name, title) => mutator.allSets.POST(title ? { name, title } : { name })}
       populateList={populateList}
@@ -135,6 +134,7 @@ ListRoute.manifest = Object.freeze({
   filters: {
     type: 'okapi',
     path: 'cyclops/filters',
+    params: { project: ':{projectId}' },
   },
   resultCount: { initialValue: INITIAL_RESULT_COUNT },
   resultOffset: { initialValue: 0 },

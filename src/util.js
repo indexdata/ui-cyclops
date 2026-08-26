@@ -43,12 +43,4 @@ export function listDisplayName(name, intl) {
   return name.replace(/.*\./, '');
 }
 
-// Filters, like sets, are namespaced to their project. Each record returned by
-// the WSAPI is { project, filter, definition }, with an unqualified filter
-// name; select just those records belonging to the given project.
-export function filtersForProject(filters, projectId) {
-  if (!projectId) return [];
-  return (filters || []).filter(f => f.project === projectId);
-}
-
 export default listDisplayName;
