@@ -37,6 +37,17 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   // eslint-disable-next-line no-use-before-define
   const saveSearch = (name) => mutator.saveFilter.POST({ name, cond: condFn(null, null, resources) });
 
+  // The set's own record -- as opposed to its contents, which is what the
+  // `spectres` resource holds -- comes from the project's list of sets, whose
+  // entries are qualified as `project.set`.
+  const listName = match.params.setId;
+  const setRecord = resources.setsToFindThisSet?.records?.[0]?.sets
+    ?.find(entry => `${entry.project}.${entry.set}` === listName);
+
+  // CCMS's "alter set" takes the whole set structure, so the name goes along
+  // with the new title even though the URL already carries it.
+  const updateList = (title) => mutator.thisSet.PUT({ name: listName, title });
+
   // Fill a newly-created set with the records of the present search result:
   // the same source set that is on view, matched by the same condition.
   const populateList = async (setName) => {
@@ -51,17 +62,19 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   return (
     <ListView
       loaded={loaded}
-      name={match.params.setId}
+      name={listName}
       projectId={match.params.projectId}
       action={action}
       batchUpdate={(ids, changes) => mutator.batch.POST({ ids, changes })}
+      listTitle={setRecord?.title}
+      updateList={updateList}
       spectres={spectresResource.records[0]}
       spectreCount={spectreCount}
       query={resources.query}
       updateQuery={mutator.query.update}
       savedFilters={resources.filters?.records?.[0]?.filters || []}
       addFrom={addFrom}
-      addList={(name, title) => mutator.allSets.POST(title ? { name, title } : { name })}
+      addList={(name, title) => mutator.setsToCreateIn.POST(title ? { name, title } : { name })}
       populateList={populateList}
       // eslint-disable-next-line no-use-before-define
       hasSearch={!!condFn(null, null, resources)}
@@ -136,6 +149,12 @@ ListRoute.manifest = Object.freeze({
     path: 'cyclops/filters',
     params: { project: ':{projectId}' },
   },
+  // Fetched for the sake of this set's own title: there is no WSAPI operation
+  // that returns a single set.
+  setsToFindThisSet: {
+    type: 'okapi',
+    path: 'cyclops/projects/:{projectId}/sets',
+  },
   resultCount: { initialValue: INITIAL_RESULT_COUNT },
   resultOffset: { initialValue: 0 },
   spectres: {
@@ -204,13 +223,20 @@ ListRoute.manifest = Object.freeze({
     fetch: false,
     throwErrors: false,
   },
-  allSets: {
+  setsToCreateIn: {
     type: 'okapi',
     path: 'cyclops/sets',
     fetch: false,
     POST: {
       throwErrors: false,
     },
+  },
+  // The set that is on view, for altering its title.
+  thisSet: {
+    type: 'okapi',
+    path: 'cyclops/sets/:{setId}',
+    fetch: false,
+    throwErrors: false,
   },
   populateTarget: {},
   populateSet: {

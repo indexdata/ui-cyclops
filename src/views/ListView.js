@@ -5,6 +5,7 @@ import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, TextField, MCLPagingTypes, NoValue, Checkbox, MenuSection } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { PromptModal } from '../components/PromptModal';
+import EditListModal from '../components/EditListModal';
 import { listDisplayName, mutateWithCallout } from '../util';
 import packageInfo from '../../package';
 import css from './ListView.css';
@@ -270,10 +271,15 @@ function renderSearch(query, updateQuery, savedFilters, intl, searchRows, setSea
 }
 
 
-export default function ListView({ loaded, name, projectId, action, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addList, populateList, hasSearch, addSpectre, removeSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
+export default function ListView({ loaded, name, listTitle, updateList, projectId, action, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addList, populateList, hasSearch, addSpectre, removeSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  // The title as last saved from here. The `sets` resource that provides the
+  // prop is not refetched by the PUT, so without this the modal would offer
+  // the old title again next time it is opened.
+  const [editedTitle, setEditedTitle] = useState(undefined);
   const [selectedIds, setSelectedIds] = useState(() => new Set());
   const [searchRows, setSearchRows] = useState(() => searchRowsFromQuery(query));
 
@@ -376,6 +382,18 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
     setSelectedIds(new Set(failures));
   };
 
+  const currentTitle = editedTitle ?? listTitle;
+
+  const onEditList = async (newTitle) => {
+    setShowEditModal(false);
+    const done = await mutateWithCallout(callout, () => updateList(newTitle), {
+      values: { name, title: newTitle },
+      successId: 'ui-cyclops.list.edit.success',
+      failureId: 'ui-cyclops.list.edit.failure',
+    });
+    if (done) setEditedTitle(newTitle);
+  };
+
   const addSelectedToList = () => applyToSelected(addSpectre, 'ui-cyclops.list.add-spectres');
   const removeSelectedFromList = () => applyToSelected(removeSpectre, 'ui-cyclops.list.remove-spectres');
 
@@ -387,6 +405,16 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
 
   const renderActionMenu = ({ onToggle }) => (
     <>
+      <MenuSection label={intl.formatMessage({ id: 'ui-cyclops.list.actions.list' })}>
+        <Button
+          buttonStyle="dropdownItem"
+          onClick={() => { onToggle(); setShowEditModal(true); }}
+        >
+          <Icon icon="edit">
+            <FormattedMessage id="ui-cyclops.list.edit.button" />
+          </Icon>
+        </Button>
+      </MenuSection>
       {canAddSpectres &&
         <MenuSection label={intl.formatMessage({ id: 'ui-cyclops.list.actions.workflow' })}>
           <Button
@@ -557,6 +585,15 @@ export default function ListView({ loaded, name, projectId, action, batchUpdate,
         onConfirm={onSaveSearch}
         onCancel={() => setShowSaveModal(false)}
         message={<FormattedMessage id="ui-cyclops.save-search.message" />}
+      />
+
+      <EditListModal
+        heading={<FormattedMessage id="ui-cyclops.list.edit.heading" />}
+        open={showEditModal}
+        name={listDisplayName(name, intl)}
+        title={currentTitle}
+        onConfirm={onEditList}
+        onCancel={() => setShowEditModal(false)}
       />
 
       <PromptModal

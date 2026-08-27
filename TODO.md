@@ -45,6 +45,6 @@
 * **FIXED**: Home and Project tabs should always be clickable, even after reloading from the List tab
 * **DONE** Implement settings page for maintaining filters (though only for deletion, as "edit" neither makes much sense, nor is supported on the back end).
 * **DONE** Fetch filters for a given project, not all projects then filter
-* Add UI for changing the name of a set. (Maybe: view set, **Action** -> **Rename**?)
+* **DONE** Add UI for changing the title of a set (view set, **Actions** -> **List** -> **Edit**). CCMS supports changing only the title, not the name.
 * Consider magical "auto.NAME" filter automatically applied to set "NAME"
 

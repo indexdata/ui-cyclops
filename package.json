@@ -115,6 +115,7 @@
           "cyclops.filters.item.post",
           "cyclops.filters.item.delete",
           "cyclops.sets.item.post",
+          "cyclops.sets.item.put",
           "cyclops.sets.item.delete",
           "cyclops.projects.item.post",
           "cyclops.projects.item.delete",
