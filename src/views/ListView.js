@@ -282,10 +282,14 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
   const [editedTitle, setEditedTitle] = useState(undefined);
   const [selectedIds, setSelectedIds] = useState(() => new Set());
   const [searchRows, setSearchRows] = useState(() => searchRowsFromQuery(query));
+  const intl = useIntl();
+  const callout = useCallout();
 
-  // What this list is called wherever it is named: an edit made here is shown
-  // at once, ahead of the resource that supplied the prop being refetched.
+  // What this list is called wherever it is named -- the heading, the tab and
+  // every callout that reports on it. An edit made here is shown at once,
+  // ahead of the resource that supplied the prop being refetched.
   const currentTitle = editedTitle ?? listTitle;
+  const displayName = listDisplayTitle(currentTitle, name, intl);
 
   const resetAll = () => {
     updateQuery(emptySearch);
@@ -300,8 +304,6 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
       return next;
     });
   };
-  const intl = useIntl();
-  const callout = useCallout();
 
   const onSaveSearch = async (searchName) => {
     if (!IDENTIFIER_RE.test(searchName)) {
@@ -324,16 +326,17 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
   const makeNewList = async (listName, options) => {
     setShowCreateModal(false);
     const fullName = `${projectId}.${listName}`;
+    const newListName = listDisplayTitle(options?.title, fullName, intl);
 
     const created = await mutateWithCallout(callout, () => addList(fullName, options?.title), {
-      values: { name: fullName },
+      values: { name: newListName },
       successId: 'ui-cyclops.project.new-list.success',
       failureId: 'ui-cyclops.project.new-list.failure',
     });
     if (!created) return;
 
     await mutateWithCallout(callout, () => populateList(fullName), {
-      values: { name: fullName },
+      values: { name: newListName },
       successId: 'ui-cyclops.list.populate-list.success',
       failureId: 'ui-cyclops.list.populate-list.failure',
     });
@@ -371,14 +374,14 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
     const done = ids.length - failures.length;
     if (done > 0) {
       callout.sendCallout({
-        message: <FormattedMessage id={`${messagePrefix}.success`} values={{ count: done, list: name }} />,
+        message: <FormattedMessage id={`${messagePrefix}.success`} values={{ count: done, list: displayName }} />,
       });
     }
     if (failures.length > 0) {
       callout.sendCallout({
         type: 'error',
         timeout: 0,
-        message: <FormattedMessage id={`${messagePrefix}.failure`} values={{ count: failures.length, list: name, ids: failures.join(', ') }} />,
+        message: <FormattedMessage id={`${messagePrefix}.failure`} values={{ count: failures.length, list: displayName, ids: failures.join(', ') }} />,
       });
     }
 
@@ -457,9 +460,9 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
     </>
   );
 
-  async function addSpectreToList(addTo, spectreId, title) {
+  async function addSpectreToList(spectreId, title) {
     await mutateWithCallout(callout, () => addSpectre(spectreId), {
-      values: { list: addTo, spectreId, title },
+      values: { list: displayName, spectreId, title },
       successId: 'ui-cyclops.list.add-spectre.success',
       failureId: 'ui-cyclops.list.add-spectre.failure',
     });
@@ -486,7 +489,7 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
         !addFrom ?
           <Link to={`${packageInfo.stripes.route}/list/${projectId}/${nav.list.name}/${r.id}`}>{r.title}</Link> :
           <>
-            <Button marginBottom0 onClick={() => addSpectreToList(name, r.id, r.title)}>
+            <Button marginBottom0 onClick={() => addSpectreToList(r.id, r.title)}>
               <Icon icon="plus-sign" />
               &nbsp;
               <FormattedMessage id="ui-cyclops.button.add" />
@@ -565,8 +568,8 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
         actionMenu={renderActionMenu}
         paneTitle={
           addFrom ?
-            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: listDisplayTitle(currentTitle, name, intl), addFrom: listDisplayTitle(addFromTitle, addFrom, intl) }} /> :
-            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name: listDisplayTitle(currentTitle, name, intl) }} />
+            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: displayName, addFrom: listDisplayTitle(addFromTitle, addFrom, intl) }} /> :
+            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name: displayName }} />
         }
         firstMenu={
           showSearchPane ? undefined : (

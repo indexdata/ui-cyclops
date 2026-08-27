@@ -92,26 +92,30 @@ function renderList(sets, nav, callout,
 
   async function makeNewSet(name, title, filter) {
     setShowCreateModal(false);
+    const displayName = listDisplayTitle(title, name, intl);
 
     const created = await mutateWithCallout(callout, () => addList(name, title), {
-      values: { name },
+      values: { name: displayName },
       successId: 'ui-cyclops.project.new-list.success',
       failureId: 'ui-cyclops.project.new-list.failure',
     });
     if (!created || !filter) return;
 
     await mutateWithCallout(callout, () => populateList(name, filter), {
-      values: { name, filter },
+      values: { name: displayName, filter },
       successId: 'ui-cyclops.project.populate-list.success',
       failureId: 'ui-cyclops.project.populate-list.failure',
     });
   }
 
-  async function actuallyDeleteSet(name) {
+  // Takes the whole set record, as the WSAPI wants its qualified name but the
+  // callout reports it as the confirmation modal named it.
+  async function actuallyDeleteSet(set) {
     setListToDelete(undefined);
+    const name = qualifiedName(set);
 
     await mutateWithCallout(callout, () => deleteList(name), {
-      values: { name },
+      values: { name: listDisplayTitle(set.title, name, intl) },
       successId: 'ui-cyclops.project.delete-list.success',
       failureId: 'ui-cyclops.project.delete-list.failure',
     });
@@ -174,7 +178,7 @@ function renderList(sets, nav, callout,
       <ConfirmationModal
         heading={<FormattedMessage id="ui-cyclops.project.delete-list.heading" />}
         open={!!listToDelete}
-        onConfirm={() => actuallyDeleteSet(qualifiedName(listToDelete))}
+        onConfirm={() => actuallyDeleteSet(listToDelete)}
         onCancel={() => setListToDelete(undefined)}
         message={<FormattedMessage
           id="ui-cyclops.project.delete-list.message"
