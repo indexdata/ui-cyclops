@@ -37,12 +37,16 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   // eslint-disable-next-line no-use-before-define
   const saveSearch = (name) => mutator.saveFilter.POST({ name, cond: condFn(null, null, resources) });
 
-  // The set's own record -- as opposed to its contents, which is what the
+  // A set's own record -- as opposed to its contents, which is what the
   // `spectres` resource holds -- comes from the project's list of sets, whose
-  // entries are qualified as `project.set`.
+  // entries are qualified as `project.set`. Both the set on view and the one
+  // that spectres are being added from (always of the same project) are looked
+  // up, as each is named in the heading.
   const listName = match.params.setId;
-  const setRecord = resources.setsToFindThisSet?.records?.[0]?.sets
-    ?.find(entry => `${entry.project}.${entry.set}` === listName);
+  const findSet = (qualifiedName) => resources.setsToFindThisSet?.records?.[0]?.sets
+    ?.find(entry => `${entry.project}.${entry.set}` === qualifiedName);
+  const setRecord = findSet(listName);
+  const addFromRecord = addFrom ? findSet(addFrom) : undefined;
 
   // CCMS's "alter set" takes the whole set structure, so the name goes along
   // with the new title even though the URL already carries it.
@@ -67,6 +71,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       action={action}
       batchUpdate={(ids, changes) => mutator.batch.POST({ ids, changes })}
       listTitle={setRecord?.title}
+      addFromTitle={addFromRecord?.title}
       updateList={updateList}
       spectres={spectresResource.records[0]}
       spectreCount={spectreCount}

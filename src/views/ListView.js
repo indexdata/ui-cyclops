@@ -6,7 +6,7 @@ import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchFiel
 import { useNav } from '../NavContext';
 import { PromptModal } from '../components/PromptModal';
 import EditListModal from '../components/EditListModal';
-import { listDisplayName, mutateWithCallout } from '../util';
+import { listDisplayName, listDisplayTitle, mutateWithCallout } from '../util';
 import packageInfo from '../../package';
 import css from './ListView.css';
 
@@ -271,17 +271,21 @@ function renderSearch(query, updateQuery, savedFilters, intl, searchRows, setSea
 }
 
 
-export default function ListView({ loaded, name, listTitle, updateList, projectId, action, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addList, populateList, hasSearch, addSpectre, removeSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
+export default function ListView({ loaded, name, listTitle, addFromTitle, updateList, projectId, action, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addList, populateList, hasSearch, addSpectre, removeSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  // The title as last saved from here. The `sets` resource that provides the
-  // prop is not refetched by the PUT, so without this the modal would offer
-  // the old title again next time it is opened.
+  // The title as last saved from here. The resource that provides the
+  // `listTitle` prop is not refetched by the PUT, so without this the heading,
+  // the tab and the modal would all go on showing the old title.
   const [editedTitle, setEditedTitle] = useState(undefined);
   const [selectedIds, setSelectedIds] = useState(() => new Set());
   const [searchRows, setSearchRows] = useState(() => searchRowsFromQuery(query));
+
+  // What this list is called wherever it is named: an edit made here is shown
+  // at once, ahead of the resource that supplied the prop being refetched.
+  const currentTitle = editedTitle ?? listTitle;
 
   const resetAll = () => {
     updateQuery(emptySearch);
@@ -336,7 +340,7 @@ export default function ListView({ loaded, name, listTitle, updateList, projectI
   };
 
   const nav = useNav();
-  nav.update({ list: { name, location: useLocation() } });
+  nav.update({ list: { name, title: currentTitle, location: useLocation() } });
   const totalCount = spectreCount || spectres?.data.length;
   const count = spectreCount || intl.formatMessage({ id: 'ui-cyclops.at-least' }, { minValue: spectres?.data.length });
 
@@ -381,8 +385,6 @@ export default function ListView({ loaded, name, listTitle, updateList, projectI
     // Keep anything that failed checked, so that it can be retried
     setSelectedIds(new Set(failures));
   };
-
-  const currentTitle = editedTitle ?? listTitle;
 
   const onEditList = async (newTitle) => {
     setShowEditModal(false);
@@ -563,8 +565,8 @@ export default function ListView({ loaded, name, listTitle, updateList, projectI
         actionMenu={renderActionMenu}
         paneTitle={
           addFrom ?
-            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: listDisplayName(name, intl), addFrom: listDisplayName(addFrom, intl) }} /> :
-            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name: listDisplayName(name, intl) }} />
+            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: listDisplayTitle(currentTitle, name, intl), addFrom: listDisplayTitle(addFromTitle, addFrom, intl) }} /> :
+            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name: listDisplayTitle(currentTitle, name, intl) }} />
         }
         firstMenu={
           showSearchPane ? undefined : (

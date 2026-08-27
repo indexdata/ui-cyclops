@@ -4,7 +4,7 @@ import { useIntl, FormattedMessage } from 'react-intl';
 import { Button, ButtonGroup } from '@folio/stripes/components';
 import packageInfo from '../package';
 import { useNav } from './NavContext';
-import { listDisplayName } from './util';
+import { listDisplayTitle } from './util';
 
 
 const segmentsConfig = [{
@@ -20,7 +20,7 @@ const segmentsConfig = [{
   }
 }, {
   name: 'list',
-  renderName: (r, nav, intl) => listDisplayName(r.name, intl),
+  renderName: (r, nav, intl) => listDisplayTitle(r.title, r.name, intl),
   makeLink: () => undefined, // If we've not visited this tab, we have no way to choose a list
 }];
 

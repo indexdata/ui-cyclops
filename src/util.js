@@ -43,4 +43,12 @@ export function listDisplayName(name, intl) {
   return name.replace(/.*\./, '');
 }
 
+// How a list is identified in headings and navigation: its human-readable
+// title where it has one, falling back to its display name otherwise. The
+// fallback covers a list whose title has never been set, and also the moment
+// before the title has been fetched.
+export function listDisplayTitle(title, name, intl) {
+  return title || listDisplayName(name, intl);
+}
+
 export default listDisplayName;

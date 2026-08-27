@@ -5,7 +5,7 @@ import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, Headline, MenuSection, Button, MultiColumnList, Row, Col, KeyValue, ConfirmationModal, NoValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { RCKV, CKV } from '../components/CKV';
-import { listDisplayName, mutateWithCallout } from '../util';
+import { listDisplayName, listDisplayTitle, mutateWithCallout } from '../util';
 import packageInfo from '../../package';
 import css from './ProjectView.css';
 import { PromptModal } from '../components/PromptModal';
@@ -152,7 +152,7 @@ function renderList(sets, nav, callout,
           title: r => r.title || <NoValue />,
           'action-delete': r => (
             r.set === 'object' ? null :
-            <Button marginBottom0 onClick={() => setListToDelete(qualifiedName(r))}>
+            <Button marginBottom0 onClick={() => setListToDelete(r)}>
               <Icon icon="trash" />
               &nbsp;
               <FormattedMessage id="stripes-core.button.delete" />
@@ -174,9 +174,12 @@ function renderList(sets, nav, callout,
       <ConfirmationModal
         heading={<FormattedMessage id="ui-cyclops.project.delete-list.heading" />}
         open={!!listToDelete}
-        onConfirm={() => actuallyDeleteSet(listToDelete)}
+        onConfirm={() => actuallyDeleteSet(qualifiedName(listToDelete))}
         onCancel={() => setListToDelete(undefined)}
-        message={<FormattedMessage id="ui-cyclops.project.delete-list.message" />}
+        message={<FormattedMessage
+          id="ui-cyclops.project.delete-list.message"
+          values={{ list: listToDelete && listDisplayTitle(listToDelete.title, qualifiedName(listToDelete), intl) }}
+        />}
       />
     </>
   );
