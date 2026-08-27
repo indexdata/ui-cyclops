@@ -329,14 +329,14 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
     const newListName = listDisplayTitle(options?.title, fullName, intl);
 
     const created = await mutateWithCallout(callout, () => addList(fullName, options?.title), {
-      values: { name: newListName },
+      values: { title: newListName },
       successId: 'ui-cyclops.project.new-list.success',
       failureId: 'ui-cyclops.project.new-list.failure',
     });
     if (!created) return;
 
     await mutateWithCallout(callout, () => populateList(fullName), {
-      values: { name: newListName },
+      values: { title: newListName },
       successId: 'ui-cyclops.list.populate-list.success',
       failureId: 'ui-cyclops.list.populate-list.failure',
     });
@@ -568,8 +568,8 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
         actionMenu={renderActionMenu}
         paneTitle={
           addFrom ?
-            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: displayName, addFrom: listDisplayTitle(addFromTitle, addFrom, intl) }} /> :
-            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name: displayName }} />
+            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, title: displayName, addFrom: listDisplayTitle(addFromTitle, addFrom, intl) }} /> :
+            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, title: displayName }} />
         }
         firstMenu={
           showSearchPane ? undefined : (

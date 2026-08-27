@@ -95,14 +95,14 @@ function renderList(sets, nav, callout,
     const displayName = listDisplayTitle(title, name, intl);
 
     const created = await mutateWithCallout(callout, () => addList(name, title), {
-      values: { name: displayName },
+      values: { title: displayName },
       successId: 'ui-cyclops.project.new-list.success',
       failureId: 'ui-cyclops.project.new-list.failure',
     });
     if (!created || !filter) return;
 
     await mutateWithCallout(callout, () => populateList(name, filter), {
-      values: { name: displayName, filter },
+      values: { title: displayName, filter },
       successId: 'ui-cyclops.project.populate-list.success',
       failureId: 'ui-cyclops.project.populate-list.failure',
     });
@@ -115,7 +115,7 @@ function renderList(sets, nav, callout,
     const name = qualifiedName(set);
 
     await mutateWithCallout(callout, () => deleteList(name), {
-      values: { name: listDisplayTitle(set.title, name, intl) },
+      values: { title: listDisplayTitle(set.title, name, intl) },
       successId: 'ui-cyclops.project.delete-list.success',
       failureId: 'ui-cyclops.project.delete-list.failure',
     });

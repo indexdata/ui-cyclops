@@ -20,6 +20,7 @@ const segmentsConfig = [{
   }
 }, {
   name: 'list',
+  valueKey: 'title',
   renderName: (r, nav, intl) => listDisplayTitle(r.title, r.name, intl),
   makeLink: () => undefined, // If we've not visited this tab, we have no way to choose a list
 }];
@@ -36,7 +37,7 @@ function Tabs() {
     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5em' }}>
       <ButtonGroup>
         {
-          segmentsConfig.map(({ name, renderName, makeLink }) => {
+          segmentsConfig.map(({ name, valueKey = 'name', renderName, makeLink }) => {
             const segmentNav = nav[name];
             const sl = segmentNav.location;
             const to = sl ? `${sl.pathname}${sl.search}` : makeLink(nav);
@@ -51,7 +52,7 @@ function Tabs() {
               >
                 <FormattedMessage
                   id={`ui-cyclops.tab.${name}`}
-                  values={{ name: renderedName }}
+                  values={{ [valueKey]: renderedName }}
                 />
               </Button>
             );
