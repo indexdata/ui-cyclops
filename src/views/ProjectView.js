@@ -5,7 +5,7 @@ import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, Headline, MenuSection, Button, MultiColumnList, Row, Col, KeyValue, ConfirmationModal, NoValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { RCKV, CKV } from '../components/CKV';
-import { listDisplayName, listDisplayTitle, mutateWithCallout } from '../util';
+import { listDisplayName, listDisplayTitle, mutateWithCallout, safeUrl } from '../util';
 import packageInfo from '../../package';
 import css from './ProjectView.css';
 import { PromptModal } from '../components/PromptModal';
@@ -38,7 +38,7 @@ function renderProject(baseProject) {
         <CKV rec={project} tag="id" xs={3} formatFn={x => <code>{x}</code>} />
         <CKV rec={project} tag="action" xs={3} formatFn={(value) => value.name} />
       </Row>
-      <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
+      <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={safeUrl(x)}>{x}</a>} />
       <Row>
         <Col xs={6}>
           <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.people" />}>

@@ -40,6 +40,28 @@ export function idCond(spectreId) {
   return { type: 'term', field: 'id', rel: 'eq', value: Number(spectreId) };
 }
 
+// The schemes that execute what follows them rather than locating something.
+const EXECUTABLE_SCHEMES = ['javascript', 'data', 'vbscript'];
+
+// A stored URL as it may safely be used in an href. Any scheme is allowed --
+// ftp, urn, mailto and the rest are all legitimate things to record -- bar the
+// three that run script, for which undefined is returned: React then renders no
+// href at all, so the value is still shown but is not clickable.
+//
+// The scheme is read with the characters a browser discards when parsing a URL
+// removed, since it discards them before deciding what the scheme is: spaces
+// around the URL, and tabs and newlines anywhere within it. Neither a leading
+// space nor a tab in the middle of the word can therefore smuggle one of these
+// schemes past the check.
+export function safeUrl(url) {
+  if (typeof url !== 'string') return undefined;
+
+  const bare = Array.from(url).filter(c => c > ' ').join('').toLowerCase();
+  const colon = bare.indexOf(':');
+  if (colon >= 0 && EXECUTABLE_SCHEMES.includes(bare.slice(0, colon))) return undefined;
+  return url;
+}
+
 // Render the display name of a list. The "master list" of a project is named
 // `PROJECTNAME.object`, and is shown using a localized label; every other list
 // is shown with its leading project-name and period stripped.
