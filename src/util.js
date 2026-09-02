@@ -32,6 +32,14 @@ export async function mutateWithCallout(callout, op, { values = {}, successId, f
   }
 }
 
+// The condition that picks out a single spectre by id, in the structured form
+// that the WSAPI's `jsonCond` takes (see cond-schema.json in mod-cyclops). The
+// id is a number, so that the back end renders it as a numeric literal rather
+// than a quoted string.
+export function idCond(spectreId) {
+  return { type: 'term', field: 'id', rel: 'eq', value: Number(spectreId) };
+}
+
 // Render the display name of a list. The "master list" of a project is named
 // `PROJECTNAME.object`, and is shown using a localized label; every other list
 // is shown with its leading project-name and period stripped.

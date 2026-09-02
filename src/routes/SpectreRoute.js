@@ -1,6 +1,7 @@
 import React from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import SpectreView from '../views/SpectreView';
+import { idCond } from '../util';
 
 function response2spectre(response) {
   if (!response) return undefined;
@@ -44,7 +45,7 @@ SpectreRoute.manifest = Object.freeze({
     path: 'cyclops/sets/:{setId}',
     params: {
       fields: '*',
-      cond: (_, pathParams) => `id=${pathParams.spectreId}`,
+      jsonCond: (_, pathParams) => JSON.stringify(idCond(pathParams.spectreId)),
     },
   },
   spectreUpdate: {

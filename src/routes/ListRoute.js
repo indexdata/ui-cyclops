@@ -1,7 +1,10 @@
+/* eslint-disable no-use-before-define */
+
 import React, { useMemo } from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import { StripesConnectedSource } from '@folio/stripes/smart-components';
 import ListView, { DEFAULT_QINDEX } from '../views/ListView';
+import { idCond } from '../util';
 
 const INITIAL_RESULT_COUNT = 20;
 const RESULT_COUNT_INCREMENT = 20;
@@ -34,8 +37,8 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   const counted = countResource.loadedAt >= spectresResource.loadedAt;
   const spectreCount = counted ? countResource.records[0]?.data[0].values[0] : undefined;
 
-  // eslint-disable-next-line no-use-before-define
-  const saveSearch = (name) => mutator.saveFilter.POST({ name, cond: condFn(null, null, resources) });
+  const searchCond = () => condFromClauses(clausesFromQuery(resources));
+  const saveSearch = (name) => mutator.saveFilter.POST({ name, jsonCond: searchCond() });
 
   // A set's own record -- as opposed to its contents, which is what the
   // `spectres` resource holds -- comes from the project's list of sets, whose
@@ -58,8 +61,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
     await mutator.populateTarget.update({ setName });
     return mutator.populateSet.POST({
       from: addFrom || match.params.setId,
-      // eslint-disable-next-line no-use-before-define
-      cond: condFn(null, null, resources),
+      jsonCond: searchCond(),
     });
   };
 
@@ -81,10 +83,9 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       addFrom={addFrom}
       addList={(name, title) => mutator.setsToCreateIn.POST(title ? { name, title } : { name })}
       populateList={populateList}
-      // eslint-disable-next-line no-use-before-define
-      hasSearch={!!condFn(null, null, resources)}
-      addSpectre={(spectreId) => mutator.addToList.POST({ from: addFrom, cond: `id = ${spectreId}` })}
-      removeSpectre={(spectreId) => mutator.removeFromList.POST({ cond: `id = ${spectreId}` })}
+      hasSearch={!!searchCond()}
+      addSpectre={(spectreId) => mutator.addToList.POST({ from: addFrom, jsonCond: idCond(spectreId) })}
+      removeSpectre={(spectreId) => mutator.removeFromList.POST({ jsonCond: idCond(spectreId) })}
       saveSearch={saveSearch}
       pageAmount={RESULT_COUNT_INCREMENT}
       onNeedMoreData={handleNeedMoreData}
@@ -96,9 +97,12 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   );
 }
 
-// Used as a query-parameter function in two manifest entries, and to build
-// the condition when saving a search as a filter.
-function condFn(_a, _b, resources) {
+// The search as a list of condition clauses in the structured form that the
+// WSAPI's `jsonCond` parameter takes (see cond-schema.json in mod-cyclops).
+// Relation names are abstract -- `contains`, `ge` -- rather than CCMS
+// operators: mod-cyclops chooses the operator and quotes the value, so nothing
+// here has to be escaped and nothing a user types can be read as syntax.
+function clausesFromQuery(resources) {
   const clauses = [];
 
   // One index/value pair per search row, ANDed together with everything else
@@ -108,39 +112,57 @@ function condFn(_a, _b, resources) {
   values.forEach((query, i) => {
     if (!query) return;
     const qindex = qindexes[i] || DEFAULT_QINDEX;
-    if (SUBSTRING_QINDEXES.includes(qindex)) {
-      clauses.push(`${qindex} ilike '%${query}%'`);
-    } else {
-      clauses.push(`${qindex} = '${query}'`);
-    }
+    // `contains` takes the bare term: the wildcards that make it a substring
+    // match, and the escaping of any wildcard character within the term, are
+    // the back end's business.
+    const rel = SUBSTRING_QINDEXES.includes(qindex) ? 'contains' : 'eq';
+    clauses.push({ type: 'term', field: qindex, rel, value: query });
   });
 
   const availability = resources.query.availability;
   if (availability) {
-    clauses.push(`availability = '${availability}'`);
+    clauses.push({ type: 'term', field: 'availability', rel: 'eq', value: availability });
   }
 
   // Numeric holdings-count filter: only apply when a value has been entered,
   // and only honour the two supported comparison operators.
   const holdingsCount = resources.query.holdingsCount;
   if (holdingsCount !== undefined && holdingsCount !== '' && !Number.isNaN(Number(holdingsCount))) {
-    const op = resources.query.holdingsCountOp === 'lte' ? '<=' : '>=';
-    clauses.push(`holdings_count ${op} ${Number(holdingsCount)}`);
+    const rel = resources.query.holdingsCountOp === 'lte' ? 'le' : 'ge';
+    clauses.push({ type: 'term', field: 'holdings_count', rel, value: Number(holdingsCount) });
   }
 
   // Tri-state decision filter: only constrain when explicitly set to one of
   // the two boolean values (an empty value means "either").
   const decision = resources.query.decision;
   if (decision === 'true' || decision === 'false') {
-    clauses.push(`decision = ${decision}`);
+    clauses.push({ type: 'term', field: 'decision', rel: 'eq', value: decision === 'true' });
   }
 
   // query-string yields a bare string for a single value and an array for
   // several, so normalise to an array before iterating.
   const filters = [].concat(resources.query.filters || []);
-  filters.forEach(filterName => clauses.push(`filter(${filterName})`));
+  filters.forEach(filterName => clauses.push({ type: 'filter', name: filterName }));
 
-  return clauses.join(' and ');
+  return clauses;
+}
+
+// A list of clauses as a single condition: the one clause itself when there is
+// only one, and a conjunction of them all when there are several. No clauses
+// means no condition, which is undefined rather than null -- a null query
+// parameter tells stripes-connect to suppress the fetch entirely.
+function condFromClauses(clauses) {
+  if (clauses.length === 0) return undefined;
+  if (clauses.length === 1) return clauses[0];
+  return { type: 'and', clauses };
+}
+
+// Used as a query-parameter function in two manifest entries. A query parameter
+// cannot itself be structured, so the condition travels as its JSON text; in a
+// POST body it goes as the structure itself.
+function jsonCondFn(_a, _b, resources) {
+  const cond = condFromClauses(clausesFromQuery(resources));
+  return cond && JSON.stringify(cond);
 }
 
 ListRoute.manifest = Object.freeze({
@@ -170,7 +192,7 @@ ListRoute.manifest = Object.freeze({
     },
     params: {
       fields: '*',
-      cond: condFn,
+      jsonCond: jsonCondFn,
       sort: (_a, _b, resources) => {
         const s = resources.query.sort;
         if (!s) {
@@ -213,7 +235,7 @@ ListRoute.manifest = Object.freeze({
     },
     params: {
       countOnly: true,
-      cond: condFn,
+      jsonCond: jsonCondFn,
     },
   },
   addToList: {

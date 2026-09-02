@@ -12,7 +12,7 @@ function ProjectRoute(props) {
     await props.mutator.populateTarget.update({ setName });
     return props.mutator.populateSet.POST({
       from: `${projectResource.records[0].id}.object`,
-      cond: `filter(${filterName})`,
+      jsonCond: { type: 'filter', name: filterName },
     });
   };
 
