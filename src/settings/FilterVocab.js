@@ -61,11 +61,18 @@ FilterVocab.manifest = Object.freeze({
   values: {
     ...ControlledVocab.manifest.values,
     GET: {
-      path: (_queryParams, _pathParams, _localResources, _logger, props) => (
-        props.projectId
-          ? `${props.baseUrl}?query=cql.allRecords=1 sortby ${props.sortby || 'name'}&limit=2000&project=${props.projectId}`
-          : null
-      ),
+      // The query-string is assembled rather than interpolated, so that a
+      // project name containing '&' or '#' cannot add parameters of its own.
+      path: (_queryParams, _pathParams, _localResources, _logger, props) => {
+        if (!props.projectId) return null;
+
+        const params = new URLSearchParams({
+          query: `cql.allRecords=1 sortby ${props.sortby || 'name'}`,
+          limit: '2000',
+          project: props.projectId,
+        });
+        return `${props.baseUrl}?${params}`;
+      },
     },
   },
 });
