@@ -25,3 +25,14 @@
     flex: 1 1 auto;
     min-width: 0;
 }
+
+/*
+ * The note under the filter chooser saying which filter this list applies of
+ * its own accord. It is not a control, so it is set smaller and quieter than
+ * the labels above it.
+ */
+.autoFilterNote {
+    font-size: var(--font-size-small);
+    color: var(--color-text-p2);
+    margin-top: calc(var(--control-margin-bottom) / -2);
+}

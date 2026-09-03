@@ -37,6 +37,10 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   const counted = countResource.loadedAt >= spectresResource.loadedAt;
   const spectreCount = counted ? countResource.records[0]?.data[0].values[0] : undefined;
 
+  // The user's own search, without the auto-filter: what "Save search" saves,
+  // what a new list is populated from, and what "Create list" is enabled by.
+  // The auto-filter belongs to the list on view rather than to the search, and
+  // is folded in only where the list itself is fetched (see jsonCondFn).
   const searchCond = () => condFromClauses(clausesFromQuery(resources));
   const saveSearch = (name) => mutator.saveFilter.POST({ name, jsonCond: searchCond() });
 
@@ -80,6 +84,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       query={resources.query}
       updateQuery={mutator.query.update}
       savedFilters={resources.filters?.records?.[0]?.filters || []}
+      autoFilter={addFrom ? undefined : autoFilterFor(listName, resources)}
       addFrom={addFrom}
       addList={(name, title) => mutator.setsToCreateIn.POST(title ? { name, title } : { name })}
       populateList={populateList}
@@ -157,11 +162,40 @@ function condFromClauses(clauses) {
   return { type: 'and', clauses };
 }
 
+// A list may have a filter that is always applied to it, over and above
+// whatever the user searches for: the list named LNAME is automatically
+// filtered by the filter called LNAME_auto, when the project defines one.
+// Filters are unqualified within a project, whereas a set is named
+// `project.set`, so the leading project-name is stripped before appending the
+// suffix. Returns the filter's name when it exists, and undefined otherwise:
+// most lists have no auto-filter.
+function autoFilterFor(setName, resources) {
+  if (!setName) return undefined;
+  const wanted = `${setName.replace(/.*\./, '')}_auto`;
+  const filters = resources.filters?.records?.[0]?.filters || [];
+  return filters.some(f => f.filter === wanted) ? wanted : undefined;
+}
+
 // Used as a query-parameter function in two manifest entries. A query parameter
 // cannot itself be structured, so the condition travels as its JSON text; in a
 // POST body it goes as the structure itself.
-function jsonCondFn(_a, _b, resources) {
-  const cond = condFromClauses(clausesFromQuery(resources));
+//
+// The filters are read from `props` rather than from `resources` because this
+// is also what tells stripes-connect that the fetch needs re-running once they
+// arrive: shouldRefresh() evaluates the old and the new options against a
+// single store state, so `resources` looks identical both times (see the
+// spectreCount path below for the same point at greater length).
+function jsonCondFn(queryParams, pathParams, resources, _logger, props) {
+  const clauses = clausesFromQuery(resources);
+
+  // The auto-filter narrows what the list shows of its own contents, so it has
+  // no place in the other thing this fetch does: listing another list's
+  // spectres as candidates to add to this one. That is a search of the list
+  // being added *from*, and this list's criteria are not its business.
+  const autoFilter = queryParams.addFrom ? undefined : autoFilterFor(pathParams.setId, props.resources);
+  if (autoFilter) clauses.push({ type: 'filter', name: autoFilter });
+
+  const cond = condFromClauses(clauses);
   return cond && JSON.stringify(cond);
 }
 
@@ -186,8 +220,16 @@ ListRoute.manifest = Object.freeze({
   resultOffset: { initialValue: 0 },
   spectres: {
     type: 'okapi',
-    path: (queryParams, pathParams) => {
+    path: (queryParams, pathParams, _resources, _logger, props) => {
       // console.log('queryParams =', queryParams, '-- pathParams =', pathParams);
+      // The list's auto-filter, if it has one, is part of the condition, so
+      // there is nothing worth fetching until the project's filters are known:
+      // a fetch issued before then would show the list unfiltered and then
+      // replace it. As with spectreCount below, the filters are read from
+      // `props` so that their arrival is seen as a change worth refetching for.
+      // No auto-filter applies when adding from another list, so there is
+      // nothing to wait for in that case.
+      if (!queryParams.addFrom && !props.resources.filters?.hasLoaded) return null;
       return `cyclops/sets/${queryParams.addFrom || pathParams.setId}`;
     },
     params: {

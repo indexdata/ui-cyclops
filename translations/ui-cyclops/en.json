@@ -111,6 +111,7 @@
   "spectres.adding-from": "Adding to list {title} from {count} {count, plural, one {spectre} other {spectres}} in list {addFrom}",
   "button.add": "Add",
   "filters.label": "Apply filters",
+  "filters.auto": "Filter <code>{name}</code> is always applied to this list",
   "search.aria-label": "Search term {number}",
   "search.add-row.aria-label": "Add another search term",
   "search.remove-row.aria-label": "Remove search term {number}",

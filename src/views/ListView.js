@@ -143,7 +143,7 @@ function isDirty(query, searchRows) {
 // resource, so that typing (and adding a row) is reflected in the UI without
 // re-running the search: submitting does that, as does removing a row. Each
 // row is an index/value pair, and the rows are ANDed together.
-function renderSearch(query, updateQuery, savedFilters, intl, searchRows, setSearchRows, onResetAll) {
+function renderSearch(query, updateQuery, savedFilters, autoFilter, intl, searchRows, setSearchRows, onResetAll) {
   const onSubmitSearch = (e) => {
     e.preventDefault();
     updateQuery(queryFromSearchRows(searchRows));
@@ -265,13 +265,18 @@ function renderSearch(query, updateQuery, savedFilters, intl, searchRows, setSea
           value={selectedFilters}
           onChange={(selected) => updateQuery({ filters: selected.map(o => o.value) })}
         />
+        {autoFilter &&
+          <div className={css.autoFilterNote}>
+            <FormattedMessage id="ui-cyclops.filters.auto" values={{ name: autoFilter }} />
+          </div>
+        }
       </div>
     </form>
   );
 }
 
 
-export default function ListView({ loaded, name, listTitle, addFromTitle, updateList, projectId, action, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addList, populateList, hasSearch, addSpectre, removeSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
+export default function ListView({ loaded, name, listTitle, addFromTitle, updateList, projectId, action, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], autoFilter, addFrom, addList, populateList, hasSearch, addSpectre, removeSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -542,7 +547,7 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
           paneTitle="Search & filter"
           lastMenu={<IconButton icon="caret-left" onClick={() => setShowSearchPane(false)} />}
         >
-          {renderSearch(query, updateQuery, savedFilters, intl, searchRows, setSearchRows, resetAll)}
+          {renderSearch(query, updateQuery, savedFilters, autoFilter, intl, searchRows, setSearchRows, resetAll)}
           <br />
           <br />
           <br />
@@ -570,6 +575,11 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
           addFrom ?
             <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, title: displayName, addFrom: listDisplayTitle(addFromTitle, addFrom, intl) }} /> :
             <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, title: displayName }} />
+        }
+        paneSub={
+          autoFilter ?
+            <FormattedMessage id="ui-cyclops.filters.auto" values={{ name: autoFilter }} /> :
+            undefined
         }
         firstMenu={
           showSearchPane ? undefined : (

@@ -46,5 +46,5 @@
 * **DONE** Implement settings page for maintaining filters (though only for deletion, as "edit" neither makes much sense, nor is supported on the back end).
 * **DONE** Fetch filters for a given project, not all projects then filter
 * **DONE** Add UI for changing the title of a set (view set, **Actions** -> **List** -> **Edit**). CCMS supports changing only the title, not the name.
-* Consider magical "auto.NAME" filter automatically applied to set "NAME"
+* **DONE** Magical `NAME_auto` filter is automatically and dynamicalt applied to set `NAME`
 
