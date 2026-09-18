@@ -4,6 +4,7 @@ import { Paneset } from '@folio/stripes/components';
 import { Settings } from '@folio/stripes/smart-components';
 import FilterSettings from './FilterSettings';
 import FundSettings from './FundSettings';
+import TrackSettings from './TrackSettings';
 
 export default class CyclopsSettings extends React.Component {
   pages = [
@@ -16,6 +17,11 @@ export default class CyclopsSettings extends React.Component {
       route: 'funds',
       label: <FormattedMessage id="ui-cyclops.settings.funds" />,
       component: FundSettings,
+    },
+    {
+      route: 'tracks',
+      label: <FormattedMessage id="ui-cyclops.settings.tracks" />,
+      component: TrackSettings,
     },
   ];
 

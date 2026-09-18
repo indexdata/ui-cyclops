@@ -101,6 +101,7 @@
           "cyclops.projects.item.get",
           "cyclops.projects.item.sets.collection.get",
           "cyclops.funds.collection.get",
+          "cyclops.tracks.collection.get",
           "cyclops.sets.item.spectres.item.post",
           "cyclops.sets.item.spectres.collection.post"
         ]
@@ -123,7 +124,11 @@
           "cyclops.funds.item.get",
           "cyclops.funds.item.post",
           "cyclops.funds.item.put",
-          "cyclops.funds.item.delete"
+          "cyclops.funds.item.delete",
+          "cyclops.tracks.item.get",
+          "cyclops.tracks.item.post",
+          "cyclops.tracks.item.put",
+          "cyclops.tracks.item.delete"
         ]
       }
     ]
