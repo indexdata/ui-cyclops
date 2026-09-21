@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { Field } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import { TitleManager } from '@folio/stripes/core';
-import { Pane, Paneset, Icon, Row, Col, KeyValue, Select, Button, PaneFooter } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, Row, Select, Button, PaneFooter } from '@folio/stripes/components';
 import stripesFinalForm from '@folio/stripes/final-form';
 import { CKV } from '../components/CKV';
 import { CF, RCF, CLF } from '../components/CF';
@@ -65,9 +65,10 @@ const LOCATION_OPTIONS = [
   { value: 'nyu', label: 'New York University' },
 ];
 
-function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting, funds = [] }) {
+function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting, funds = [], tracks = [] }) {
   const name = initialValues?.name;
   const fundOptions = funds.map(f => ({ value: f.id, label: f.name }));
+  const trackOptions = tracks.map(t => ({ value: t.id, label: t.name }));
   const actionOptions = [
     // Leading empty option so the dropdown reads as empty until a value is
     // chosen, rather than defaulting to displaying the first action name.
@@ -155,13 +156,19 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                   />
                 </Row>
                 <Row>
-                  <Col xs={6}>
-                    <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.tracks" />}>
-                      <ul>
-                        {/* project.tracks?.map(x => <li key={x.name}>{x.name}</li>) */}
-                      </ul>
-                    </KeyValue>
-                  </Col>
+                  <CLF
+                    tag="tracks"
+                    xs={6}
+                    emptyValue={{ id: '' }}
+                    renderEntry={subname => (
+                      <Field
+                        name={`${subname}.id`}
+                        component={Select}
+                        dataOptions={trackOptions}
+                        placeholder="Select track"
+                      />
+                    )}
+                  />
                 </Row>
               </form>
             </TitleManager>

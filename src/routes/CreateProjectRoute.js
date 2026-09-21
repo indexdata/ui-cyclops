@@ -13,11 +13,12 @@ function CreateProjectRoute({ resources, mutator }) {
   };
 
   const handleSubmit = async (record) => {
-    // The controlled vocabulary only edits fund IDs; the server does not need
-    // (and we do not retain) the human-readable `name` of each fund.
+    // The controlled vocabularies only edit fund and track IDs; the server
+    // does not need (and we do not retain) the human-readable `name` of each.
     const normalized = {
       ...record,
       funds: (record.funds || []).map(({ id }) => ({ id })),
+      tracks: (record.tracks || []).map(({ id }) => ({ id })),
     };
 
     try {
@@ -44,13 +45,17 @@ function CreateProjectRoute({ resources, mutator }) {
   };
 
   const fundsResource = resources.funds;
-  const loaded = fundsResource && fundsResource.hasLoaded;
+  const tracksResource = resources.tracks;
+  const loaded = (fundsResource && fundsResource.hasLoaded &&
+                  tracksResource && tracksResource.hasLoaded);
   const funds = (fundsResource.records[0] || {}).funds || [];
+  const tracks = (tracksResource.records[0] || {}).tracks || [];
 
   return <ProjectForm
     loaded={loaded}
     initialValues={{}}
     funds={funds}
+    tracks={tracks}
     onSubmit={handleSubmit}
     onClose={handleClose}
   />;
@@ -68,6 +73,10 @@ CreateProjectRoute.manifest = Object.freeze({
   funds: {
     type: 'okapi',
     path: 'cyclops/funds',
+  },
+  tracks: {
+    type: 'okapi',
+    path: 'cyclops/tracks',
   },
 });
 

@@ -38,15 +38,19 @@ function EditProjectRoute({ resources, mutator, match }) {
 
   const projectResource = resources.project;
   const fundsResource = resources.funds;
+  const tracksResource = resources.tracks;
   const loaded = (projectResource && projectResource.hasLoaded &&
-                  fundsResource && fundsResource.hasLoaded);
+                  fundsResource && fundsResource.hasLoaded &&
+                  tracksResource && tracksResource.hasLoaded);
   const funds = (fundsResource.records[0] || {}).funds || [];
+  const tracks = (tracksResource.records[0] || {}).tracks || [];
   const project = projectResource.records[0];
 
   return <ProjectForm
     loaded={loaded}
     initialValues={project}
     funds={funds}
+    tracks={tracks}
     onSubmit={handleSubmit}
     onClose={handleClose}
   />;
@@ -63,6 +67,10 @@ EditProjectRoute.manifest = Object.freeze({
   funds: {
     type: 'okapi',
     path: 'cyclops/funds',
+  },
+  tracks: {
+    type: 'okapi',
+    path: 'cyclops/tracks',
   },
 });
 

@@ -11,8 +11,9 @@ import css from './ProjectView.css';
 import { PromptModal } from '../components/PromptModal';
 
 
-function formatFunds(entries) {
-  if (entries.length === 0) return <NoValue />;
+// Funds and tracks are both lists of { id, name }
+function formatItems(entries) {
+  if (!entries || entries.length === 0) return <NoValue />;
 
   return (
     <ul>
@@ -45,18 +46,19 @@ function renderProject(baseProject) {
             (To come)
           </KeyValue>
         </Col>
-        <Col xs={6}>
-          <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.tracks" />}>
-            (To come)
-          </KeyValue>
-        </Col>
+        <CKV
+          rec={project}
+          tag="tracks"
+          xs={6}
+          formatFn={formatItems}
+        />
       </Row>
       <Row>
         <CKV
           rec={project}
           tag="funds"
           xs={6}
-          formatFn={formatFunds}
+          formatFn={formatItems}
         />
       </Row>
       <Row>
