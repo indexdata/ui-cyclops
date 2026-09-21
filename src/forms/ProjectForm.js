@@ -101,6 +101,33 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                 </Row>
                 <RCF tag="mou_link" />
                 <Row>
+                  <CKV
+                    xs={6}
+                    rec={project}
+                    tag="people"
+                    formatFn={
+                      x => (
+                        <ul>
+                          {x?.map(y => <li key={y.name}>{y.name}: {y.role}</li>)}
+                        </ul>
+                      )
+                    }
+                  />
+                  <CLF
+                    tag="tracks"
+                    xs={6}
+                    emptyValue={{ id: '' }}
+                    renderEntry={subname => (
+                      <Field
+                        name={`${subname}.id`}
+                        component={Select}
+                        dataOptions={trackOptions}
+                        placeholder="Select track"
+                      />
+                    )}
+                  />
+                </Row>
+                <Row>
                   <CLF
                     tag="funds"
                     xs={6}
@@ -113,18 +140,6 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                         placeholder="Select fund"
                       />
                     )}
-                  />
-                  <CKV
-                    xs={6}
-                    rec={project}
-                    tag="people"
-                    formatFn={
-                      x => (
-                        <ul>
-                          {x?.map(y => <li key={y.name}>{y.name}: {y.role}</li>)}
-                        </ul>
-                      )
-                    }
                   />
                 </Row>
                 <Row>
@@ -151,21 +166,6 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                         component={Select}
                         dataOptions={LOCATION_OPTIONS}
                         placeholder="Select location"
-                      />
-                    )}
-                  />
-                </Row>
-                <Row>
-                  <CLF
-                    tag="tracks"
-                    xs={6}
-                    emptyValue={{ id: '' }}
-                    renderEntry={subname => (
-                      <Field
-                        name={`${subname}.id`}
-                        component={Select}
-                        dataOptions={trackOptions}
-                        placeholder="Select track"
                       />
                     )}
                   />
