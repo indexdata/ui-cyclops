@@ -101,17 +101,18 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                 </Row>
                 <RCF tag="mou_link" />
                 <Row>
-                  <CKV
+                  <CLF
+                    tag="funds"
                     xs={6}
-                    rec={project}
-                    tag="people"
-                    formatFn={
-                      x => (
-                        <ul>
-                          {x?.map(y => <li key={y.name}>{y.name}: {y.role}</li>)}
-                        </ul>
-                      )
-                    }
+                    emptyValue={{ id: '' }}
+                    renderEntry={subname => (
+                      <Field
+                        name={`${subname}.id`}
+                        component={Select}
+                        dataOptions={fundOptions}
+                        placeholder="Select fund"
+                      />
+                    )}
                   />
                   <CLF
                     tag="tracks"
@@ -128,18 +129,11 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                   />
                 </Row>
                 <Row>
-                  <CLF
-                    tag="funds"
+                  <CKV
                     xs={6}
-                    emptyValue={{ id: '' }}
-                    renderEntry={subname => (
-                      <Field
-                        name={`${subname}.id`}
-                        component={Select}
-                        dataOptions={fundOptions}
-                        placeholder="Select fund"
-                      />
-                    )}
+                    rec={project}
+                    tag="people"
+                    formatFn={() => '(To come)'}
                   />
                 </Row>
                 <Row>

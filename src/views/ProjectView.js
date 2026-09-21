@@ -41,11 +41,12 @@ function renderProject(baseProject) {
       </Row>
       <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={safeUrl(x)}>{x}</a>} />
       <Row>
-        <Col xs={6}>
-          <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.people" />}>
-            (To come)
-          </KeyValue>
-        </Col>
+        <CKV
+          rec={project}
+          tag="funds"
+          xs={6}
+          formatFn={formatItems}
+        />
         <CKV
           rec={project}
           tag="tracks"
@@ -54,12 +55,11 @@ function renderProject(baseProject) {
         />
       </Row>
       <Row>
-        <CKV
-          rec={project}
-          tag="funds"
-          xs={6}
-          formatFn={formatItems}
-        />
+        <Col xs={6}>
+          <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.people" />}>
+            (To come)
+          </KeyValue>
+        </Col>
       </Row>
       <Row>
         <Col xs={6}>
