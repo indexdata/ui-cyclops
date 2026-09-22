@@ -17,6 +17,9 @@ const IDENTIFIER_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
 const fields = {
   id: ['90px'],
   holdings_count: ['110px'],
+  library_holdings_count: ['70px'],
+  online_database_holdings_count: ['70px'],
+  vendor_holdings_count: ['70px'],
   author: ['200px'],
   title: ['450px'],
   full_vendor_name: ['200px'],
