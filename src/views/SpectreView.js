@@ -73,8 +73,12 @@ function SpectreView({ loaded, match, project, spectre, funds, mutator }) {
           <i>Not yet available.</i>
         </Col>
         <Col xs={6} className={css.miniPane}>
-          <Headline tag="h3">Holdings</Headline>
-          <i>Not yet available.</i>
+          <Headline tag="h3">{spectre.holdings_count} holdings</Headline>
+          <ul className={css.noDecoration}>
+            <li>{spectre.library_holdings_count} library holdings</li>
+            <li>{spectre.online_database_holdings_count} online DB holdings</li>
+            <li>{spectre.vendor_holdings_count} vendor holdings</li>
+          </ul>
         </Col>
       </Row>
       <Row>

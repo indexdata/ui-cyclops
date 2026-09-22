@@ -11,3 +11,11 @@
     color: #808080;
     margin-top: 0px;
 }
+
+ul.noDecoration {
+    padding-left: 0;
+}
+
+ul.noDecoration li {
+    list-style-type: none;
+}
