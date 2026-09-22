@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
+import { ColumnManager } from '@folio/stripes/smart-components';
 import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, TextField, MCLPagingTypes, NoValue, Checkbox, MenuSection } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { PromptModal } from '../components/PromptModal';
@@ -49,9 +50,13 @@ const columnWidths = Object.fromEntries(
 
 // The checkbox column for selecting spectres for batch operations. It sits
 // to the left of the data columns, is not a real field, and is not sortable.
-const visibleColumns = ['select', ...Object.keys(fields)];
 const columnMappingWithSelect = { select: <FormattedMessage id="ui-cyclops.field.select" />, ...columnMapping };
 const columnWidthsWithSelect = { select: '80px', ...columnWidths };
+
+// The columns that the user cannot hide using the column manager: the
+// selection checkboxes, and the title, which is the link to each spectre's
+// full record (or, when adding from another list, the button that adds it).
+const alwaysVisibleColumns = ['select', 'title'];
 
 // Determined experimentally from records in an old "reserve" list
 const availabilityValues = [
@@ -431,7 +436,7 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
   // do the bulk action "Remove from list".
   const canAddSpectres = name !== projectId + '.object' && !addFrom;
 
-  const renderActionMenu = ({ onToggle }) => (
+  const renderActionMenu = ({ onToggle }, renderColumnsMenu) => (
     <>
       <MenuSection label={intl.formatMessage({ id: 'ui-cyclops.list.actions.list' })}>
         <Button
@@ -480,6 +485,7 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
             </Button>
         }
       </MenuSection>
+      {renderColumnsMenu}
     </>
   );
 
@@ -491,7 +497,7 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
     });
   }
 
-  const renderList = () => {
+  const renderList = (visibleColumns) => {
     const sortedColumn = query.sort?.replace(/^-/, '');
     const sortDirection = query.sort?.startsWith('-') ? 'descending' : 'ascending';
 
@@ -586,30 +592,39 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
           </Button>
         </Pane>
       }
-      <Pane
-        defaultWidth="fill"
-        actionMenu={renderActionMenu}
-        paneTitle={
-          addFrom ?
-            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, title: displayName, addFrom: listDisplayTitle(addFromTitle, addFrom, intl) }} /> :
-            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, title: displayName }} />
-        }
-        paneSub={
-          autoFilter ?
-            <FormattedMessage id="ui-cyclops.filters.auto" values={{ name: autoFilter }} /> :
-            undefined
-        }
-        firstMenu={
-          showSearchPane ? undefined : (
-            <IconButton icon="caret-right" onClick={() => setShowSearchPane(true)} />
-          )
-        }
+      <ColumnManager
+        id="spectres-visible-columns"
+        columnMapping={columnMappingWithSelect}
+        excludeKeys={alwaysVisibleColumns}
+        persist
       >
-        {loaded
-          ? renderList()
-          : <Icon icon="spinner-ellipsis" />
-        }
-      </Pane>
+        {({ renderColumnsMenu, visibleColumns }) => (
+          <Pane
+            defaultWidth="fill"
+            actionMenu={(menuProps) => renderActionMenu(menuProps, renderColumnsMenu)}
+            paneTitle={
+              addFrom ?
+                <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, title: displayName, addFrom: listDisplayTitle(addFromTitle, addFrom, intl) }} /> :
+                <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, title: displayName }} />
+            }
+            paneSub={
+              autoFilter ?
+                <FormattedMessage id="ui-cyclops.filters.auto" values={{ name: autoFilter }} /> :
+                undefined
+            }
+            firstMenu={
+              showSearchPane ? undefined : (
+                <IconButton icon="caret-right" onClick={() => setShowSearchPane(true)} />
+              )
+            }
+          >
+            {loaded
+              ? renderList(visibleColumns)
+              : <Icon icon="spinner-ellipsis" />
+            }
+          </Pane>
+        )}
+      </ColumnManager>
       {children}
 
       <PromptModal

@@ -51,4 +51,4 @@
 * **DONE** Provide at-least/at-most filters for all three holdings sub-types
 * **DONE** Add holdings subtypes to full view of a spectre
 * **DONE** Internationalize the text in full spectre view and pluralize holdings counts
-* Allow set of fields in list displays to be configured
+* **DONE** Allow set of fields in list displays to be persistently configured
