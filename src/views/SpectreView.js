@@ -46,51 +46,51 @@ function SpectreView({ loaded, match, project, spectre, funds, mutator }) {
     >
       <Row>
         <Col xs={6} className={css.miniPane}>
-          <Headline tag="h3">About</Headline>
+          <Headline tag="h3"><FormattedMessage id="ui-cyclops.spectre.about.heading" /></Headline>
           <KeyValue label={<FormattedMessage id="ui-cyclops.field.title" />} value={spectre.title} />
           <KeyValue label={<FormattedMessage id="ui-cyclops.field.author" />} value={spectre.author} />
           <KeyValue label={<FormattedMessage id="ui-cyclops.field.full_vendor_name" />} value={spectre.vendor} />
           <KeyValue label={<FormattedMessage id="ui-cyclops.field.availability" />} value={spectre.availability} />
         </Col>
         <Col xs={6} className={css.miniPane}>
-          <Headline tag="h3">Media</Headline>
-          <i>I have no idea what we can put here.</i>
+          <Headline tag="h3"><FormattedMessage id="ui-cyclops.spectre.media.heading" /></Headline>
+          <i><FormattedMessage id="ui-cyclops.spectre.not-yet-available" /></i>
         </Col>
       </Row>
       <Row>
         <Col xs={6} className={css.miniPane}>
-          <Headline tag="h3">Identifiers</Headline>
-          <i>Not yet available.</i>
+          <Headline tag="h3"><FormattedMessage id="ui-cyclops.spectre.identifiers.heading" /></Headline>
+          <i><FormattedMessage id="ui-cyclops.spectre.not-yet-available" /></i>
         </Col>
         <Col xs={6} className={css.miniPane}>
-          <Headline tag="h3">BISAC categories</Headline>
-          <i>Not yet available.</i>
+          <Headline tag="h3"><FormattedMessage id="ui-cyclops.spectre.bisac.heading" /></Headline>
+          <i><FormattedMessage id="ui-cyclops.spectre.not-yet-available" /></i>
         </Col>
       </Row>
       <Row>
         <Col xs={6} className={css.miniPane}>
-          <Headline tag="h3">Review citations</Headline>
-          <i>Not yet available.</i>
+          <Headline tag="h3"><FormattedMessage id="ui-cyclops.spectre.reviews.heading" /></Headline>
+          <i><FormattedMessage id="ui-cyclops.spectre.not-yet-available" /></i>
         </Col>
         <Col xs={6} className={css.miniPane}>
-          <Headline tag="h3">{spectre.holdings_count} holdings</Headline>
+          <Headline tag="h3"><FormattedMessage id="ui-cyclops.spectre.holdings.heading" values={{ count: spectre.holdings_count }} /></Headline>
           <ul className={css.noDecoration}>
-            <li>{spectre.library_holdings_count} library holdings</li>
-            <li>{spectre.online_database_holdings_count} online DB holdings</li>
-            <li>{spectre.vendor_holdings_count} vendor holdings</li>
+            <li><FormattedMessage id="ui-cyclops.spectre.holdings.library" values={{ count: spectre.library_holdings_count }} /></li>
+            <li><FormattedMessage id="ui-cyclops.spectre.holdings.online-database" values={{ count: spectre.online_database_holdings_count }} /></li>
+            <li><FormattedMessage id="ui-cyclops.spectre.holdings.vendor" values={{ count: spectre.vendor_holdings_count }} /></li>
           </ul>
         </Col>
       </Row>
       <Row>
         <Col xs={12} className={css.miniPane}>
-          <Headline tag="h3">In lists</Headline>
-          <i>CCMS does not yet provide a means to discover this.</i>
+          <Headline tag="h3"><FormattedMessage id="ui-cyclops.spectre.lists.heading" /></Headline>
+          <i><FormattedMessage id="ui-cyclops.spectre.lists.unavailable" /></i>
         </Col>
       </Row>
 
       <Row>
         <Col xs={12} className={css.miniPane}>
-          <Headline tag="h3">Actions</Headline>
+          <Headline tag="h3"><FormattedMessage id="ui-cyclops.spectre.actions.heading" /></Headline>
           <ActionSection
             key={match.params.spectreId}
             project={project}
