@@ -67,7 +67,20 @@ const dataOptions = [
   ...availabilityValues.map(x => ({ value: x, label: <FormattedMessage id={`ui-cyclops.availability.${x}`} /> })),
 ];
 
-// Comparison directions offered for the numeric holdings-count filter. The
+// The numeric holdings-count filters, one for the summary count and one for
+// each type of holding, named by the field they filter on. Each is a
+// comparison-direction/value pair, recorded in the query resource as `FIELD`
+// (the value) and `FIELD_op` (the direction); the field name is also the
+// prefix of its label translations. ListRoute uses these too, when building
+// the query condition.
+export const HOLDINGS_COUNT_FIELDS = [
+  'holdings_count',
+  'library_holdings_count',
+  'online_database_holdings_count',
+  'vendor_holdings_count',
+];
+
+// Comparison directions offered for the numeric holdings-count filters. The
 // value is a symbolic token that ListRoute maps to an actual operator when
 // building the query condition.
 const holdingsCountOps = [
@@ -89,8 +102,7 @@ const emptySearch = {
   qindex: DEFAULT_QINDEX,
   query: '',
   availability: '',
-  holdingsCountOp: 'gte',
-  holdingsCount: '',
+  ...Object.fromEntries(HOLDINGS_COUNT_FIELDS.flatMap(field => [[`${field}_op`, 'gte'], [field, '']])),
   decision: '',
   filters: [],
 };
@@ -137,7 +149,8 @@ function isDirty(query, searchRows) {
     const value = query[key];
     if (key === 'filters') return [].concat(value || []).length > 0;
     // An absent value means the control is showing its default, which is the
-    // empty value -- notably for holdingsCountOp, whose default is not ''
+    // empty value -- notably for the holdings-count directions, whose default
+    // is not ''
     return (value ?? empty) !== empty;
   });
 }
@@ -237,22 +250,24 @@ function renderSearch(query, updateQuery, savedFilters, autoFilter, intl, search
           onChange={(e) => updateQuery({ availability: e.currentTarget.value })}
         />
       </div>
-      <div>
-        <Select
-          label={<FormattedMessage id="ui-cyclops.holdings-count.label" />}
-          dataOptions={holdingsCountOps}
-          value={query.holdingsCountOp || 'gte'}
-          onChange={(e) => updateQuery({ holdingsCountOp: e.currentTarget.value })}
-          marginBottom0
-        />
-        <TextField
-          type="number"
-          min="0"
-          ariaLabel={intl.formatMessage({ id: 'ui-cyclops.holdings-count.value.aria-label' })}
-          value={query.holdingsCount ?? ''}
-          onChange={(e) => updateQuery({ holdingsCount: e.currentTarget.value })}
-        />
-      </div>
+      {HOLDINGS_COUNT_FIELDS.map(field => (
+        <div key={field}>
+          <Select
+            label={<FormattedMessage id={`ui-cyclops.${field}.label`} />}
+            dataOptions={holdingsCountOps}
+            value={query[`${field}_op`] || 'gte'}
+            onChange={(e) => updateQuery({ [`${field}_op`]: e.currentTarget.value })}
+            marginBottom0
+          />
+          <TextField
+            type="number"
+            min="0"
+            ariaLabel={intl.formatMessage({ id: `ui-cyclops.${field}.value.aria-label` })}
+            value={query[field] ?? ''}
+            onChange={(e) => updateQuery({ [field]: e.currentTarget.value })}
+          />
+        </div>
+      ))}
       <div>
         <Select
           label={<FormattedMessage id="ui-cyclops.decision.label" />}

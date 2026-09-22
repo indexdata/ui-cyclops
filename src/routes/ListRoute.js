@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { stripesConnect } from '@folio/stripes/core';
 import { StripesConnectedSource } from '@folio/stripes/smart-components';
-import ListView, { DEFAULT_QINDEX } from '../views/ListView';
+import ListView, { DEFAULT_QINDEX, HOLDINGS_COUNT_FIELDS } from '../views/ListView';
 import { idCond } from '../util';
 
 const INITIAL_RESULT_COUNT = 20;
@@ -129,13 +129,15 @@ function clausesFromQuery(resources) {
     clauses.push({ type: 'term', field: 'availability', rel: 'eq', value: availability });
   }
 
-  // Numeric holdings-count filter: only apply when a value has been entered,
-  // and only honour the two supported comparison operators.
-  const holdingsCount = resources.query.holdingsCount;
-  if (holdingsCount !== undefined && holdingsCount !== '' && !Number.isNaN(Number(holdingsCount))) {
-    const rel = resources.query.holdingsCountOp === 'lte' ? 'le' : 'ge';
-    clauses.push({ type: 'term', field: 'holdings_count', rel, value: Number(holdingsCount) });
-  }
+  // Numeric holdings-count filters: each applies only when a value has been
+  // entered, and only the two supported comparison operators are honoured.
+  HOLDINGS_COUNT_FIELDS.forEach(field => {
+    const count = resources.query[field];
+    if (count !== undefined && count !== '' && !Number.isNaN(Number(count))) {
+      const rel = resources.query[`${field}_op`] === 'lte' ? 'le' : 'ge';
+      clauses.push({ type: 'term', field, rel, value: Number(count) });
+    }
+  });
 
   // Tri-state decision filter: only constrain when explicitly set to one of
   // the two boolean values (an empty value means "either").
