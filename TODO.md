@@ -49,3 +49,5 @@
 * **DONE** Magical `NAME_auto` filter is automatically and dynamicalt applied to set `NAME`
 * **DONE** Include all three holdings sub-types in summary list of spectres in a list
 * **DONE** Provide at-least/at-most filters for all three holdings sub-types
+* Add holdings subtypes to full view of a spectre
+* Allow set of fields in list displays to be configured
