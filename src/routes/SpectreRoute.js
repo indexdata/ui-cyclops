@@ -20,20 +20,14 @@ function SpectreRoute({ resources, mutator, match }) {
                   projectResource && projectResource.hasLoaded);
   const spectre = response2spectre(spectreResource.records[0]);
 
-  // Populate the Fund dropdown from the funds defined on the associated
-  // project rather than the global fund list. Project funds are stored as
-  // { id, name }; map them to the { name, title } shape ActionSection expects,
-  // keying the option value on the fund id (which is what spectre.fund holds).
-  const projectFunds = (projectResource.records[0] || {}).funds || [];
-  const funds = projectFunds.map(f => ({ name: f.id, title: f.name }));
+  const project = projectResource.records[0] || {};
 
   return (
     <SpectreView
       loaded={loaded}
       match={match}
-      project={projectResource.records[0]}
+      project={project}
       spectre={spectre}
-      funds={funds}
       mutator={mutator}
     />
   );

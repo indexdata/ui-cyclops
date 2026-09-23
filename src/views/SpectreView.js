@@ -6,7 +6,7 @@ import ActionSection from './ActionSection';
 import css from './SpectreView.css';
 import packageInfo from '../../package';
 
-function SpectreView({ loaded, match, project, spectre, funds, mutator }) {
+function SpectreView({ loaded, match, project, spectre, mutator }) {
   const callout = useCallout();
 
   if (!loaded) return <LoadingPane />;
@@ -15,7 +15,14 @@ function SpectreView({ loaded, match, project, spectre, funds, mutator }) {
 
   const decide = async (payload, messageId, values = {}) => {
     try {
-      await mutator.spectreUpdate.POST({ decision: spectre.decision, fund: spectre.fund?.replace(/:.*/, ''), ...payload });
+      // Every update sends the whole record, so the values that are not being
+      // changed are sent along as they stand.
+      await mutator.spectreUpdate.POST({
+        decision: spectre.decision,
+        fund: spectre.fund?.replace(/:.*/, ''),
+        track: spectre.track?.replace(/:.*/, ''),
+        ...payload,
+      });
       callout.sendCallout({
         message: <FormattedMessage id={`${messageId}.success`} values={values} />,
       });
@@ -37,6 +44,7 @@ function SpectreView({ loaded, match, project, spectre, funds, mutator }) {
   };
 
   const onChangeFund = (fund) => decide({ fund }, 'ui-cyclops.spectre.set-fund', { fund });
+  const onChangeTrack = (track) => decide({ track }, 'ui-cyclops.spectre.set-track', { track });
   const onDecide = () => decide({ decision: true }, 'ui-cyclops.spectre.decision');
   return (
     <Pane
@@ -95,8 +103,8 @@ function SpectreView({ loaded, match, project, spectre, funds, mutator }) {
             key={match.params.spectreId}
             project={project}
             spectre={spectre}
-            funds={funds}
             onChangeFund={onChangeFund}
+            onChangeTrack={onChangeTrack}
             onDecide={onDecide}
           />
         </Col>

@@ -49,6 +49,7 @@
 * **DONE** Magical `NAME_auto` filter is automatically and dynamicalt applied to set `NAME`
 * **DONE** Settings page for maintaining the set of available tracks
 * **DONE** Association of tracks to individual projects
+* **DONE** Ability to set track for a spectre
 * **DONE** Include all three holdings sub-types in summary list of spectres in a list
 * **DONE** Provide at-least/at-most filters for all three holdings sub-types
 * **DONE** Add holdings subtypes to full view of a spectre
