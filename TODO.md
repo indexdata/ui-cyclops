@@ -47,6 +47,8 @@
 * **DONE** Fetch filters for a given project, not all projects then filter
 * **DONE** Add UI for changing the title of a set (view set, **Actions** -> **List** -> **Edit**). CCMS supports changing only the title, not the name.
 * **DONE** Magical `NAME_auto` filter is automatically and dynamicalt applied to set `NAME`
+* **DONE** Settings page for maintaining the set of available tracks
+* **DONE** Association of tracks to individual projects
 * **DONE** Include all three holdings sub-types in summary list of spectres in a list
 * **DONE** Provide at-least/at-most filters for all three holdings sub-types
 * **DONE** Add holdings subtypes to full view of a spectre
