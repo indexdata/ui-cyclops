@@ -1,6 +1,18 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
+// What a failed mutation contributes to its failure message. A rejected fetch
+// yields the response, whose status and body say what went wrong; anything
+// else -- a network failure, or a bug in the caller -- arrives as an error,
+// which has only a message to report. Both shapes fill in the same three
+// values, as that is what the failure translations take.
+async function failureDetails(res) {
+  if (typeof res?.text !== 'function') {
+    return { status: '', statusText: '', body: res?.message ?? String(res) };
+  }
+  return { status: res.status, statusText: res.statusText, body: await res.text() };
+}
+
 // Run an async mutation and report the outcome through a callout: `successId`
 // on success, `failureId` on failure (with the response's status/statusText/
 // body folded into `values`). `values` are shared by both messages. Returns
@@ -19,12 +31,7 @@ export async function mutateWithCallout(callout, op, { values = {}, successId, f
       message: (
         <FormattedMessage
           id={failureId}
-          values={{
-            ...values,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
+          values={{ ...values, ...await failureDetails(res) }}
         />
       ),
     });
