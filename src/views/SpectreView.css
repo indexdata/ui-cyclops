@@ -19,3 +19,9 @@ ul.noDecoration {
 ul.noDecoration li {
     list-style-type: none;
 }
+
+pre.sourceRecord {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+}

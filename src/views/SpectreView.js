@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
-import { Pane, LoadingPane, IconButton, Row, Col, Headline, KeyValue } from '@folio/stripes/components';
+import XMLViewer from 'react-xml-viewer';
+import { Pane, LoadingPane, IconButton, Row, Col, Headline, KeyValue, Button, Icon, Modal } from '@folio/stripes/components';
 import ActionSection from './ActionSection';
 import { mutateWithCallout } from '../util';
 import css from './SpectreView.css';
@@ -9,6 +10,7 @@ import packageInfo from '../../package';
 
 function SpectreView({ loaded, match, project, spectre, mutator }) {
   const callout = useCallout();
+  const [showSourceRecord, setShowSourceRecord] = useState(false);
 
   if (!loaded) return <LoadingPane />;
 
@@ -32,12 +34,39 @@ function SpectreView({ loaded, match, project, spectre, mutator }) {
   const onChangeFund = (fund) => decide({ fund }, 'ui-cyclops.spectre.set-fund', { fund });
   const onChangeTrack = (track) => decide({ track }, 'ui-cyclops.spectre.set-track', { track });
   const onDecide = () => decide({ decision: true }, 'ui-cyclops.spectre.decision');
+
+  const renderActionMenu = ({ onToggle }) => (
+    <Button
+      buttonStyle="dropdownItem"
+      onClick={() => { onToggle(); setShowSourceRecord(true); }}
+    >
+      <Icon icon="report">
+        <FormattedMessage id="ui-cyclops.spectre.view-source-record" />
+      </Icon>
+    </Button>
+  );
+
   return (
     <Pane
       defaultWidth="40%"
       paneTitle={spectre.title}
       firstMenu={<IconButton icon="times" to={listUrl} />}
+      actionMenu={renderActionMenu}
     >
+      <Modal
+        open={showSourceRecord}
+        onClose={() => setShowSourceRecord(false)}
+        dismissible
+        closeOnBackgroundClick
+        size="large"
+        label={<FormattedMessage id="ui-cyclops.spectre.source-record.heading" />}
+      >
+        <XMLViewer
+          xml={spectre.source_record || ''}
+          collapsible
+          invalidXml={<pre className={css.sourceRecord}>{spectre.source_record}</pre>}
+        />
+      </Modal>
       <Row>
         <Col xs={6} className={css.miniPane}>
           <Headline tag="h3"><FormattedMessage id="ui-cyclops.spectre.about.heading" /></Headline>

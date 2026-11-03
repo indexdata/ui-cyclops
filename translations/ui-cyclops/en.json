@@ -76,6 +76,8 @@
   "spectre.lists.heading": "In lists",
   "spectre.lists.unavailable": "CCMS does not yet provide a means to discover this.",
   "spectre.actions.heading": "Actions",
+  "spectre.view-source-record": "View source record",
+  "spectre.source-record.heading": "Source record",
   "field.select": "Select?",
   "select.aria-label": "Select spectre: {title}",
   "deselect.aria-label": "Deselect spectre: {title}",
