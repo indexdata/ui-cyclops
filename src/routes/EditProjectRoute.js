@@ -1,8 +1,8 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { stripesConnect, useCallout } from '@folio/stripes/core';
 import ProjectForm from '../forms/ProjectForm';
+import { mutateWithCallout } from '../util';
 
 function EditProjectRoute({ resources, mutator, match }) {
   const history = useHistory();
@@ -13,27 +13,12 @@ function EditProjectRoute({ resources, mutator, match }) {
   };
 
   const handleSubmit = async (record) => {
-    try {
-      await mutator.project.PUT(record);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.project.update.success" values={{ name: record.id }} />,
-      });
-      handleClose();
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.project.update.failure"
-          values={{
-            name: record.id,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-    }
+    const updated = await mutateWithCallout(callout, () => mutator.project.PUT(record), {
+      values: { name: record.id },
+      successId: 'ui-cyclops.project.update.success',
+      failureId: 'ui-cyclops.project.update.failure',
+    });
+    if (updated) handleClose();
   };
 
   const projectResource = resources.project;

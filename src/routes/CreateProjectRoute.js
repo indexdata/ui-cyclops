@@ -1,8 +1,8 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { stripesConnect, useCallout } from '@folio/stripes/core';
 import ProjectForm from '../forms/ProjectForm';
+import { mutateWithCallout } from '../util';
 
 function CreateProjectRoute({ resources, mutator }) {
   const history = useHistory();
@@ -21,27 +21,18 @@ function CreateProjectRoute({ resources, mutator }) {
       tracks: (record.tracks || []).map(({ id }) => ({ id })),
     };
 
-    try {
-      const newRecord = await mutator.project.POST(normalized);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.project.create.success" values={{ name: newRecord.id }} />,
-      });
-      history.push(`./${newRecord.id}`);
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.project.create.failure"
-          values={{
-            name: record.id,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-    }
+    // The created project's id comes back on the response, and is what the
+    // redirect uses; the callouts name the id as submitted, which the form
+    // requires and the server honours.
+    let created;
+    const ok = await mutateWithCallout(callout, async () => {
+      created = await mutator.project.POST(normalized);
+    }, {
+      values: { name: record.id },
+      successId: 'ui-cyclops.project.create.success',
+      failureId: 'ui-cyclops.project.create.failure',
+    });
+    if (ok) history.push(`./${created.id}`);
   };
 
   const fundsResource = resources.funds;

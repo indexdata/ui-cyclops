@@ -4,34 +4,18 @@ import { FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, MultiColumnList, Button, ConfirmationModal } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
+import { mutateWithCallout } from '../util';
 import packageInfo from '../../package';
 
 
 function renderList(projects, callout, projectToDelete, setProjectToDelete, deleteProject) {
   async function actuallyDeleteProject(project) {
     setProjectToDelete(undefined);
-    const name = project.name;
-
-    try {
-      await deleteProject(project.id);
-      callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.projects.delete.success" values={{ name }} />,
-      });
-    } catch (res) {
-      callout.sendCallout({
-        type: 'error',
-        timeout: 0,
-        message: <FormattedMessage
-          id="ui-cyclops.projects.delete.failure"
-          values={{
-            name,
-            status: res.status,
-            statusText: res.statusText,
-            body: await res.text(),
-          }}
-        />
-      });
-    }
+    await mutateWithCallout(callout, () => deleteProject(project.id), {
+      values: { name: project.name },
+      successId: 'ui-cyclops.projects.delete.success',
+      failureId: 'ui-cyclops.projects.delete.failure',
+    });
   }
 
   return (
