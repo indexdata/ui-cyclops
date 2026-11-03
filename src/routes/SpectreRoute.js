@@ -38,7 +38,7 @@ SpectreRoute.manifest = Object.freeze({
     type: 'okapi',
     path: 'cyclops/sets/:{setId}',
     params: {
-      fields: '*',
+      fields: '*, source_record',
       jsonCond: (_, pathParams) => JSON.stringify(idCond(pathParams.spectreId)),
     },
   },
