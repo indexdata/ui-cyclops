@@ -517,6 +517,12 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
     ));
 
     const formatter = {
+      library_holdings_count: r => (
+        <FormattedMessage
+          id="ui-cyclops.list.library_holdings_count.value"
+          values={{ holdings: r.library_holdings_count, libraries: r.library_count }}
+        />
+      ),
       select: r => (
         <Checkbox
           checked={selectedIds.has(r.id)}
