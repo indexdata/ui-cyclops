@@ -40,8 +40,18 @@ const searchableIndexes = [].concat(Object.entries(fields).map(([key]) => ({
 })));
 
 
+// A column heading, with hover text if the translations define a hint
+// (`ui-cyclops.field.<key>.hint`) for that field.
+const ColumnHeading = ({ field }) => {
+  const intl = useIntl();
+  const id = `ui-cyclops.field.${field}`;
+  const hintId = `${id}.hint`;
+  const hint = intl.messages[hintId] ? intl.formatMessage({ id: hintId }) : undefined;
+  return <span title={hint}><FormattedMessage id={id} /></span>;
+};
+
 const columnMapping = Object.fromEntries(
-  Object.entries(fields).map(([key]) => [key, <FormattedMessage id={`ui-cyclops.field.${key}`} />])
+  Object.entries(fields).map(([key]) => [key, <ColumnHeading field={key} />])
 );
 
 const columnWidths = Object.fromEntries(
