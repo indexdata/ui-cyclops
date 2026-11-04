@@ -155,7 +155,10 @@ function renderList(sets, nav, callout,
               {listDisplayName(qualifiedName(r), intl)}
             </Link>
           ),
-          title: r => r.title || <NoValue />,
+          title: r => (
+            !r.title ? <NoValue /> :
+            <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${qualifiedName(r)}`}>{r.title}</Link>
+          ),
           'action-delete': r => (
             r.set === 'object' ? null :
             <Button marginBottom0 onClick={() => setListToDelete(r)}>

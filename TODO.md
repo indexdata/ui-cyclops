@@ -63,6 +63,7 @@
 * **DONE** Provide ARIA labelling for all relevant UI elements
 * **DONE** Add `track` field to the spectre list
 * **DONE** Consistently refer to lists by their display-name, not tag
+* **DONE** Allow linking to a list (from its project) by display-name as well as tag.
 
 ## To be done
 
