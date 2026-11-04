@@ -58,3 +58,8 @@
 * **DONE** Provide right-pane action-menu to pop up the source record
 * **DONE** Internationalize all remaining user-facing strings
 * **DONE** Provide ARIA labelling for all relevant UI elements
+* Add `track` field to the spectre list
+* Consistent nomenclature for Spectre/Record
+* Consistent nomenclature for List/Set
+* Refer to list by display-name, not tag (e.g. in tab)
+* Consistent nomenclature for display-name vs. tag
