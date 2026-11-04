@@ -56,10 +56,17 @@
 * **DONE** Internationalize the text in full spectre view and pluralize holdings counts
 * **DONE** Allow set of fields in list displays to be persistently configured
 * **DONE** Provide right-pane action-menu to pop up the source record
+
+## 2026-11-04
+
 * **DONE** Internationalize all remaining user-facing strings
 * **DONE** Provide ARIA labelling for all relevant UI elements
 * **DONE** Add `track` field to the spectre list
+
+## To be done
+
 * Consistent nomenclature for Spectre/Record
 * Consistent nomenclature for List/Set
 * Refer to list by display-name, not tag (e.g. in tab)
 * Consistent nomenclature for display-name vs. tag
+
