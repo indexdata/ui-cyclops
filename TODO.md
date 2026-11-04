@@ -56,3 +56,5 @@
 * **DONE** Internationalize the text in full spectre view and pluralize holdings counts
 * **DONE** Allow set of fields in list displays to be persistently configured
 * **DONE** Provide right-pane action-menu to pop up the source record
+* **DONE** Internationalize all remaining user-facing strings
+* **DONE** Provide ARIA labelling for all relevant UI elements

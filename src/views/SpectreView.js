@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
 import XMLViewer from 'react-xml-viewer';
 import { Pane, LoadingPane, IconButton, Row, Col, Headline, KeyValue, Button, Icon, Modal } from '@folio/stripes/components';
@@ -10,6 +10,7 @@ import packageInfo from '../../package';
 
 function SpectreView({ loaded, match, project, spectre, mutator }) {
   const callout = useCallout();
+  const intl = useIntl();
   const [showSourceRecord, setShowSourceRecord] = useState(false);
 
   if (!loaded) return <LoadingPane />;
@@ -50,7 +51,13 @@ function SpectreView({ loaded, match, project, spectre, mutator }) {
     <Pane
       defaultWidth="40%"
       paneTitle={spectre.title}
-      firstMenu={<IconButton icon="times" to={listUrl} />}
+      firstMenu={
+        <IconButton
+          icon="times"
+          to={listUrl}
+          aria-label={intl.formatMessage({ id: 'ui-cyclops.spectre.close.aria-label' })}
+        />
+      }
       actionMenu={renderActionMenu}
     >
       <Modal

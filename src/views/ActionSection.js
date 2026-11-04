@@ -43,7 +43,6 @@ function ActionSection({ project, spectre, onChangeFund, onChangeTrack, onDecide
 
   return (
     <Row>
-      {/* Replace text with 118n tags */}
       <Col xs={2} style={{ paddingTop: '1.7em' }}>
         <Button
           type="button"
@@ -54,12 +53,12 @@ function ActionSection({ project, spectre, onChangeFund, onChangeTrack, onDecide
         </Button>
       </Col>
       <Col xs={4}>
-        <Select label="Fund" dataOptions={options(project.funds)} value={fund} onChange={handleChangeFund} />
-        <Select label="Track" dataOptions={options(project.tracks)} value={track} onChange={handleChangeTrack} />
+        <Select label={<FormattedMessage id="ui-cyclops.field.fund" />} dataOptions={options(project.funds)} value={fund} onChange={handleChangeFund} />
+        <Select label={<FormattedMessage id="ui-cyclops.field.track" />} dataOptions={options(project.tracks)} value={track} onChange={handleChangeTrack} />
       </Col>
       <Col xs={4}>
-        <Select label="Origin" dataOptions={options(project.origins)} />
-        <Select label="Destination" dataOptions={options(project.destinations)} />
+        <Select label={<FormattedMessage id="ui-cyclops.action.origin" />} dataOptions={options(project.origins)} />
+        <Select label={<FormattedMessage id="ui-cyclops.action.destination" />} dataOptions={options(project.destinations)} />
       </Col>
       <Col xs={2} style={{ paddingTop: '1.7em' }}>
         <div>

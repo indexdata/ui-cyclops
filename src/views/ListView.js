@@ -454,7 +454,7 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
           onClick={() => { onToggle(); setShowEditModal(true); }}
         >
           <Icon icon="edit">
-            <FormattedMessage id="ui-cyclops.list.edit.button" />
+            <FormattedMessage id="ui-cyclops.button.edit" />
           </Icon>
         </Button>
       </MenuSection>
@@ -584,8 +584,14 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
       {showSearchPane &&
         <Pane
           defaultWidth="20%"
-          paneTitle="Search & filter"
-          lastMenu={<IconButton icon="caret-left" onClick={() => setShowSearchPane(false)} />}
+          paneTitle={<FormattedMessage id="ui-cyclops.search.heading" />}
+          lastMenu={
+            <IconButton
+              icon="caret-left"
+              onClick={() => setShowSearchPane(false)}
+              aria-label={intl.formatMessage({ id: 'ui-cyclops.search.hide-pane.aria-label' })}
+            />
+          }
         >
           {renderSearch(query, updateQuery, savedFilters, autoFilter, intl, searchRows, setSearchRows, resetAll)}
           <br />
@@ -630,7 +636,11 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
             }
             firstMenu={
               showSearchPane ? undefined : (
-                <IconButton icon="caret-right" onClick={() => setShowSearchPane(true)} />
+                <IconButton
+                  icon="caret-right"
+                  onClick={() => setShowSearchPane(true)}
+                  aria-label={intl.formatMessage({ id: 'ui-cyclops.search.show-pane.aria-label' })}
+                />
               )
             }
           >

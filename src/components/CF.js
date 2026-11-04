@@ -61,6 +61,7 @@ export const CLF = ({ domain = 'project', tag, i18nTag, helpTag, xs, ...rest }) 
         id={`edit-${domain}-${tag}`}
         name={tag}
         label={<><FormattedMessage id={translationTag} /> {helpButton}</>}
+        entryLabel={intl.formatMessage({ id: translationTag })}
         {...rest}
       />
     </Col>

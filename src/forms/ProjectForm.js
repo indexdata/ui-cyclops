@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Field } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import { TitleManager } from '@folio/stripes/core';
@@ -66,6 +66,7 @@ const LOCATION_OPTIONS = [
 ];
 
 function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting, funds = [], tracks = [] }) {
+  const intl = useIntl();
   const name = initialValues?.name;
   const fundOptions = funds.map(f => ({ value: f.id, label: f.name }));
   const trackOptions = tracks.map(t => ({ value: t.id, label: t.name }));
@@ -105,12 +106,13 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                     tag="funds"
                     xs={6}
                     emptyValue={{ id: '' }}
-                    renderEntry={subname => (
+                    renderEntry={(subname, ariaLabel) => (
                       <Field
                         name={`${subname}.id`}
                         component={Select}
+                        aria-label={ariaLabel}
                         dataOptions={fundOptions}
-                        placeholder="Select fund"
+                        placeholder={intl.formatMessage({ id: 'ui-cyclops.project.field.funds.placeholder' })}
                       />
                     )}
                   />
@@ -118,12 +120,13 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                     tag="tracks"
                     xs={6}
                     emptyValue={{ id: '' }}
-                    renderEntry={subname => (
+                    renderEntry={(subname, ariaLabel) => (
                       <Field
                         name={`${subname}.id`}
                         component={Select}
+                        aria-label={ariaLabel}
                         dataOptions={trackOptions}
-                        placeholder="Select track"
+                        placeholder={intl.formatMessage({ id: 'ui-cyclops.project.field.tracks.placeholder' })}
                       />
                     )}
                   />
@@ -133,7 +136,7 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                     xs={6}
                     rec={project}
                     tag="people"
-                    formatFn={() => '(To come)'}
+                    formatFn={() => <FormattedMessage id="ui-cyclops.to-come" />}
                   />
                 </Row>
                 <Row>
@@ -141,12 +144,13 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                     tag="origins"
                     xs={6}
                     emptyValue={{ id: '' }}
-                    renderEntry={subname => (
+                    renderEntry={(subname, ariaLabel) => (
                       <Field
                         name={`${subname}.id`}
                         component={Select}
+                        aria-label={ariaLabel}
                         dataOptions={LOCATION_OPTIONS}
-                        placeholder="Select location"
+                        placeholder={intl.formatMessage({ id: 'ui-cyclops.project.field.locations.placeholder' })}
                       />
                     )}
                   />
@@ -154,12 +158,13 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                     tag="destinations"
                     xs={6}
                     emptyValue={{ id: '' }}
-                    renderEntry={subname => (
+                    renderEntry={(subname, ariaLabel) => (
                       <Field
                         name={`${subname}.id`}
                         component={Select}
+                        aria-label={ariaLabel}
                         dataOptions={LOCATION_OPTIONS}
-                        placeholder="Select location"
+                        placeholder={intl.formatMessage({ id: 'ui-cyclops.project.field.locations.placeholder' })}
                       />
                     )}
                   />

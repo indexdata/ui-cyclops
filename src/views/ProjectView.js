@@ -57,7 +57,7 @@ function renderProject(baseProject) {
       <Row>
         <Col xs={6}>
           <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.people" />}>
-            (To come)
+            <FormattedMessage id="ui-cyclops.to-come" />
           </KeyValue>
         </Col>
       </Row>
@@ -210,10 +210,10 @@ export default function ProjectView({ loaded, project, sets, filters, addList, p
   />;
 
   const renderActionMenu = () => (
-    <MenuSection label="Actions">
+    <MenuSection label={<FormattedMessage id="ui-cyclops.project.actions.heading" />}>
       <Button buttonStyle="dropdownItem" to={`${nav.project.id}/edit`}>
         <Icon size="small" icon="edit">
-          Edit
+          <FormattedMessage id="ui-cyclops.button.edit" />
         </Icon>
       </Button>
     </MenuSection>
