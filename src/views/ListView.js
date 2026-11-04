@@ -27,6 +27,7 @@ const fields = {
   availability: ['240px'],
   decision: ['80px'],
   fund: ['220px'],
+  track: ['220px'],
 };
 
 // There is no empty entry among the searchable indexes, so a search with none
@@ -546,6 +547,7 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
       ),
       decision: r => (r.decision ? '❎' : <NoValue />),
       fund: r => r.fund?.replace(/.*?:/, ''),
+      track: r => r.track?.replace(/.*?:/, ''),
     };
 
     return (
