@@ -310,7 +310,7 @@ function renderSearch(query, updateQuery, savedFilters, autoFilter, intl, search
 }
 
 
-export default function ListView({ loaded, name, listTitle, addFromTitle, updateList, projectId, action, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], autoFilter, addFrom, addList, populateList, hasSearch, addSpectre, removeSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
+export default function ListView({ loaded, name, project, listTitle, addFromTitle, updateList, projectId, batchUpdate, spectres, spectreCount, query, updateQuery, savedFilters = [], autoFilter, addFrom, addList, populateList, hasSearch, addSpectre, removeSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -382,11 +382,16 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
   };
 
   const nav = useNav();
-  nav.update({ list: { name, title: currentTitle, location: useLocation() } });
+  // After a reload or a direct link, no project page has been visited to put
+  // the project's record in the nav, and the project tab would fall back to
+  // naming it by its ID. Supply it from here, keeping a record that is already
+  // there for this project, as that carries the location to return to.
+  const navProject = project && nav.project.id !== project.id ? project : nav.project;
+  nav.update({ project: navProject, list: { name, title: currentTitle, location: useLocation() } });
   const totalCount = spectreCount || spectres?.data.length;
   const count = spectreCount || intl.formatMessage({ id: 'ui-cyclops.at-least' }, { minValue: spectres?.data.length });
 
-  const actionName = action?.name || intl.formatMessage({ id: 'ui-cyclops.action.default' });
+  const actionName = project?.action?.name || intl.formatMessage({ id: 'ui-cyclops.action.default' });
 
   const doBatchAction = async () => {
     const ids = [...selectedIds].map(String);
@@ -431,7 +436,7 @@ export default function ListView({ loaded, name, listTitle, addFromTitle, update
   const onEditList = async (newTitle) => {
     setShowEditModal(false);
     const done = await mutateWithCallout(callout, () => updateList(newTitle), {
-      values: { name, title: newTitle },
+      values: { list: displayName, title: newTitle },
       successId: 'ui-cyclops.list.edit.success',
       failureId: 'ui-cyclops.list.edit.failure',
     });

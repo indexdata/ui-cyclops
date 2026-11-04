@@ -62,11 +62,11 @@
 * **DONE** Internationalize all remaining user-facing strings
 * **DONE** Provide ARIA labelling for all relevant UI elements
 * **DONE** Add `track` field to the spectre list
+* **DONE** Consistently refer to lists by their display-name, not tag
 
 ## To be done
 
 * Consistent nomenclature for Spectre/Record
 * Consistent nomenclature for List/Set
-* Refer to list by display-name, not tag (e.g. in tab)
 * Consistent nomenclature for display-name vs. tag
 

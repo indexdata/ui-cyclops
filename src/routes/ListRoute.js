@@ -26,7 +26,6 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   const addFrom = query.get('addFrom');
   const spectresResource = resources.spectres;
   const loaded = spectresResource && spectresResource.hasLoaded;
-  const action = resources.project?.records?.[0]?.action;
 
   // Since the count is fetched only after the records (see the manifest), the
   // previous search's count lingers for as long as the new search takes, plus
@@ -74,7 +73,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       loaded={loaded}
       name={listName}
       projectId={match.params.projectId}
-      action={action}
+      project={resources.project?.records?.[0]}
       batchUpdate={(ids, changes) => mutator.batch.POST({ ids, changes })}
       listTitle={setRecord?.title}
       addFromTitle={addFromRecord?.title}
