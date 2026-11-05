@@ -12,7 +12,7 @@ function renderList(projects, callout, projectToDelete, setProjectToDelete, dele
   async function actuallyDeleteProject(project) {
     setProjectToDelete(undefined);
     await mutateWithCallout(callout, () => deleteProject(project.id), {
-      values: { name: project.name },
+      values: { name: project.name || project.id },
       successId: 'ui-cyclops.projects.delete.success',
       failureId: 'ui-cyclops.projects.delete.failure',
     });

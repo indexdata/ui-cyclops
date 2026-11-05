@@ -68,7 +68,7 @@
 ## 2026-11-05
 
 * **DONE** Refer to fund and track by display-name, not tag, in toasts.
-* Refer to projects by display-name, not tag, in toasts.
+* **DONE** Refer to projects by display-name, not tag, in toasts.
 * Use bold for all project, set, track, fund and location names in toasts.
 
 ## To be done

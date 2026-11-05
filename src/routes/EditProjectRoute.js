@@ -14,7 +14,7 @@ function EditProjectRoute({ resources, mutator, match }) {
 
   const handleSubmit = async (record) => {
     const updated = await mutateWithCallout(callout, () => mutator.project.PUT(record), {
-      values: { name: record.id },
+      values: { name: record.name || record.id },
       successId: 'ui-cyclops.project.update.success',
       failureId: 'ui-cyclops.project.update.failure',
     });

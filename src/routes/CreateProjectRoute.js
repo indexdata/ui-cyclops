@@ -22,13 +22,14 @@ function CreateProjectRoute({ resources, mutator }) {
     };
 
     // The created project's id comes back on the response, and is what the
-    // redirect uses; the callouts name the id as submitted, which the form
-    // requires and the server honours.
+    // redirect uses; the callouts name the project by its title, falling
+    // back to the id as submitted, which the form requires and the server
+    // honours.
     let created;
     const ok = await mutateWithCallout(callout, async () => {
       created = await mutator.project.POST(normalized);
     }, {
-      values: { name: record.id },
+      values: { name: record.name || record.id },
       successId: 'ui-cyclops.project.create.success',
       failureId: 'ui-cyclops.project.create.failure',
     });
