@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Button, Modal, ModalFooter, Select, TextField } from '@folio/stripes/components';
 
-// A set's name is used unquoted in CCMS queries, so restrict it to a
+// A list's name is used unquoted in CCMS queries, so restrict it to a
 // conservative identifier syntax: a letter followed by letters, digits and
 // underscores.
 const VALID_NAME = /^[A-Za-z][0-9A-Za-z_]*$/;

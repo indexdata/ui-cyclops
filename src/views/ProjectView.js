@@ -86,7 +86,7 @@ function renderList(sets, nav, callout,
   showCreateModal, setShowCreateModal, addList,
   listToDelete, setListToDelete, deleteList,
   filters, populateList, intl) {
-  // Each record is { project, set, title }, as returned by the WSAPI. The set
+  // Each record is { project, set, title }, as returned by the WSAPI. The list
   // name is unqualified, but everything downstream -- URLs, the WSAPI itself --
   // wants the fully qualified `project.set`.
   const contentData = sets.sets;
@@ -110,7 +110,7 @@ function renderList(sets, nav, callout,
     });
   }
 
-  // Takes the whole set record, as the WSAPI wants its qualified name but the
+  // Takes the whole list record, as the WSAPI wants its qualified name but the
   // callout reports it as the confirmation modal named it.
   async function actuallyDeleteSet(set) {
     setListToDelete(undefined);

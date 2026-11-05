@@ -42,8 +42,8 @@ export default function Cyclops(props) {
         <Route path={`${path}/project/create`} exact component={CreateProjectRoute} />
         <Route path={`${path}/project/:projectId`} exact component={ProjectRoute} />
         <Route path={`${path}/project/:projectId/edit`} exact component={EditProjectRoute} />
-        <NestedRoute path={`${path}/list/:projectId/:setId`} component={ListRoute}>
-          <Route path={`${path}/list/:projectId/:setId/:spectreId`} exact component={SpectreRoute} />
+        <NestedRoute path={`${path}/list/:projectId/:listId`} component={ListRoute}>
+          <Route path={`${path}/list/:projectId/:listId/:spectreId`} exact component={SpectreRoute} />
         </NestedRoute>
       </Switch>
     </NavContext.Provider>

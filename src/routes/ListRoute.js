@@ -43,27 +43,27 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   const searchCond = () => condFromClauses(clausesFromQuery(resources));
   const saveSearch = (name) => mutator.saveFilter.POST({ name, jsonCond: searchCond() });
 
-  // A set's own record -- as opposed to its contents, which is what the
-  // `spectres` resource holds -- comes from the project's list of sets, whose
-  // entries are qualified as `project.set`. Both the set on view and the one
+  // A list's own record -- as opposed to its contents, which is what the
+  // `spectres` resource holds -- comes from the project's lists, whose
+  // entries are qualified as `project.set`. Both the list on view and the one
   // that spectres are being added from (always of the same project) are looked
   // up, as each is named in the heading.
-  const listName = match.params.setId;
+  const listName = match.params.listId;
   const findSet = (qualifiedName) => resources.setsToFindThisSet?.records?.[0]?.sets
     ?.find(entry => `${entry.project}.${entry.set}` === qualifiedName);
   const setRecord = findSet(listName);
   const addFromRecord = addFrom ? findSet(addFrom) : undefined;
 
-  // CCMS's "alter set" takes the whole set structure, so the name goes along
+  // CCMS's "alter set" takes the whole list structure, so the name goes along
   // with the new title even though the URL already carries it.
   const updateList = (title) => mutator.thisSet.PUT({ name: listName, title });
 
-  // Fill a newly-created set with the records of the present search result:
-  // the same source set that is on view, matched by the same condition.
+  // Fill a newly-created list with the records of the present search result:
+  // the same source list that is on view, matched by the same condition.
   const populateList = async (setName) => {
     await mutator.populateTarget.update({ setName });
     return mutator.populateSet.POST({
-      from: addFrom || match.params.setId,
+      from: addFrom || match.params.listId,
       jsonCond: searchCond(),
     });
   };
@@ -166,8 +166,8 @@ function condFromClauses(clauses) {
 // A list may have a filter that is always applied to it, over and above
 // whatever the user searches for: the list named LNAME is automatically
 // filtered by the filter called LNAME_auto, when the project defines one.
-// Filters are unqualified within a project, whereas a set is named
-// `project.set`, so the leading project-name is stripped before appending the
+// Filters are unqualified within a project, whereas a list is named
+// `PROJECT.LNAME`, so the leading project-name is stripped before appending the
 // suffix. Returns the filter's name when it exists, and undefined otherwise:
 // most lists have no auto-filter.
 function autoFilterFor(setName, resources) {
@@ -193,7 +193,7 @@ function jsonCondFn(queryParams, pathParams, resources, _logger, props) {
   // no place in the other thing this fetch does: listing another list's
   // spectres as candidates to add to this one. That is a search of the list
   // being added *from*, and this list's criteria are not its business.
-  const autoFilter = queryParams.addFrom ? undefined : autoFilterFor(pathParams.setId, props.resources);
+  const autoFilter = queryParams.addFrom ? undefined : autoFilterFor(pathParams.listId, props.resources);
   if (autoFilter) clauses.push({ type: 'filter', name: autoFilter });
 
   const cond = condFromClauses(clauses);
@@ -211,8 +211,8 @@ ListRoute.manifest = Object.freeze({
     path: 'cyclops/filters',
     params: { project: ':{projectId}' },
   },
-  // Fetched for the sake of this set's own title: there is no WSAPI operation
-  // that returns a single set.
+  // Fetched for the sake of this list's own title: there is no WSAPI operation
+  // that returns a single list.
   setsToFindThisSet: {
     type: 'okapi',
     path: 'cyclops/projects/:{projectId}/sets',
@@ -231,7 +231,7 @@ ListRoute.manifest = Object.freeze({
       // No auto-filter applies when adding from another list, so there is
       // nothing to wait for in that case.
       if (!queryParams.addFrom && !props.resources.filters?.hasLoaded) return null;
-      return `cyclops/sets/${queryParams.addFrom || pathParams.setId}`;
+      return `cyclops/sets/${queryParams.addFrom || pathParams.listId}`;
     },
     params: {
       fields: '*',
@@ -274,7 +274,7 @@ ListRoute.manifest = Object.freeze({
       if (!rendered?.hasLoaded || rendered.isPending || current?.isPending) return null;
 
       // Otherwise, the same path as for the main 'spectres' manifest entry
-      return `cyclops/sets/${queryParams.addFrom || pathParams.setId}`;
+      return `cyclops/sets/${queryParams.addFrom || pathParams.listId}`;
     },
     params: {
       countOnly: true,
@@ -283,13 +283,13 @@ ListRoute.manifest = Object.freeze({
   },
   addToList: {
     type: 'okapi',
-    path: 'cyclops/sets/:{setId}/add',
+    path: 'cyclops/sets/:{listId}/add',
     fetch: false,
     throwErrors: false,
   },
   removeFromList: {
     type: 'okapi',
-    path: 'cyclops/sets/:{setId}/remove',
+    path: 'cyclops/sets/:{listId}/remove',
     fetch: false,
     throwErrors: false,
   },
@@ -301,10 +301,10 @@ ListRoute.manifest = Object.freeze({
       throwErrors: false,
     },
   },
-  // The set that is on view, for altering its title.
+  // The list that is on view, for altering its title.
   thisSet: {
     type: 'okapi',
-    path: 'cyclops/sets/:{setId}',
+    path: 'cyclops/sets/:{listId}',
     fetch: false,
     throwErrors: false,
   },

@@ -15,7 +15,7 @@ function SpectreView({ loaded, match, project, spectre, mutator }) {
 
   if (!loaded) return <LoadingPane />;
 
-  const listUrl = `${packageInfo.stripes.route}/list/${match.params.projectId}/${match.params.setId}`;
+  const listUrl = `${packageInfo.stripes.route}/list/${match.params.projectId}/${match.params.listId}`;
 
   // Every update sends the whole record, so the values that are not being
   // changed are sent along as they stand.

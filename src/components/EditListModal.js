@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { Button, Modal, ModalFooter, TextField } from '@folio/stripes/components';
 
 // Edit the human-readable title of an existing list. The list's name is not
-// editable -- CCMS has no facility for renaming a set -- so it is shown as
+// editable -- CCMS has no facility for renaming a list -- so it is shown as
 // read-only context for the title that is being changed.
 const EditListModal = ({
   heading,

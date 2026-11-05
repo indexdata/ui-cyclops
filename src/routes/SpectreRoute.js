@@ -36,7 +36,7 @@ function SpectreRoute({ resources, mutator, match }) {
 SpectreRoute.manifest = Object.freeze({
   spectre: {
     type: 'okapi',
-    path: 'cyclops/sets/:{setId}',
+    path: 'cyclops/sets/:{listId}',
     params: {
       fields: '*, source_record',
       jsonCond: (_, pathParams) => JSON.stringify(idCond(pathParams.spectreId)),
@@ -44,7 +44,7 @@ SpectreRoute.manifest = Object.freeze({
   },
   spectreUpdate: {
     type: 'okapi',
-    path: 'cyclops/sets/:{setId}/:{spectreId}',
+    path: 'cyclops/sets/:{listId}/:{spectreId}',
     fetch: false,
     clientGeneratePk: false,
     throwErrors: false,
