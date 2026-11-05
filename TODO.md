@@ -24,7 +24,7 @@
 * **DONE** Ability to create a new set directly from search results, skipping filter creation
 * **DONE** Result-list: checkboxes for bulk actions
 * **DONE** Update to use new permissions from updated mod-graphql
-* **DONE** Replace "No value selected" on Decision filter with "-" placeholder.
+* **DONE** Replace "No value selected" on Decision filter with "-" placeholder
 * **DONE** Fix "Adding to list mike_chosen from 11384075 spectres in list mike.object" message
 * **DONE** Widen the ID field to accomodate larger IDs
 * **DONE** Remove the unused dummy Settings pages
@@ -39,13 +39,13 @@
 * **DONE** Sets should be listed by human-readable title, not just by slug
 * **DONE** When creating a set, allow the title to be set as well as the slug (so far as possible: CCMS itself does not yet support this)
 * **DONE** Filters are now namespaced to project: hide prefixes in UI, as for sets
-* **DONE** Source and destination dropdowns for spectre should use relevant lists from project.
+* **DONE** Source and destination dropdowns for spectre should use relevant lists from project
 * **DONE** Action menu for bulk actions should support "Remove from list"
 * **DONE** Ability to add further index=query search fields with a "+" button
 * **FIXED**: Home and Project tabs should always be clickable, even after reloading from the List tab
-* **DONE** Implement settings page for maintaining filters (though only for deletion, as "edit" neither makes much sense, nor is supported on the back end).
+* **DONE** Implement settings page for maintaining filters (though only for deletion, as "edit" neither makes much sense, nor is supported on the back end)
 * **DONE** Fetch filters for a given project, not all projects then filter
-* **DONE** Add UI for changing the title of a set (view set, **Actions** -> **List** -> **Edit**). CCMS supports changing only the title, not the name.
+* **DONE** Add UI for changing the title of a set (view set, **Actions** -> **List** -> **Edit**). CCMS supports changing only the title, not the name
 * **DONE** Magical `NAME_auto` filter is automatically and dynamicalt applied to set `NAME`
 * **DONE** Settings page for maintaining the set of available tracks
 * **DONE** Association of tracks to individual projects
@@ -63,13 +63,13 @@
 * **DONE** Provide ARIA labelling for all relevant UI elements
 * **DONE** Add `track` field to the spectre list
 * **DONE** Consistently refer to lists by their display-name, not tag
-* **DONE** Allow linking to a list (from its project) by display-name as well as tag.
+* **DONE** Allow linking to a list (from its project) by display-name as well as tag
 
 ## 2026-11-05
 
-* **DONE** Refer to fund and track by display-name, not tag, in toasts.
-* **DONE** Refer to projects by display-name, not tag, in toasts.
-* **DONE** Use bold for all project, set, track, fund and location names in toasts.
+* **DONE** Refer to fund and track by display-name, not tag, in toasts
+* **DONE** Refer to projects by display-name, not tag, in toasts
+* **DONE** Use bold for all project, set, track, fund and location names in toasts
 
 ## To be done
 
