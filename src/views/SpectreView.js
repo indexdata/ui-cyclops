@@ -32,8 +32,11 @@ function SpectreView({ loaded, match, project, spectre, mutator }) {
     failureId: `${messageId}.failure`,
   });
 
-  const onChangeFund = (fund) => decide({ fund }, 'ui-cyclops.spectre.set-fund', { fund });
-  const onChangeTrack = (track) => decide({ track }, 'ui-cyclops.spectre.set-track', { track });
+  // Report the chosen entry by its name when the project defines one,
+  // falling back to the bare tag.
+  const nameOf = (entries, id) => (entries || []).find(x => x.id === id)?.name || id;
+  const onChangeFund = (fund) => decide({ fund }, 'ui-cyclops.spectre.set-fund', { fund: nameOf(project.funds, fund) });
+  const onChangeTrack = (track) => decide({ track }, 'ui-cyclops.spectre.set-track', { track: nameOf(project.tracks, track) });
   const onDecide = () => decide({ decision: true }, 'ui-cyclops.spectre.decision');
 
   const renderActionMenu = ({ onToggle }) => (

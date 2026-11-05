@@ -65,6 +65,10 @@
 * **DONE** Consistently refer to lists by their display-name, not tag
 * **DONE** Allow linking to a list (from its project) by display-name as well as tag.
 
+## 2026-11-05
+
+* **DONE** Refer to fund and track by display-name, not tag, in toasts.
+
 ## To be done
 
 * Consistent nomenclature for Spectre/Record
