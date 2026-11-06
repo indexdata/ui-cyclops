@@ -49,20 +49,20 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   // that spectres are being added from (always of the same project) are looked
   // up, as each is named in the heading.
   const listName = match.params.listId;
-  const findSet = (qualifiedName) => resources.setsToFindThisSet?.records?.[0]?.sets
+  const findList = (qualifiedName) => resources.listsToFindThisList?.records?.[0]?.sets
     ?.find(entry => `${entry.project}.${entry.set}` === qualifiedName);
-  const setRecord = findSet(listName);
-  const addFromRecord = addFrom ? findSet(addFrom) : undefined;
+  const listRecord = findList(listName);
+  const addFromRecord = addFrom ? findList(addFrom) : undefined;
 
   // CCMS's "alter set" takes the whole list structure, so the name goes along
   // with the new title even though the URL already carries it.
-  const updateList = (title) => mutator.thisSet.PUT({ name: listName, title });
+  const updateList = (title) => mutator.thisList.PUT({ name: listName, title });
 
   // Fill a newly-created list with the records of the present search result:
   // the same source list that is on view, matched by the same condition.
-  const populateList = async (setName) => {
-    await mutator.populateTarget.update({ setName });
-    return mutator.populateSet.POST({
+  const populateList = async (newListName) => {
+    await mutator.listToPopulate.update({ name: newListName });
+    return mutator.populateList.POST({
       from: addFrom || match.params.listId,
       jsonCond: searchCond(),
     });
@@ -75,7 +75,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       projectId={match.params.projectId}
       project={resources.project?.records?.[0]}
       batchUpdate={(ids, changes) => mutator.batch.POST({ ids, changes })}
-      listTitle={setRecord?.title}
+      listTitle={listRecord?.title}
       addFromTitle={addFromRecord?.title}
       updateList={updateList}
       spectres={spectresResource.records[0]}
@@ -85,7 +85,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       savedFilters={resources.filters?.records?.[0]?.filters || []}
       autoFilter={addFrom ? undefined : autoFilterFor(listName, resources)}
       addFrom={addFrom}
-      addList={(name, title) => mutator.setsToCreateIn.POST(title ? { name, title } : { name })}
+      addList={(name, title) => mutator.listsToCreateIn.POST(title ? { name, title } : { name })}
       populateList={populateList}
       hasSearch={!!searchCond()}
       addSpectre={(spectreId) => mutator.addToList.POST({ from: addFrom, jsonCond: idCond(spectreId) })}
@@ -170,9 +170,9 @@ function condFromClauses(clauses) {
 // `PROJECT.LNAME`, so the leading project-name is stripped before appending the
 // suffix. Returns the filter's name when it exists, and undefined otherwise:
 // most lists have no auto-filter.
-function autoFilterFor(setName, resources) {
-  if (!setName) return undefined;
-  const wanted = `${setName.replace(/.*\./, '')}_auto`;
+function autoFilterFor(listName, resources) {
+  if (!listName) return undefined;
+  const wanted = `${listName.replace(/.*\./, '')}_auto`;
   const filters = resources.filters?.records?.[0]?.filters || [];
   return filters.some(f => f.filter === wanted) ? wanted : undefined;
 }
@@ -213,7 +213,7 @@ ListRoute.manifest = Object.freeze({
   },
   // Fetched for the sake of this list's own title: there is no WSAPI operation
   // that returns a single list.
-  setsToFindThisSet: {
+  listsToFindThisList: {
     type: 'okapi',
     path: 'cyclops/projects/:{projectId}/sets',
   },
@@ -293,7 +293,7 @@ ListRoute.manifest = Object.freeze({
     fetch: false,
     throwErrors: false,
   },
-  setsToCreateIn: {
+  listsToCreateIn: {
     type: 'okapi',
     path: 'cyclops/sets',
     fetch: false,
@@ -302,16 +302,16 @@ ListRoute.manifest = Object.freeze({
     },
   },
   // The list that is on view, for altering its title.
-  thisSet: {
+  thisList: {
     type: 'okapi',
     path: 'cyclops/sets/:{listId}',
     fetch: false,
     throwErrors: false,
   },
-  populateTarget: {},
-  populateSet: {
+  listToPopulate: {},
+  populateList: {
     type: 'okapi',
-    path: (_q, _p, resources) => `cyclops/sets/${resources.populateTarget?.setName}/add`,
+    path: (_q, _p, resources) => `cyclops/sets/${resources.listToPopulate?.name}/add`,
     fetch: false,
     throwErrors: false,
   },

@@ -72,9 +72,12 @@
 * **DONE** Use bold for all project, list, track, fund and location names in toasts
 * **DONE** Consistent user-facing nomenclature "list" rather than "set"
 
+## 2026-11-06
+
+* **DONE** Consistent use of "list" rather than "set" in code
+
 ## To be done
 
-* Consistent use of "list" rather than "set" in code
 * Consistent nomenclature for Spectre/Record
 * Consistent nomenclature for display-name vs. tag
 

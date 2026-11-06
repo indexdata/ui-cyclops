@@ -4,13 +4,13 @@ import ProjectView from '../views/ProjectView';
 
 function ProjectRoute(props) {
   const projectResource = props.resources.project;
-  const setsResource = props.resources.sets;
-  const loaded = (setsResource && setsResource.hasLoaded &&
+  const listsResource = props.resources.lists;
+  const loaded = (listsResource && listsResource.hasLoaded &&
                   projectResource && projectResource.hasLoaded);
 
-  const populateList = async (setName, filterName) => {
-    await props.mutator.populateTarget.update({ setName });
-    return props.mutator.populateSet.POST({
+  const populateList = async (listName, filterName) => {
+    await props.mutator.listToPopulate.update({ name: listName });
+    return props.mutator.populateList.POST({
       from: `${projectResource.records[0].id}.object`,
       jsonCond: { type: 'filter', name: filterName },
     });
@@ -19,11 +19,11 @@ function ProjectRoute(props) {
   return <ProjectView
     loaded={loaded}
     project={projectResource.records[0]}
-    sets={setsResource.records[0]}
+    lists={listsResource.records[0]}
     filters={props.resources.filters?.records?.[0]?.filters || []}
-    addList={(name, title) => props.mutator.allSets.POST(title ? { name, title } : { name })}
+    addList={(name, title) => props.mutator.allLists.POST(title ? { name, title } : { name })}
     populateList={populateList}
-    deleteList={(id) => props.mutator.allSets.DELETE({ id })}
+    deleteList={(id) => props.mutator.allLists.DELETE({ id })}
   />;
 }
 
@@ -32,7 +32,7 @@ ProjectRoute.manifest = Object.freeze({
     type: 'okapi',
     path: 'cyclops/projects/:{projectId}',
   },
-  sets: {
+  lists: {
     type: 'okapi',
     path: 'cyclops/projects/:{projectId}/sets',
   },
@@ -41,14 +41,14 @@ ProjectRoute.manifest = Object.freeze({
     path: 'cyclops/filters',
     params: { project: ':{projectId}' },
   },
-  populateTarget: {},
-  populateSet: {
+  listToPopulate: {},
+  populateList: {
     type: 'okapi',
-    path: (_q, _p, resources) => `cyclops/sets/${resources.populateTarget?.setName}/add`,
+    path: (_q, _p, resources) => `cyclops/sets/${resources.listToPopulate?.name}/add`,
     fetch: false,
     throwErrors: false,
   },
-  allSets: {
+  allLists: {
     type: 'okapi',
     path: 'cyclops/sets',
     fetch: false,

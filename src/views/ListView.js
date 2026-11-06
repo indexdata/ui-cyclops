@@ -365,17 +365,17 @@ export default function ListView({ loaded, name, project, listTitle, addFromTitl
   const makeNewList = async (listName, options) => {
     setShowCreateModal(false);
     const fullName = `${projectId}.${listName}`;
-    const newListName = listDisplayTitle(options?.title, fullName, intl);
+    const newListTitle = listDisplayTitle(options?.title, fullName, intl);
 
     const created = await mutateWithCallout(callout, () => addList(fullName, options?.title), {
-      values: { title: newListName },
+      values: { title: newListTitle },
       successId: 'ui-cyclops.project.new-list.success',
       failureId: 'ui-cyclops.project.new-list.failure',
     });
     if (!created) return;
 
     await mutateWithCallout(callout, () => populateList(fullName), {
-      values: { title: newListName },
+      values: { title: newListTitle },
       successId: 'ui-cyclops.list.populate-list.success',
       failureId: 'ui-cyclops.list.populate-list.failure',
     });

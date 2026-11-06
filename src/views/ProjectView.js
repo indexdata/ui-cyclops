@@ -82,17 +82,17 @@ function renderProject(baseProject) {
 }
 
 
-function renderList(sets, nav, callout,
+function renderList(lists, nav, callout,
   showCreateModal, setShowCreateModal, addList,
   listToDelete, setListToDelete, deleteList,
   filters, populateList, intl) {
   // Each record is { project, set, title }, as returned by the WSAPI. The list
   // name is unqualified, but everything downstream -- URLs, the WSAPI itself --
   // wants the fully qualified `project.set`.
-  const contentData = sets.sets;
+  const contentData = lists.sets;
   const qualifiedName = r => `${r.project}.${r.set}`;
 
-  async function makeNewSet(name, title, filter) {
+  async function makeNewList(name, title, filter) {
     setShowCreateModal(false);
     const displayName = listDisplayTitle(title, name, intl);
 
@@ -112,12 +112,12 @@ function renderList(sets, nav, callout,
 
   // Takes the whole list record, as the WSAPI wants its qualified name but the
   // callout reports it as the confirmation modal named it.
-  async function actuallyDeleteSet(set) {
+  async function actuallyDeleteList(list) {
     setListToDelete(undefined);
-    const name = qualifiedName(set);
+    const name = qualifiedName(list);
 
     await mutateWithCallout(callout, () => deleteList(name), {
-      values: { title: listDisplayTitle(set.title, name, intl) },
+      values: { title: listDisplayTitle(list.title, name, intl) },
       successId: 'ui-cyclops.project.delete-list.success',
       failureId: 'ui-cyclops.project.delete-list.failure',
     });
@@ -142,15 +142,15 @@ function renderList(sets, nav, callout,
 
       <MultiColumnList
         columnMapping={{
-          set: <FormattedMessage id="ui-cyclops.field.name" />,
+          name: <FormattedMessage id="ui-cyclops.field.name" />,
           title: <FormattedMessage id="ui-cyclops.field.title" />,
           'action-delete': <FormattedMessage id="ui-cyclops.field.action-delete" />,
         }}
-        visibleColumns={['set', 'title', 'action-delete']}
-        columnWidths={{ 'set': '30%', 'title': '55%' }}
+        visibleColumns={['name', 'title', 'action-delete']}
+        columnWidths={{ 'name': '30%', 'title': '55%' }}
         contentData={contentData}
         formatter={{
-          set: r => (
+          name: r => (
             <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${qualifiedName(r)}`}>
               {listDisplayName(qualifiedName(r), intl)}
             </Link>
@@ -173,7 +173,7 @@ function renderList(sets, nav, callout,
       <PromptModal
         heading={<FormattedMessage id="ui-cyclops.project.new-list.heading" />}
         open={showCreateModal}
-        onConfirm={(name, options) => makeNewSet(`${nav.project.id}.${name}`, options.title, options.filter)}
+        onConfirm={(name, options) => makeNewList(`${nav.project.id}.${name}`, options.title, options.filter)}
         onCancel={() => setShowCreateModal(false)}
         message={<FormattedMessage id="ui-cyclops.project.new-list.message" />}
         filters={filters}
@@ -183,7 +183,7 @@ function renderList(sets, nav, callout,
       <ConfirmationModal
         heading={<FormattedMessage id="ui-cyclops.project.delete-list.heading" />}
         open={!!listToDelete}
-        onConfirm={() => actuallyDeleteSet(listToDelete)}
+        onConfirm={() => actuallyDeleteList(listToDelete)}
         onCancel={() => setListToDelete(undefined)}
         message={<FormattedMessage
           id="ui-cyclops.project.delete-list.message"
@@ -195,7 +195,7 @@ function renderList(sets, nav, callout,
 }
 
 
-export default function ProjectView({ loaded, project, sets, filters, addList, populateList, deleteList }) {
+export default function ProjectView({ loaded, project, lists, filters, addList, populateList, deleteList }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [listToDelete, setListToDelete] = useState();
   const callout = useCallout();
@@ -207,7 +207,7 @@ export default function ProjectView({ loaded, project, sets, filters, addList, p
   const paneTitle = <FormattedMessage
     id="ui-cyclops.project.header"
     values={{
-      count: sets?.sets.length,
+      count: lists?.sets.length,
       project: nav.project.name,
     }}
   />;
@@ -233,7 +233,7 @@ export default function ProjectView({ loaded, project, sets, filters, addList, p
           : (
             <>
               {renderProject(project)}
-              {renderList(sets, nav, callout,
+              {renderList(lists, nav, callout,
                 showCreateModal, setShowCreateModal, addList,
                 listToDelete, setListToDelete, deleteList,
                 filters, populateList, intl)}
