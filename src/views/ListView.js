@@ -66,10 +66,10 @@ const columnWidthsWithSelect = { select: '80px', ...columnWidths };
 
 // The columns that the user cannot hide using the column manager: the
 // selection checkboxes, and the title, which is the link to each spectre's
-// full record (or, when adding from another list, the button that adds it).
+// full view (or, when adding from another list, the button that adds it).
 const alwaysVisibleColumns = ['select', 'title'];
 
-// Determined experimentally from records in an old "reserve" list
+// Determined experimentally from spectres in an old "reserve" list
 const availabilityValues = [
   'In stock',
   'Temporarily unavailable',

@@ -27,11 +27,11 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   const spectresResource = resources.spectres;
   const loaded = spectresResource && spectresResource.hasLoaded;
 
-  // Since the count is fetched only after the records (see the manifest), the
+  // Since the count is fetched only after the spectres (see the manifest), the
   // previous search's count lingers for as long as the new search takes, plus
   // the time to count it. It is the count of what is on view only if it was
-  // fetched later than the records themselves; until then, report no count, so
-  // that the view falls back to "at least so many records".
+  // fetched later than the spectres themselves; until then, report no count, so
+  // that the view falls back to "at least so many spectres".
   const countResource = resources.spectreCount;
   const counted = countResource.loadedAt >= spectresResource.loadedAt;
   const spectreCount = counted ? countResource.records[0]?.data[0].values[0] : undefined;
@@ -58,7 +58,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   // with the new title even though the URL already carries it.
   const updateList = (title) => mutator.thisList.PUT({ name: listName, title });
 
-  // Fill a newly-created list with the records of the present search result:
+  // Fill a newly-created list with the spectres of the present search result:
   // the same source list that is on view, matched by the same condition.
   const populateList = async (newListName) => {
     await mutator.listToPopulate.update({ name: newListName });
@@ -256,8 +256,8 @@ ListRoute.manifest = Object.freeze({
   spectreCount: {
     type: 'okapi',
     // It's inefficient for CCMS to run this alongside the (faster) fetch of
-    // the actual records, so the path is null -- meaning "do not fetch" --
-    // until those records are in.
+    // the actual spectres, so the path is null -- meaning "do not fetch" --
+    // until those spectres are in.
     //
     // Two views of the spectres are needed to say when that is. `props` holds
     // the copy the component last rendered with, and is the only one
@@ -267,7 +267,7 @@ ListRoute.manifest = Object.freeze({
     // and no fetch is ever dispatched. `resources` holds the store as it is at
     // this instant, and so is the only one that is up to date when a fetch is
     // about to be dispatched -- which is how we see that a new search has
-    // already begun, the records last rendered being the previous search's.
+    // already begun, the spectres last rendered being the previous search's.
     path: (queryParams, pathParams, resources, _logger, props) => {
       const rendered = props.resources.spectres;
       const current = resources.spectres;

@@ -76,8 +76,11 @@
 
 * **DONE** Consistent use of "list" rather than "set" in code
 
+## 2026-11-10
+
+* **DONE** Consistent nomenclature for Spectre/Record
+
 ## To be done
 
-* Consistent nomenclature for Spectre/Record
 * Consistent nomenclature for display-name vs. tag
 

@@ -84,7 +84,7 @@
   "spectre.actions.heading": "Actions",
   "spectre.view-source-record": "View source record",
   "spectre.source-record.heading": "Source record",
-  "spectre.close.aria-label": "Close record",
+  "spectre.close.aria-label": "Close spectre",
   "field.select": "Select?",
   "select.aria-label": "Select spectre: {title}",
   "deselect.aria-label": "Deselect spectre: {title}",
