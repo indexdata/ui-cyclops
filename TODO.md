@@ -82,5 +82,6 @@
 
 ## To be done
 
+* Support new `filter` element in the Project object
 * Consistent nomenclature for display-name vs. tag
 
